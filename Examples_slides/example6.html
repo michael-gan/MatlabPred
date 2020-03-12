@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>案例6</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../reveal.js/css/reveal.css">
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../reveal.js/css/theme/beige.css" id="theme">
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? '../reveal.js/css/print/pdf.css' : '../reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+    </script>
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+  <!--[if lt IE 9]>
+  <script src="../reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+	<section>
+<h2 id="案例6使用simulink生成传动系统故障数据"><span id="jumpExample6">案例6：使用Simulink生成传动系统故障数据</span></h2>
+</section>
+<section align=left>
+<p>本案例将展示，如何使用Simulink模型生成故障和健康数据。随后，生成的故障和健康数据将被用来开发状态监控算法。本案例聚焦于传动系统，将模拟齿轮齿故障、传感器漂移故障和轴磨损故障</p>
+</section>
+<section align=left>
+<h4 id="第一步传动系统模型"><strong>第一步：传动系统模型</strong></h4>
+<section>
+<p>变速箱体模型使用Simscape中的传动系统模块（需安装Simscape Driveline）来模拟简单的传动系统。传动系统包括转矩驱动器、传动轴、离合器和连接到输出轴的高低齿轮</p>
+<p>下面直接导入Matlab中已有的变速箱体模型</p>
+<div class="sourceCode" id="cb117"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb117-1" data-line-number="1">mdl = <span class="st">&#39;pdmTransmissionCasing&#39;</span></a>
+<a class="sourceLine" id="cb117-2" data-line-number="2">open_system(mdl)</a></code></pre></div>
+<p align=center><img src="..\algo_dev\MathworksVibrationModel.PNG" style="zoom: 120%;" /></p>
+</section>
+<section align=left>
+<p>传动系统中包含了一个振动传感器，用来监控箱体振动。箱体模型将轴的角位移转化为箱体上的线性位移。将箱体建模为质量弹簧阻尼系统和从箱体上测得的振动（箱体加速度）</p>
+<p>下面可在Simulink中打开箱体模型</p>
+<div class="sourceCode" id="cb118"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb118-1" data-line-number="1">open_system([mdl <span class="st">&#39;/Casing&#39;</span>])</a></code></pre></div>
+<p align=center><img src="..\algo_dev\MathworksVibrationModelCasing.PNG" style="zoom:120%;" /></p>
+</section>
+</section>
+<section align=left>
+<h4 id="第二步故障建模"><strong>第二步：故障建模</strong></h4>
+<section align=left>
+<p>传动系统包含了诸如振动传感器漂移、齿轮齿故障和轴磨损故障。传感器漂移可以很容易地通过在传感器模型中加上偏移量模拟。该偏移量是通过模型变量<code>SDrift</code>控制，当 <code>SDrift</code>为0时代表无传感器故障</p>
+<div class="sourceCode" id="cb119"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb119-1" data-line-number="1">open_system([mdl <span class="st">&#39;/Vibration sensor with drift&#39;</span>])</a></code></pre></div>
+<p align=center><img src="..\algo_dev\MathworksVibrationModelSensorShift.PNG" style="zoom:120%;" /></p>
+</section>
+<section align=left>
+<p>轴磨损故障通过变量子系统模拟。在这种情况下，子系统变量改变轴阻尼，但变量子系统可以用来完全改变轴模型的实现。所选择的变量通过模型变量<code>ShaftWear</code>控制，当<code>ShaftWear</code>为0时，表示无轴磨损故障</p>
+<div class="sourceCode" id="cb120"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb120-1" data-line-number="1">open_system([mdl <span class="st">&#39;/Shaft&#39;</span>])</a></code></pre></div>
+<p align=center><img src="..\algo_dev\MathworksVibrationModelShaft.PNG" style="zoom:120%;" /></p>
+</section>
+<section align=left>
+<div class="sourceCode" id="cb121"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb121-1" data-line-number="1">open_system([mdl,<span class="st">&#39;/Shaft/Output Shaft&#39;</span>])</a></code></pre></div>
+<p align=center><img src="..\algo_dev\MathworksVibrationModelOuputShaft.PNG" style="zoom:120%;" /></p>
+</section>
+<section align=left>
+<p>齿轮齿故障通过在传动轴转动的固定位置引入扰动力矩实现。轴位置使用弧度测得，当轴位置为在0附近的小窗范围内时，将扰动力施加于轴上。扰动大小通过模型变量<code>ToothFaultGain</code>控制，当<code>ToothFaultGain</code>为0时，表示无齿轮齿故障</p>
+<div class="sourceCode" id="cb122"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb122-1" data-line-number="1">open_system([mdl,<span class="st">&#39;/Gear Tooth fault&#39;</span>])</a></code></pre></div>
+<p align=center><img src="..\algo_dev\MathworksVibrationModelGearToothFault.PNG" style="zoom:120%;" /></p>
+</section>
+</section>
+<section align=left>
+<h4 id="第三步模拟故障和健康数据"><strong>第三步：模拟故障和健康数据</strong></h4>
+<section>
+<p>通过控制并调节传感器漂移、齿轮齿故障、轴磨损三种故障类型出现及严重程度的变量配置传动模型。通过改变模型变量，<code>SDrift</code>，<code>ToothFaultGain</code>，<code>ShaftWear</code>三个变量，可以模拟出不同故障类型下的数据。使用<code>Simulink.SimulationInput</code>对象中的数组，可以定义不同的模拟场景。例如，为每个模型变量分配一个数组，然后使用<code>ndgrid</code>函数为每组模型变量的组合生成一个<code>Simulink.SimulationInput</code>对象</p>
+<div class="sourceCode" id="cb123"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb123-1" data-line-number="1">toothFaultArray = -<span class="fl">2</span>:<span class="fl">2</span>/<span class="fl">10</span>:<span class="fl">0</span>; <span class="co">% 齿轮故障增益值</span></a>
+<a class="sourceLine" id="cb123-2" data-line-number="2">sensorDriftArray = -<span class="fl">1</span>:<span class="fl">0.5</span>:<span class="fl">1</span>; <span class="co">% 传感器漂移偏移值</span></a>
+<a class="sourceLine" id="cb123-3" data-line-number="3">shaftWearArray = [<span class="fl">0</span> -<span class="fl">1</span>];       <span class="co">% 对应驱动轴磨损不同的变量值</span></a>
+<a class="sourceLine" id="cb123-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb123-5" data-line-number="5"><span class="co">% 创建组合所有值的n-维数组</span></a>
+<a class="sourceLine" id="cb123-6" data-line-number="6">[toothFaultValues,sensorDriftValues,shaftWearValues] = ...</a>
+<a class="sourceLine" id="cb123-7" data-line-number="7">    ndgrid(toothFaultArray,sensorDriftArray,shaftWearArray);</a>
+<a class="sourceLine" id="cb123-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb123-9" data-line-number="9">for ct = numel(toothFaultValues):-<span class="fl">1</span>:<span class="fl">1</span></a>
+<a class="sourceLine" id="cb123-10" data-line-number="10">    <span class="co">% 对每个模型参数输入的组合生成一个Simulink.SimulationInput结果</span></a>
+<a class="sourceLine" id="cb123-11" data-line-number="11">    siminput = Simulink.SimulationInput(mdl);</a>
+<a class="sourceLine" id="cb123-12" data-line-number="12">    </a>
+<a class="sourceLine" id="cb123-13" data-line-number="13">    <span class="co">% 修改模型参数</span></a>
+<a class="sourceLine" id="cb123-14" data-line-number="14">    siminput = setVariable(siminput,<span class="st">&#39;ToothFaultGain&#39;</span>,toothFaultValues(ct));</a>
+<a class="sourceLine" id="cb123-15" data-line-number="15">    siminput = setVariable(siminput,<span class="st">&#39;SDrift&#39;</span>,sensorDriftValues(ct));</a>
+<a class="sourceLine" id="cb123-16" data-line-number="16">    siminput = setVariable(siminput,<span class="st">&#39;ShaftWear&#39;</span>,shaftWearValues(ct));</a>
+<a class="sourceLine" id="cb123-17" data-line-number="17">    </a>
+<a class="sourceLine" id="cb123-18" data-line-number="18">    <span class="co">% 收集数组中的模拟输入</span></a>
+<a class="sourceLine" id="cb123-19" data-line-number="19">    gridSimulationInput(ct) = siminput;</a>
+<a class="sourceLine" id="cb123-20" data-line-number="20">end</a></code></pre></div>
+</section>
+<section align=left>
+<p>相似的，创建每种随机模型变量值的组合。同时确保包含0值，以使得只包含三种故障模式的子集对应的变量组合存在</p>
+<div class="sourceCode" id="cb124"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb124-1" data-line-number="1">rng(<span class="st">&#39;default&#39;</span>); <span class="co">% 设置随机种子</span></a>
+<a class="sourceLine" id="cb124-2" data-line-number="2">toothFaultArray = [<span class="fl">0</span> -rand(<span class="fl">1</span>,<span class="fl">6</span>)];    <span class="co">% 齿轮故障增益值</span></a>
+<a class="sourceLine" id="cb124-3" data-line-number="3">sensorDriftArray = [<span class="fl">0</span> randn(<span class="fl">1</span>,<span class="fl">6</span>)/<span class="fl">8</span>]; <span class="co">% 传感器漂移偏移值</span></a>
+<a class="sourceLine" id="cb124-4" data-line-number="4">shaftWearArray = [<span class="fl">0</span> -<span class="fl">1</span>];               <span class="co">% 对应驱动轴磨损不同的变量值</span></a>
+<a class="sourceLine" id="cb124-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb124-6" data-line-number="6"><span class="co">%创建组合所有值的n-维数组</span></a>
+<a class="sourceLine" id="cb124-7" data-line-number="7">[toothFaultValues,sensorDriftValues,shaftWearValues] = ...</a>
+<a class="sourceLine" id="cb124-8" data-line-number="8">    ndgrid(toothFaultArray,sensorDriftArray,shaftWearArray);</a>
+<a class="sourceLine" id="cb124-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb124-10" data-line-number="10">for ct=numel(toothFaultValues):-<span class="fl">1</span>:<span class="fl">1</span></a>
+<a class="sourceLine" id="cb124-11" data-line-number="11">    <span class="co">% 对每个模型参数输入的组合生成一个Simulink.SimulationInput结果</span></a>
+<a class="sourceLine" id="cb124-12" data-line-number="12">    siminput = Simulink.SimulationInput(mdl);</a>
+<a class="sourceLine" id="cb124-13" data-line-number="13">    </a>
+<a class="sourceLine" id="cb124-14" data-line-number="14">    <span class="co">% 修改模型参数</span></a>
+<a class="sourceLine" id="cb124-15" data-line-number="15">    siminput = setVariable(siminput,<span class="st">&#39;ToothFaultGain&#39;</span>,toothFaultValues(ct));</a>
+<a class="sourceLine" id="cb124-16" data-line-number="16">    siminput = setVariable(siminput,<span class="st">&#39;SDrift&#39;</span>,sensorDriftValues(ct));</a>
+<a class="sourceLine" id="cb124-17" data-line-number="17">    siminput = setVariable(siminput,<span class="st">&#39;ShaftWear&#39;</span>,shaftWearValues(ct));</a>
+<a class="sourceLine" id="cb124-18" data-line-number="18">    </a>
+<a class="sourceLine" id="cb124-19" data-line-number="19">    <span class="co">% 收集数组中的模拟输入</span></a>
+<a class="sourceLine" id="cb124-20" data-line-number="20">    randomSimulationInput(ct) = siminput;</a>
+<a class="sourceLine" id="cb124-21" data-line-number="21">end</a></code></pre></div>
+<p>在<code>Simulink.SimulationInput</code>数组对象被定义后，使用<code>generateSimulationEnsemble</code>函数运行这些模拟过程。<code>generateSimulationEnsemble</code>函数对模型进行配置，将记录的数据保存到文件中，对信号记录使用时间表标准化，并存储<code>Simulink.SimulationInput</code>对象到存储文件中。<code>generateSimulationEnsemble</code>函数返回状态标志，反映模拟过程是否成功运行完成</p>
+</section>
+<section align=left>
+<p>以上代码从网格化的变量值中创造了110组模拟输入，98组来自随机变量值的模拟输入输出了总共208次模拟。在标准桌面算力中并行运行这208次模拟过程需耗时大约10分钟，生成大于10GB数据。方便起见，可以选择只运行其中的10次模拟过程（作者注：本文件夹中包含了所有的208次模拟数据，可直接加载，不必再次运行）</p>
+<div class="sourceCode" id="cb125"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb125-1" data-line-number="1"><span class="co">% 运行模拟过程，并创造集成数据以管理模拟结果</span></a>
+<a class="sourceLine" id="cb125-2" data-line-number="2">if ~exist(fullfile(pwd,<span class="st">&#39;Data&#39;</span>),<span class="st">&#39;dir&#39;</span>)</a>
+<a class="sourceLine" id="cb125-3" data-line-number="3">    mkdir(fullfile(pwd,<span class="st">&#39;Data&#39;</span>)) <span class="co">% 当前目录下，创建存储数据的Data文件夹</span></a>
+<a class="sourceLine" id="cb125-4" data-line-number="4">end</a>
+<a class="sourceLine" id="cb125-5" data-line-number="5">runAll = true;</a>
+<a class="sourceLine" id="cb125-6" data-line-number="6">if runAll  <span class="co">%并行运行所有模拟，需要parallel computing工具箱</span></a>
+<a class="sourceLine" id="cb125-7" data-line-number="7">   [ok,e] = generateSimulationEnsemble([gridSimulationInput, randomSimulationInput], ...</a>
+<a class="sourceLine" id="cb125-8" data-line-number="8">        fullfile(pwd,<span class="st">&#39;Data&#39;</span>),<span class="st">&#39;UseParallel&#39;</span>, true);</a>
+<a class="sourceLine" id="cb125-9" data-line-number="9">else       <span class="co">%运行前10次模拟</span></a>
+<a class="sourceLine" id="cb125-10" data-line-number="10">    [ok,e] = generateSimulationEnsemble(gridSimulationInput(<span class="fl">1</span>:<span class="fl">10</span>), fullfile(pwd,<span class="st">&#39;Data&#39;</span>)); <span class="co">%#ok&lt;*UNRCH&gt;</span></a>
+<a class="sourceLine" id="cb125-11" data-line-number="11">end</a></code></pre></div>
+<p style="font-size:20px;">[18-Feb-2020 23:40:27] Checking for availability of parallel pool… Starting parallel pool (parpool) using the ‘local’ profile … Connected to the parallel pool (number of workers: 4). </br>[18-Feb-2020 23:41:27] Starting Simulink on parallel workers… </br>[18-Feb-2020 23:41:45] Configuring simulation cache folder on parallel workers… </br>[18-Feb-2020 23:41:48] Loading model on parallel workers… </br>[18-Feb-2020 23:41:56] Transferring base workspace variables used in the model to parallel workers… </br>[18-Feb-2020 23:42:17] Running simulations… Analyzing and transferring files to the workers …done. </br>[18-Feb-2020 23:44:45] Completed 1 of 208 simulation runs </br>[18-Feb-2020 23:44:46] Completed 2 of 208 simulation runs </br>[18-Feb-2020 23:44:47] Completed 3 of 208 simulation runs … </br>[19-Feb-2020 01:12:21] Completed 207 of 208 simulation runs </br>[19-Feb-2020 01:12:30] Completed 208 of 208 simulation runs </br>[19-Feb-2020 01:12:33] Cleaning up parallel workers…</p>
+<p><code>generateSimulationEnsemble</code>函数运行并保存模拟结果，可使用<code>simulationEnsembleDatastore</code>命令来创建一个模拟集成模块来处理和分析模拟结果（数据已存在时，直接加载）</p>
+<div class="sourceCode" id="cb126"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb126-1" data-line-number="1">ens = simulationEnsembleDatastore(fullfile(pwd,<span class="st">&#39;Data&#39;</span>));</a></code></pre></div>
+</section>
+</section>
+<section align=left>
+<h4 id="第四步处理模拟结果"><strong>第四步：处理模拟结果</strong></h4>
+<section>
+<p><code>simulationEnsembledatastore</code>命令生成了一个指向模拟结果的集成对象。使用这个集成对象可以准备并分析每个在集成对象元素中的数据。集成对象列出了所有的数据变量，同时在默认情况下，这些变量可读</p>
+<div class="sourceCode" id="cb127"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb127-1" data-line-number="1">ens</a></code></pre></div>
+<p align=center><img src="..\algo_dev\ensObject.PNG" style="zoom:120%;" /></p>
+<div class="sourceCode" id="cb128"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb128-1" data-line-number="1">ens.SelectedVariables</a></code></pre></div>
+<p align=center><img src="..\algo_dev\ensObjectVariables.PNG" style="zoom:120%;" /></p>
+</section>
+<section align=left>
+<p>分析时，仅读取<code>Vibration</code>，<code>Tacho</code>信号和<code>Simulink.SimulationInput</code>即可。<code>Simulink.SimulationInput</code>中保存有模型变量值，同时也可被用来创建集成对象中元素的故障标签。可以使用<code>read</code>命令来读取集成对象的数据元素：</p>
+<div class="sourceCode" id="cb129"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb129-1" data-line-number="1">ens.SelectedVariables = [&quot;Vibration&quot; &quot;Tacho&quot; &quot;SimulationInput&quot;];</a>
+<a class="sourceLine" id="cb129-2" data-line-number="2">data = read(ens)</a></code></pre></div>
+<p align=center><img src="..\algo_dev\dataOverview.PNG" style="zoom:120%;" /></p>
+</section>
+<section align=left>
+<p>从返回的数据中提取振动信号并画出它</p>
+<div class="sourceCode" id="cb130"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb130-1" data-line-number="1">vibration = data.Vibration{<span class="fl">1</span>};</a>
+<a class="sourceLine" id="cb130-2" data-line-number="2">plot(vibration.Time,vibration.Data)</a>
+<a class="sourceLine" id="cb130-3" data-line-number="3">title(<span class="st">&#39;Vibration&#39;</span>)</a>
+<a class="sourceLine" id="cb130-4" data-line-number="4">ylabel(<span class="st">&#39;Acceleration&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\algo_dev\vibrationDataVisualization.png" style="zoom:120%;" /></p>
+</section>
+<section align=left>
+<p>前10秒数据中包含了传动系统起步阶段，因此分析时需去除这部分数据</p>
+<div class="sourceCode" id="cb131"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb131-1" data-line-number="1">idx = vibration.Time &gt;= seconds(<span class="fl">10</span>);</a>
+<a class="sourceLine" id="cb131-2" data-line-number="2">vibration = vibration(idx,:);</a>
+<a class="sourceLine" id="cb131-3" data-line-number="3">vibration.Time = vibration.Time - vibration.Time(<span class="fl">1</span>);</a></code></pre></div>
+<p><code>Tacho</code>转速信号中包含了驱动轴和负载轴旋转的脉冲，但分析时，尤其是当时间同步平均时，需要轴旋转的次数。以下代码去除了转速信号的前10秒，并且在<code>tachoPulses</code>中找出轴旋转次数</p>
+<div class="sourceCode" id="cb132"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb132-1" data-line-number="1">tacho = data.Tacho{<span class="fl">1</span>};</a>
+<a class="sourceLine" id="cb132-2" data-line-number="2">idx = tacho.Time &gt;= seconds(<span class="fl">10</span>);</a>
+<a class="sourceLine" id="cb132-3" data-line-number="3">tacho = tacho(idx,:);</a>
+<a class="sourceLine" id="cb132-4" data-line-number="4">plot(tacho.Time,tacho.Data)</a>
+<a class="sourceLine" id="cb132-5" data-line-number="5">title(<span class="st">&#39;Tacho pulses&#39;</span>)</a>
+<a class="sourceLine" id="cb132-6" data-line-number="6">legend(<span class="st">&#39;Drive shaft&#39;</span>,<span class="st">&#39;Load shaft&#39;</span>) <span class="co">% 负载轴转得比驱动轴更慢</span></a></code></pre></div>
+<p align=center><img src="..\algo_dev\TachoPulses.png" style="zoom:90%;" /></p>
+</section>
+<section align=left>
+<div class="sourceCode" id="cb133"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb133-1" data-line-number="1">idx = diff(tacho.Data(:,<span class="fl">2</span>)) &gt; <span class="fl">0.5</span>;</a>
+<a class="sourceLine" id="cb133-2" data-line-number="2">tachoPulses = tacho.Time(find(idx)+<span class="fl">1</span>)-tacho.Time(<span class="fl">1</span>)</a></code></pre></div>
+<p align=center><img src="..\algo_dev\tachoPulsesoutput.PNG" style="zoom:120%;" /></p>
+<p><code>Simulink.SimulationInput.Variables</code>属性中包含了模拟用的故障参数值，这些值可以被用来对每个集成对象元素创建故障标签</p>
+<div class="sourceCode" id="cb134"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb134-1" data-line-number="1">vars = data.SimulationInput{<span class="fl">1</span>}.Variables;</a>
+<a class="sourceLine" id="cb134-2" data-line-number="2">idx = strcmp({vars.Name},<span class="st">&#39;SDrift&#39;</span>);</a>
+<a class="sourceLine" id="cb134-3" data-line-number="3">if any(idx)</a>
+<a class="sourceLine" id="cb134-4" data-line-number="4">    sF = abs(vars(idx).Value) &gt; <span class="fl">0.01</span>; <span class="co">% 微小偏移值不算故障</span></a>
+<a class="sourceLine" id="cb134-5" data-line-number="5">else</a>
+<a class="sourceLine" id="cb134-6" data-line-number="6">    sF = false;</a>
+<a class="sourceLine" id="cb134-7" data-line-number="7">end</a>
+<a class="sourceLine" id="cb134-8" data-line-number="8">idx = strcmp({vars.Name},<span class="st">&#39;ShaftWear&#39;</span>);</a>
+<a class="sourceLine" id="cb134-9" data-line-number="9">if any(idx)</a>
+<a class="sourceLine" id="cb134-10" data-line-number="10">    sV = vars(idx).Value &lt; <span class="fl">0</span>;</a>
+<a class="sourceLine" id="cb134-11" data-line-number="11">else</a>
+<a class="sourceLine" id="cb134-12" data-line-number="12">    sV = false;</a>
+<a class="sourceLine" id="cb134-13" data-line-number="13">end</a>
+<a class="sourceLine" id="cb134-14" data-line-number="14">if any(idx)</a>
+<a class="sourceLine" id="cb134-15" data-line-number="15">    idx = strcmp({vars.Name},<span class="st">&#39;ToothFaultGain&#39;</span>);</a>
+<a class="sourceLine" id="cb134-16" data-line-number="16">    sT = abs(vars(idx).Value) &lt; <span class="fl">0.1</span>; <span class="co">% 微小齿轮齿故障值不算故障</span></a>
+<a class="sourceLine" id="cb134-17" data-line-number="17">else</a>
+<a class="sourceLine" id="cb134-18" data-line-number="18">    sT = false</a>
+<a class="sourceLine" id="cb134-19" data-line-number="19">end</a>
+<a class="sourceLine" id="cb134-20" data-line-number="20">faultCode = sF + <span class="fl">2</span>*sV + <span class="fl">4</span>*sT; <span class="co">% 表征不同故障类型的故障码</span></a></code></pre></div>
+</section>
+<section align=left>
+<p>处理后的振动和转速信号以及故障标签被加到集成对象中，以便之后使用</p>
+<div class="sourceCode" id="cb135"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb135-1" data-line-number="1">sdata = table({vibration},{tachoPulses},sF,sV,sT,faultCode, ...</a>
+<a class="sourceLine" id="cb135-2" data-line-number="2">    <span class="st">&#39;VariableNames&#39;</span>,{<span class="st">&#39;Vibration&#39;</span>,<span class="st">&#39;TachoPulses&#39;</span>,<span class="st">&#39;SensorDrift&#39;</span>,<span class="st">&#39;ShaftWear&#39;</span>,<span class="st">&#39;ToothFault&#39;</span>,<span class="st">&#39;FaultCode&#39;</span>})  </a></code></pre></div>
+<p align=center><img src="..\algo_dev\sdataProperty.PNG" style="zoom:120%;" /></p>
+<div class="sourceCode" id="cb136"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb136-1" data-line-number="1">ens.DataVariables = [ens.DataVariables; &quot;TachoPulses&quot;];</a></code></pre></div>
+<p>集成对象的<code>ConditionVariables</code>属性可以被用来识别集成对象中的变量，包含状态和故障标签数据。设定包含新创建的故障标签属性</p>
+<div class="sourceCode" id="cb137"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb137-1" data-line-number="1">ens.ConditionVariables = [&quot;SensorDrift&quot;,&quot;ShaftWear&quot;,&quot;ToothFault&quot;,&quot;FaultCode&quot;];</a></code></pre></div>
+<p>上述代码被用来处理集成对象中的单个元素。要处理对象中所有的元素，须将以上代码转成<code>prepareData</code>方法，并且使用集成对象<code>hasdata</code>命令进行循环，将同样的操作应用于集成对象中的所有元素中。集成对象中元素可以用过将集成对象分块划分，并将划分的部分并行处理即可实现整体的并行化处理</p>
+</section>
+<section align=left>
+<p><code>prepareData</code>方法如下：</p>
+<div class="sourceCode" id="cb138"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb138-1" data-line-number="1">function sData = prepareData(data)</a>
+<a class="sourceLine" id="cb138-2" data-line-number="2"><span class="co">%% </span></a>
+<a class="sourceLine" id="cb138-3" data-line-number="3"><span class="co">%</span></a>
+<a class="sourceLine" id="cb138-4" data-line-number="4"><span class="co">%   Clean up the signals in the data:</span></a>
+<a class="sourceLine" id="cb138-5" data-line-number="5"><span class="co">%       Vibration signal - remove the 1st 10 seconds of data and any duplicte times.</span></a>
+<a class="sourceLine" id="cb138-6" data-line-number="6"><span class="co">%       Tacho - remove 1st 10 seconds, find rising edge times</span></a>
+<a class="sourceLine" id="cb138-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb138-8" data-line-number="8"><span class="co">%The first 10 seconds of the simulation contains data where the</span></a>
+<a class="sourceLine" id="cb138-9" data-line-number="9"><span class="co">%transmission system is starting up; for analysis we discard this data.</span></a>
+<a class="sourceLine" id="cb138-10" data-line-number="10">Vibration = data.Vibration{<span class="fl">1</span>};</a>
+<a class="sourceLine" id="cb138-11" data-line-number="11">plot(Vibration.Time,Vibration.Data)</a>
+<a class="sourceLine" id="cb138-12" data-line-number="12">title(<span class="st">&#39;Vibration&#39;</span>)</a>
+<a class="sourceLine" id="cb138-13" data-line-number="13">idx = Vibration.Time &gt;= seconds(<span class="fl">10</span>);</a>
+<a class="sourceLine" id="cb138-14" data-line-number="14">Vibration = Vibration(idx,:);</a>
+<a class="sourceLine" id="cb138-15" data-line-number="15">Vibration.Time = Vibration.Time - Vibration.Time(<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb138-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb138-17" data-line-number="17"><span class="co">%The tacho signal contains pulses for the rotations of the drive and load</span></a>
+<a class="sourceLine" id="cb138-18" data-line-number="18"><span class="co">%shafts. Later we use time synchronous averaging on the vibration data and</span></a>
+<a class="sourceLine" id="cb138-19" data-line-number="19"><span class="co">%that requires the times of shaft rotations, the following code discards</span></a>
+<a class="sourceLine" id="cb138-20" data-line-number="20"><span class="co">%the first 10 seconds of the tacho data and finds the shaft rotation times</span></a>
+<a class="sourceLine" id="cb138-21" data-line-number="21"><span class="co">%in TachoPulses. </span></a>
+<a class="sourceLine" id="cb138-22" data-line-number="22">Tacho = data.Tacho{<span class="fl">1</span>};</a>
+<a class="sourceLine" id="cb138-23" data-line-number="23">idx = Tacho.Time &gt;= seconds(<span class="fl">10</span>);</a>
+<a class="sourceLine" id="cb138-24" data-line-number="24">Tacho = Tacho(idx,:);</a>
+<a class="sourceLine" id="cb138-25" data-line-number="25">plot(Tacho.Time,Tacho.Data)</a>
+<a class="sourceLine" id="cb138-26" data-line-number="26">title(<span class="st">&#39;Tacho pulses&#39;</span>)</a>
+<a class="sourceLine" id="cb138-27" data-line-number="27">idx = diff(Tacho.Data(:,<span class="fl">2</span>)) &gt; <span class="fl">0.5</span>;</a>
+<a class="sourceLine" id="cb138-28" data-line-number="28">tachoPulses = Tacho.Time(find(idx)+<span class="fl">1</span>)-Tacho.Time(<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb138-29" data-line-number="29"></a>
+<a class="sourceLine" id="cb138-30" data-line-number="30"><span class="co">%The Simulink.SimulationInput.Variables property contains the values of the</span></a>
+<a class="sourceLine" id="cb138-31" data-line-number="31"><span class="co">%fault parameters used for the simulation, these values allow us to create</span></a>
+<a class="sourceLine" id="cb138-32" data-line-number="32"><span class="co">%fault labels for each ensemble member. </span></a>
+<a class="sourceLine" id="cb138-33" data-line-number="33">vars = data.SimulationInput{<span class="fl">1</span>}.Variables;</a>
+<a class="sourceLine" id="cb138-34" data-line-number="34">sF = false; sV = false; sT = false;</a>
+<a class="sourceLine" id="cb138-35" data-line-number="35">idx = strcmp({vars.Name},<span class="st">&#39;SDrift&#39;</span>);</a>
+<a class="sourceLine" id="cb138-36" data-line-number="36">if any(idx)</a>
+<a class="sourceLine" id="cb138-37" data-line-number="37">    sF = abs(vars(idx).Value) &gt; <span class="fl">0.01</span>; <span class="co">%Small drift values are not faults</span></a>
+<a class="sourceLine" id="cb138-38" data-line-number="38">end</a>
+<a class="sourceLine" id="cb138-39" data-line-number="39">idx = strcmp({vars.Name},<span class="st">&#39;ShaftWear&#39;</span>);</a>
+<a class="sourceLine" id="cb138-40" data-line-number="40">if any(idx)</a>
+<a class="sourceLine" id="cb138-41" data-line-number="41">    sV = vars(idx).Value &lt; <span class="fl">0</span>;</a>
+<a class="sourceLine" id="cb138-42" data-line-number="42">end</a>
+<a class="sourceLine" id="cb138-43" data-line-number="43">idx = strcmp({vars.Name},<span class="st">&#39;ToothFaultGain&#39;</span>);</a>
+<a class="sourceLine" id="cb138-44" data-line-number="44">if any(idx)    </a>
+<a class="sourceLine" id="cb138-45" data-line-number="45">    sT = abs(vars(idx).Value) &lt; <span class="fl">0.1</span>; <span class="co">%Small tooth fault values are not faults</span></a>
+<a class="sourceLine" id="cb138-46" data-line-number="46">end</a>
+<a class="sourceLine" id="cb138-47" data-line-number="47">FaultCode = sF+<span class="fl">2</span>*sV+<span class="fl">4</span>*sT; <span class="co">%A fault code to capture different fault conditions</span></a>
+<a class="sourceLine" id="cb138-48" data-line-number="48"></a>
+<a class="sourceLine" id="cb138-49" data-line-number="49"><span class="co">%Collect processed data into a table</span></a>
+<a class="sourceLine" id="cb138-50" data-line-number="50">sData = table({Vibration},{tachoPulses},sF,sV,sT,FaultCode, ...</a>
+<a class="sourceLine" id="cb138-51" data-line-number="51">        <span class="st">&#39;VariableNames&#39;</span>,{<span class="st">&#39;Vibration&#39;</span>,<span class="st">&#39;TachoPulses&#39;</span>,<span class="st">&#39;SensorDrift&#39;</span>,<span class="st">&#39;ShaftWear&#39;</span>,<span class="st">&#39;ToothFault&#39;</span>,<span class="st">&#39;FaultCode&#39;</span>});</a>
+<a class="sourceLine" id="cb138-52" data-line-number="52">end</a></code></pre></div>
+<div class="sourceCode" id="cb139"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb139-1" data-line-number="1">reset(ens)</a>
+<a class="sourceLine" id="cb139-2" data-line-number="2">runLocal = false;</a>
+<a class="sourceLine" id="cb139-3" data-line-number="3">if runLocal</a>
+<a class="sourceLine" id="cb139-4" data-line-number="4">    <span class="co">% 处理集成对象中的单个元素</span></a>
+<a class="sourceLine" id="cb139-5" data-line-number="5">    while hasdata(ens)</a>
+<a class="sourceLine" id="cb139-6" data-line-number="6">        data = read(ens);</a>
+<a class="sourceLine" id="cb139-7" data-line-number="7">        addData = prepareData(data);</a>
+<a class="sourceLine" id="cb139-8" data-line-number="8">        writeToLastMemberRead(ens,addData)</a>
+<a class="sourceLine" id="cb139-9" data-line-number="9">    end</a>
+<a class="sourceLine" id="cb139-10" data-line-number="10">else</a>
+<a class="sourceLine" id="cb139-11" data-line-number="11">    <span class="co">% 将集成对象划分成多个块，然后并行处理每个块</span></a>
+<a class="sourceLine" id="cb139-12" data-line-number="12">    n = numpartitions(ens,gcp);</a>
+<a class="sourceLine" id="cb139-13" data-line-number="13">    parfor ct = <span class="fl">1</span>:n</a>
+<a class="sourceLine" id="cb139-14" data-line-number="14">        subens = partition(ens,n,ct);</a>
+<a class="sourceLine" id="cb139-15" data-line-number="15">        while hasdata(subens)</a>
+<a class="sourceLine" id="cb139-16" data-line-number="16">            data = read(subens);</a>
+<a class="sourceLine" id="cb139-17" data-line-number="17">            addData = prepareData(data);</a>
+<a class="sourceLine" id="cb139-18" data-line-number="18">            writeToLastMemberRead(subens,addData)</a>
+<a class="sourceLine" id="cb139-19" data-line-number="19">        end</a>
+<a class="sourceLine" id="cb139-20" data-line-number="20">    end    </a>
+<a class="sourceLine" id="cb139-21" data-line-number="21">end</a></code></pre></div>
+</section>
+<section align=left>
+<p>使用<code>hasdata</code>和<code>read</code>方法从集成对象元素（从208个元素中每隔10条取一条）中提取振动信号并画出</p>
+<div class="sourceCode" id="cb140"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb140-1" data-line-number="1">reset(ens)</a>
+<a class="sourceLine" id="cb140-2" data-line-number="2">ens.SelectedVariables = &quot;Vibration&quot;;</a>
+<a class="sourceLine" id="cb140-3" data-line-number="3">figure, </a>
+<a class="sourceLine" id="cb140-4" data-line-number="4">ct = <span class="fl">1</span>;</a>
+<a class="sourceLine" id="cb140-5" data-line-number="5">while hasdata(ens)</a>
+<a class="sourceLine" id="cb140-6" data-line-number="6">    data = read(ens);</a>
+<a class="sourceLine" id="cb140-7" data-line-number="7">    if mod(ct,<span class="fl">10</span>) == <span class="fl">0</span></a>
+<a class="sourceLine" id="cb140-8" data-line-number="8">        vibration = data.Vibration{<span class="fl">1</span>};</a>
+<a class="sourceLine" id="cb140-9" data-line-number="9">        plot(vibration.Time,vibration.Data)</a>
+<a class="sourceLine" id="cb140-10" data-line-number="10">        hold on</a>
+<a class="sourceLine" id="cb140-11" data-line-number="11">    end</a>
+<a class="sourceLine" id="cb140-12" data-line-number="12">    ct = ct + <span class="fl">1</span>;</a>
+<a class="sourceLine" id="cb140-13" data-line-number="13">end</a>
+<a class="sourceLine" id="cb140-14" data-line-number="14">hold off</a>
+<a class="sourceLine" id="cb140-15" data-line-number="15">title(<span class="st">&#39;Vibration signals&#39;</span>)</a>
+<a class="sourceLine" id="cb140-16" data-line-number="16">ylabel(<span class="st">&#39;Acceleration&#39;</span>)</a></code></pre></div>
+
+<p align=center><img src="..\algo_dev\VibrationSignalsEvery10.png" style="zoom:100%;" /></p>
+</section>
+</section>
+<section align=left>
+<h4 id="第五步分析模拟数据"><strong>第五步：分析模拟数据</strong></h4>
+<section>
+<p>至此，数据已被清洗并预处理过，并且可以被用来提取可被用于分类不同故障类型的特征。先对集成对象进行配置，使得它只返回处理过的数据</p>
+<div class="sourceCode" id="cb141"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb141-1" data-line-number="1">ens.SelectedVariables = [&quot;Vibration&quot;,&quot;TachoPulses&quot;];</a></code></pre></div>
+<p>对集成对象中的每个元素提取一些时序特征和频谱特征。它们包括诸如信号均值、方差、峰峰值，非线性信号特征诸如近似熵、李雅普诺夫指数，频谱特征诸如振动信号时间同步平均的频率峰值以及时间同步平均包络谱信号。<code>analyzeData</code>函数包含了完整的特征提取过程。本实例计算了时间同步平均振动信号的频谱</p>
+<div class="sourceCode" id="cb142"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb142-1" data-line-number="1">reset(ens)</a>
+<a class="sourceLine" id="cb142-2" data-line-number="2">data = read(ens)</a></code></pre></div>
+
+<p align=center><img src="..\algo_dev\ensembleDataObject.PNG" style="zoom:120%;" /></p>
+</section>
+<section align=left>
+<div class="sourceCode" id="cb143"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb143-1" data-line-number="1">vibration = data.Vibration{<span class="fl">1</span>};</a>
+<a class="sourceLine" id="cb143-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb143-3" data-line-number="3"><span class="co">% 将振动信号插值为适合快速傅里叶变换的周期时序</span></a>
+<a class="sourceLine" id="cb143-4" data-line-number="4">np = <span class="fl">2</span>^floor(log(height(vibration))/log(<span class="fl">2</span>));</a>
+<a class="sourceLine" id="cb143-5" data-line-number="5">dt = vibration.Time(end)/(np-<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb143-6" data-line-number="6">tv = <span class="fl">0</span>:dt:vibration.Time(end);</a>
+<a class="sourceLine" id="cb143-7" data-line-number="7">y = retime(vibration,tv,<span class="st">&#39;linear&#39;</span>);</a>
+<a class="sourceLine" id="cb143-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb143-9" data-line-number="9"><span class="co">% 计算振动信号的时间同步平均</span></a>
+<a class="sourceLine" id="cb143-10" data-line-number="10">tp = seconds(data.TachoPulses{<span class="fl">1</span>});</a>
+<a class="sourceLine" id="cb143-11" data-line-number="11">vibrationTSA = tsa(y,tp);</a>
+<a class="sourceLine" id="cb143-12" data-line-number="12">figure</a>
+<a class="sourceLine" id="cb143-13" data-line-number="13">plot(vibrationTSA.ttTime,vibrationTSA.tsa)</a>
+<a class="sourceLine" id="cb143-14" data-line-number="14">title(<span class="st">&#39;Vibration time synchronous average&#39;</span>)</a>
+<a class="sourceLine" id="cb143-15" data-line-number="15">ylabel(<span class="st">&#39;Acceleration&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\algo_dev\VibrationTimeSyncAverage.png" style="zoom:120%;" /></p>
+</section>
+<section align=left>
+<div class="sourceCode" id="cb144"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb144-1" data-line-number="1"><span class="co">% 计算时间同步平均的频谱</span></a>
+<a class="sourceLine" id="cb144-2" data-line-number="2">np = numel(vibrationTSA);</a>
+<a class="sourceLine" id="cb144-3" data-line-number="3">f = fft(vibrationTSA.tsa.*hamming(np))/np;</a>
+<a class="sourceLine" id="cb144-4" data-line-number="4">frTSA = f(<span class="fl">1</span>:floor(np/<span class="fl">2</span>)+<span class="fl">1</span>);            <span class="co">% 时间同步平均频率响应</span></a>
+<a class="sourceLine" id="cb144-5" data-line-number="5">wTSA = (<span class="fl">0</span>:np/<span class="fl">2</span>)/np*(<span class="fl">2</span>*pi/seconds(dt)); <span class="co">% 时间同步平均谱频率</span></a>
+<a class="sourceLine" id="cb144-6" data-line-number="6">mTSA = abs(frTSA);                     <span class="co">% 时间同步平均谱量级</span></a>
+<a class="sourceLine" id="cb144-7" data-line-number="7">figure</a>
+<a class="sourceLine" id="cb144-8" data-line-number="8">semilogx(wTSA,<span class="fl">20</span>*log10(mTSA))</a>
+<a class="sourceLine" id="cb144-9" data-line-number="9">title(<span class="st">&#39;Vibration spectrum&#39;</span>)</a>
+<a class="sourceLine" id="cb144-10" data-line-number="10">xlabel(<span class="st">&#39;rad/s&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\algo_dev\VibrationSpectrum.png" style="zoom:110%;" /></p>
+<p style="font-size:34px;">对应于峰值的频率可以作为分类不同故障类型的有用特征使用。以下代码将使用<code>analyzeData</code>函数对集成对象中的所有存储元素计算以上提到的所有特征（该步骤在标准桌面算力下，需耗时约30分钟，可以使用<code>partition</code>命令并行运算）。这些特征的名称将在调用<code>writeToLastMemberRead</code>函数将计算得到的特征假如到单个元素存储中之前，被加入到数据的属性中</p>
+</section>
+<section align=left>
+<div class="sourceCode" id="cb145"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb145-1" data-line-number="1">function sData = analyzeData(data)</a>
+<a class="sourceLine" id="cb145-2" data-line-number="2"><span class="co">%%</span></a>
+<a class="sourceLine" id="cb145-3" data-line-number="3"><span class="co">%</span></a>
+<a class="sourceLine" id="cb145-4" data-line-number="4"><span class="co">%   Derive features from the vibration signal. Later we use these features</span></a>
+<a class="sourceLine" id="cb145-5" data-line-number="5"><span class="co">%   to determine the type of fault from the vibration signal as well as for</span></a>
+<a class="sourceLine" id="cb145-6" data-line-number="6"><span class="co">%   selecting the minimum number of features needed.</span></a>
+<a class="sourceLine" id="cb145-7" data-line-number="7"><span class="co">%</span></a>
+<a class="sourceLine" id="cb145-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb145-9" data-line-number="9"><span class="co">% Copyright 2017 MathWorks Inc.</span></a>
+<a class="sourceLine" id="cb145-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb145-11" data-line-number="11"><span class="co">%创建将要计算的特征表</span></a>
+<a class="sourceLine" id="cb145-12" data-line-number="12">varnames = {...</a>
+<a class="sourceLine" id="cb145-13" data-line-number="13">    <span class="st">&#39;SigMean&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-14" data-line-number="14">    <span class="st">&#39;SigMedian&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-15" data-line-number="15">    <span class="st">&#39;SigRMS&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-16" data-line-number="16">    <span class="st">&#39;SigVar&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-17" data-line-number="17">    <span class="st">&#39;SigPeak&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-18" data-line-number="18">    <span class="st">&#39;SigPeak2Peak&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-19" data-line-number="19">    <span class="st">&#39;SigSkewness&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-20" data-line-number="20">    <span class="st">&#39;SigKurtosis&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-21" data-line-number="21">    <span class="st">&#39;SigCrestFactor&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-22" data-line-number="22">    <span class="st">&#39;SigMAD&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-23" data-line-number="23">    <span class="st">&#39;SigRangeCumSum&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-24" data-line-number="24">    <span class="st">&#39;SigCorrDimension&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-25" data-line-number="25">    <span class="st">&#39;SigApproxEntropy&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-26" data-line-number="26">    <span class="st">&#39;SigLyapExponent&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-27" data-line-number="27">    <span class="st">&#39;PeakFreq&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-28" data-line-number="28">    <span class="st">&#39;HighFreqPower&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-29" data-line-number="29">    <span class="st">&#39;EnvPower&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-30" data-line-number="30">    <span class="st">&#39;PeakSpecKurtosis&#39;</span>};</a>
+<a class="sourceLine" id="cb145-31" data-line-number="31"></a>
+<a class="sourceLine" id="cb145-32" data-line-number="32">if ischar(data)</a>
+<a class="sourceLine" id="cb145-33" data-line-number="33">    <span class="co">%返回需要计算特征的名称</span></a>
+<a class="sourceLine" id="cb145-34" data-line-number="34">    sData = varnames(:);</a>
+<a class="sourceLine" id="cb145-35" data-line-number="35">    return</a>
+<a class="sourceLine" id="cb145-36" data-line-number="36">end</a>
+<a class="sourceLine" id="cb145-37" data-line-number="37"></a>
+<a class="sourceLine" id="cb145-38" data-line-number="38"><span class="co">%提取被用来计算特征的振动信号</span></a>
+<a class="sourceLine" id="cb145-39" data-line-number="39">Vibration = data.Vibration{<span class="fl">1</span>};</a>
+<a class="sourceLine" id="cb145-40" data-line-number="40"></a>
+<a class="sourceLine" id="cb145-41" data-line-number="41"><span class="co">%将振动信号插值为适合快速傅里叶变换的周期时序</span></a>
+<a class="sourceLine" id="cb145-42" data-line-number="42">np = <span class="fl">2</span>^floor(log(height(Vibration))/log(<span class="fl">2</span>));</a>
+<a class="sourceLine" id="cb145-43" data-line-number="43">dt = Vibration.Time(end)/(np-<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb145-44" data-line-number="44">tv = <span class="fl">0</span>:dt:Vibration.Time(end);</a>
+<a class="sourceLine" id="cb145-45" data-line-number="45">y = retime(Vibration,tv,<span class="st">&#39;linear&#39;</span>);</a>
+<a class="sourceLine" id="cb145-46" data-line-number="46"></a>
+<a class="sourceLine" id="cb145-47" data-line-number="47"><span class="co">%信号均值</span></a>
+<a class="sourceLine" id="cb145-48" data-line-number="48">SigMean = mean(Vibration.Data);</a>
+<a class="sourceLine" id="cb145-49" data-line-number="49"></a>
+<a class="sourceLine" id="cb145-50" data-line-number="50"><span class="co">%信号中值</span></a>
+<a class="sourceLine" id="cb145-51" data-line-number="51">SigMedian = median(Vibration.Data);</a>
+<a class="sourceLine" id="cb145-52" data-line-number="52"></a>
+<a class="sourceLine" id="cb145-53" data-line-number="53"><span class="co">%信号均方根值</span></a>
+<a class="sourceLine" id="cb145-54" data-line-number="54">SigRMS = rms(Vibration.Data);</a>
+<a class="sourceLine" id="cb145-55" data-line-number="55"></a>
+<a class="sourceLine" id="cb145-56" data-line-number="56"><span class="co">%信号方差</span></a>
+<a class="sourceLine" id="cb145-57" data-line-number="57">SigVar = var(Vibration.Data);</a>
+<a class="sourceLine" id="cb145-58" data-line-number="58"></a>
+<a class="sourceLine" id="cb145-59" data-line-number="59"><span class="co">%信号峰值</span></a>
+<a class="sourceLine" id="cb145-60" data-line-number="60">SigPeak = max(Vibration.Data);</a>
+<a class="sourceLine" id="cb145-61" data-line-number="61"></a>
+<a class="sourceLine" id="cb145-62" data-line-number="62"><span class="co">%信号峰峰值</span></a>
+<a class="sourceLine" id="cb145-63" data-line-number="63">SigPeak2Peak = peak2peak(Vibration.Data);</a>
+<a class="sourceLine" id="cb145-64" data-line-number="64"></a>
+<a class="sourceLine" id="cb145-65" data-line-number="65"><span class="co">%信号偏度</span></a>
+<a class="sourceLine" id="cb145-66" data-line-number="66">SigSkewness = skewness(Vibration.Data);</a>
+<a class="sourceLine" id="cb145-67" data-line-number="67"></a>
+<a class="sourceLine" id="cb145-68" data-line-number="68"><span class="co">%信号峰度</span></a>
+<a class="sourceLine" id="cb145-69" data-line-number="69">SigKurtosis = kurtosis(Vibration.Data);</a>
+<a class="sourceLine" id="cb145-70" data-line-number="70"></a>
+<a class="sourceLine" id="cb145-71" data-line-number="71"><span class="co">%信号峰值系数</span></a>
+<a class="sourceLine" id="cb145-72" data-line-number="72">SigCrestFactor = peak2rms(Vibration.Data);</a>
+<a class="sourceLine" id="cb145-73" data-line-number="73"></a>
+<a class="sourceLine" id="cb145-74" data-line-number="74"><span class="co">%信号中值绝对偏差</span></a>
+<a class="sourceLine" id="cb145-75" data-line-number="75">SigMAD = mad(Vibration.Data);</a>
+<a class="sourceLine" id="cb145-76" data-line-number="76"></a>
+<a class="sourceLine" id="cb145-77" data-line-number="77"><span class="co">%信号累计和范围</span></a>
+<a class="sourceLine" id="cb145-78" data-line-number="78">d = cumsum(Vibration.Data);</a>
+<a class="sourceLine" id="cb145-79" data-line-number="79">SigRangeCumSum = max(d)-min(d);</a>
+<a class="sourceLine" id="cb145-80" data-line-number="80">    </a>
+<a class="sourceLine" id="cb145-81" data-line-number="81"><span class="co">%信号关联维数</span></a>
+<a class="sourceLine" id="cb145-82" data-line-number="82">SigCorrDimension = correlationDimension(y.Data);</a>
+<a class="sourceLine" id="cb145-83" data-line-number="83"></a>
+<a class="sourceLine" id="cb145-84" data-line-number="84"><span class="co">%信号近似熵</span></a>
+<a class="sourceLine" id="cb145-85" data-line-number="85">SigApproxEntropy = approximateEntropy(y.Data);</a>
+<a class="sourceLine" id="cb145-86" data-line-number="86"></a>
+<a class="sourceLine" id="cb145-87" data-line-number="87"><span class="co">%信号李雅普诺夫指数</span></a>
+<a class="sourceLine" id="cb145-88" data-line-number="88">SigLyapExponent = lyapunovExponent(y.Data,<span class="fl">1</span>/seconds(dt));</a>
+<a class="sourceLine" id="cb145-89" data-line-number="89">    </a>
+<a class="sourceLine" id="cb145-90" data-line-number="90"><span class="co">%计算时间同步平均振动信号的快速傅里叶变换</span></a>
+<a class="sourceLine" id="cb145-91" data-line-number="91">dt = seconds(dt);</a>
+<a class="sourceLine" id="cb145-92" data-line-number="92">tp = seconds(data.TachoPulses{<span class="fl">1</span>});</a>
+<a class="sourceLine" id="cb145-93" data-line-number="93">vibrationTSA = tsa(y,tp);</a>
+<a class="sourceLine" id="cb145-94" data-line-number="94">np = numel(vibrationTSA);</a>
+<a class="sourceLine" id="cb145-95" data-line-number="95">f = fft(vibrationTSA.tsa.*hamming(np))/np;</a>
+<a class="sourceLine" id="cb145-96" data-line-number="96">frTSA = f(<span class="fl">1</span>:floor(np/<span class="fl">2</span>)+<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb145-97" data-line-number="97">wTSA = (<span class="fl">0</span>:np/<span class="fl">2</span>)/np*(<span class="fl">2</span>*pi/dt);</a>
+<a class="sourceLine" id="cb145-98" data-line-number="98">mTSA = abs(frTSA);</a>
+<a class="sourceLine" id="cb145-99" data-line-number="99"></a>
+<a class="sourceLine" id="cb145-100" data-line-number="100"><span class="co">%频率峰值</span></a>
+<a class="sourceLine" id="cb145-101" data-line-number="101">[~,idx] = max(mTSA);</a>
+<a class="sourceLine" id="cb145-102" data-line-number="102">PeakFreq = wTSA(idx);</a>
+<a class="sourceLine" id="cb145-103" data-line-number="103"></a>
+<a class="sourceLine" id="cb145-104" data-line-number="104"><span class="co">%高于30Hz的功率</span></a>
+<a class="sourceLine" id="cb145-105" data-line-number="105">HighFreqPower = sum(mTSA(wTSA &gt; <span class="fl">30</span>).^<span class="fl">2</span>);</a>
+<a class="sourceLine" id="cb145-106" data-line-number="106"></a>
+<a class="sourceLine" id="cb145-107" data-line-number="107"><span class="co">%时间同步平均的包络</span></a>
+<a class="sourceLine" id="cb145-108" data-line-number="108">M_env = envspectrum(vibrationTSA);</a>
+<a class="sourceLine" id="cb145-109" data-line-number="109"></a>
+<a class="sourceLine" id="cb145-110" data-line-number="110"><span class="co">%包络谱功率</span></a>
+<a class="sourceLine" id="cb145-111" data-line-number="111">EnvPower = sum(M_env.^<span class="fl">2</span>);</a>
+<a class="sourceLine" id="cb145-112" data-line-number="112"></a>
+<a class="sourceLine" id="cb145-113" data-line-number="113"><span class="co">%最大谱峭度处的频率</span></a>
+<a class="sourceLine" id="cb145-114" data-line-number="114">[~,~,~,fc] = kurtogram(y.Data,<span class="fl">1</span>/dt,<span class="fl">8</span>);</a>
+<a class="sourceLine" id="cb145-115" data-line-number="115">PeakSpecKurtosis = fc;</a>
+<a class="sourceLine" id="cb145-116" data-line-number="116">    </a>
+<a class="sourceLine" id="cb145-117" data-line-number="117"><span class="co">%保存计算结果值</span></a>
+<a class="sourceLine" id="cb145-118" data-line-number="118">varnames = {...</a>
+<a class="sourceLine" id="cb145-119" data-line-number="119">    <span class="st">&#39;SigMean&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-120" data-line-number="120">    <span class="st">&#39;SigMedian&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-121" data-line-number="121">    <span class="st">&#39;SigRMS&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-122" data-line-number="122">    <span class="st">&#39;SigVar&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-123" data-line-number="123">    <span class="st">&#39;SigPeak&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-124" data-line-number="124">    <span class="st">&#39;SigPeak2Peak&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-125" data-line-number="125">    <span class="st">&#39;SigSkewness&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-126" data-line-number="126">    <span class="st">&#39;SigKurtosis&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-127" data-line-number="127">    <span class="st">&#39;SigCrestFactor&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-128" data-line-number="128">    <span class="st">&#39;SigMAD&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-129" data-line-number="129">    <span class="st">&#39;SigRangeCumSum&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-130" data-line-number="130">    <span class="st">&#39;SigCorrDimension&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-131" data-line-number="131">    <span class="st">&#39;SigApproxEntropy&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-132" data-line-number="132">    <span class="st">&#39;SigLyapExponent&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-133" data-line-number="133">    <span class="st">&#39;PeakFreq&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-134" data-line-number="134">    <span class="st">&#39;HighFreqPower&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-135" data-line-number="135">    <span class="st">&#39;EnvPower&#39;</span>, ...</a>
+<a class="sourceLine" id="cb145-136" data-line-number="136">    <span class="st">&#39;PeakSpecKurtosis&#39;</span>};</a>
+<a class="sourceLine" id="cb145-137" data-line-number="137">sData = table(...</a>
+<a class="sourceLine" id="cb145-138" data-line-number="138">    SigMean, ...</a>
+<a class="sourceLine" id="cb145-139" data-line-number="139">    SigMedian, ...</a>
+<a class="sourceLine" id="cb145-140" data-line-number="140">    SigRMS, ...</a>
+<a class="sourceLine" id="cb145-141" data-line-number="141">    SigVar, ...</a>
+<a class="sourceLine" id="cb145-142" data-line-number="142">    SigPeak, ...</a>
+<a class="sourceLine" id="cb145-143" data-line-number="143">    SigPeak2Peak, ...</a>
+<a class="sourceLine" id="cb145-144" data-line-number="144">    SigSkewness, ...</a>
+<a class="sourceLine" id="cb145-145" data-line-number="145">    SigKurtosis, ...</a>
+<a class="sourceLine" id="cb145-146" data-line-number="146">    SigCrestFactor, ...</a>
+<a class="sourceLine" id="cb145-147" data-line-number="147">    SigMAD, ...</a>
+<a class="sourceLine" id="cb145-148" data-line-number="148">    SigRangeCumSum, ...</a>
+<a class="sourceLine" id="cb145-149" data-line-number="149">    SigCorrDimension, ...</a>
+<a class="sourceLine" id="cb145-150" data-line-number="150">    SigApproxEntropy, ...</a>
+<a class="sourceLine" id="cb145-151" data-line-number="151">    SigLyapExponent, ...</a>
+<a class="sourceLine" id="cb145-152" data-line-number="152">    PeakFreq, ...</a>
+<a class="sourceLine" id="cb145-153" data-line-number="153">    HighFreqPower, ...</a>
+<a class="sourceLine" id="cb145-154" data-line-number="154">    EnvPower, ...</a>
+<a class="sourceLine" id="cb145-155" data-line-number="155">    PeakSpecKurtosis, ...</a>
+<a class="sourceLine" id="cb145-156" data-line-number="156">    <span class="st">&#39;VariableNames&#39;</span>, varnames);</a>
+<a class="sourceLine" id="cb145-157" data-line-number="157">end</a></code></pre></div>
+<div class="sourceCode" id="cb146"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb146-1" data-line-number="1">reset(ens)</a>
+<a class="sourceLine" id="cb146-2" data-line-number="2"><span class="co">% 加入特征名到集成数据元素中</span></a>
+<a class="sourceLine" id="cb146-3" data-line-number="3">ens.DataVariables = [ens.DataVariables; ...</a>
+<a class="sourceLine" id="cb146-4" data-line-number="4">    &quot;SigMean&quot;;&quot;SigMedian&quot;;&quot;SigRMS&quot;;&quot;SigVar&quot;;&quot;SigPeak&quot;;&quot;SigPeak2Peak&quot;;&quot;SigSkewness&quot;; ...</a>
+<a class="sourceLine" id="cb146-5" data-line-number="5">    &quot;SigKurtosis&quot;;&quot;SigCrestFactor&quot;;&quot;SigMAD&quot;;&quot;SigRangeCumSum&quot;;&quot;SigCorrDimension&quot;;&quot;SigApproxEntropy&quot;; ...</a>
+<a class="sourceLine" id="cb146-6" data-line-number="6">    &quot;SigLyapExponent&quot;;&quot;PeakFreq&quot;;&quot;HighFreqPower&quot;;&quot;EnvPower&quot;;&quot;PeakSpecKurtosis&quot;];</a>
+<a class="sourceLine" id="cb146-7" data-line-number="7">if runLocal</a>
+<a class="sourceLine" id="cb146-8" data-line-number="8">    while hasdata(ens)</a>
+<a class="sourceLine" id="cb146-9" data-line-number="9">        data = read(ens);</a>
+<a class="sourceLine" id="cb146-10" data-line-number="10">        addData = analyzeData(data);</a>
+<a class="sourceLine" id="cb146-11" data-line-number="11">        writeToLastMemberRead(ens,addData);</a>
+<a class="sourceLine" id="cb146-12" data-line-number="12">    end</a>
+<a class="sourceLine" id="cb146-13" data-line-number="13">else</a>
+<a class="sourceLine" id="cb146-14" data-line-number="14">    <span class="co">% 将集成数据分块进行并行运算</span></a>
+<a class="sourceLine" id="cb146-15" data-line-number="15">    n = numpartitions(ens,gcp);</a>
+<a class="sourceLine" id="cb146-16" data-line-number="16">    parfor ct = <span class="fl">1</span>:n</a>
+<a class="sourceLine" id="cb146-17" data-line-number="17">        subens = partition(ens,n,ct);</a>
+<a class="sourceLine" id="cb146-18" data-line-number="18">        while hasdata(subens)</a>
+<a class="sourceLine" id="cb146-19" data-line-number="19">            data = read(subens);</a>
+<a class="sourceLine" id="cb146-20" data-line-number="20">            addData = analyzeData(data);</a>
+<a class="sourceLine" id="cb146-21" data-line-number="21">            writeToLastMemberRead(subens,addData)</a>
+<a class="sourceLine" id="cb146-22" data-line-number="22">        end</a>
+<a class="sourceLine" id="cb146-23" data-line-number="23">    end</a>
+<a class="sourceLine" id="cb146-24" data-line-number="24">end</a></code></pre></div>
+</section>
+</section>
+<section align=left>
+<h4 id="第六步故障分类特征选择"><strong>第六步：故障分类特征选择</strong></h4>
+<section>
+<p>以上步骤计算得到的特征被用作构建分类器以分类不同故障工况。先配置集成对象以使其仅能读取提取得到的特征和故障标签</p>
+<div class="sourceCode" id="cb147"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb147-1" data-line-number="1">featureVariables = analyzeData(<span class="st">&#39;GetFeatureNames&#39;</span>);</a>
+<a class="sourceLine" id="cb147-2" data-line-number="2">ens.DataVariables = [ens.DataVariables; featureVariables];</a>
+<a class="sourceLine" id="cb147-3" data-line-number="3">ens.SelectedVariables = [featureVariables; ens.ConditionVariables];</a>
+<a class="sourceLine" id="cb147-4" data-line-number="4">reset(ens)</a></code></pre></div>
+<p>之后将集成数据对象存储中每个数据元素得到的特征集成为一个大的特征表</p>
+<div class="sourceCode" id="cb148"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb148-1" data-line-number="1">featureData = gather(tall(ens))</a></code></pre></div>
+<p style="font-size:20px;margin-left:110px;">正在使用 Parallel Pool ‘local’ 计算 tall 表达式: - 第 1 次遍历(共 1 次): 用时 1 分钟 28 秒 计算已完成，用时 1 分钟 29 秒</p>
+<p align=center><img src="..\algo_dev\featureData.PNG" style="zoom:90%;" /></p>
+</section>
+<section align=left>
+<p><strong>对传感器漂移故障</strong></p>
+<p>用<code>fscnca</code>命令，将以上计算得到的所有特征作为预测变量，同时将传感器漂移故障标签做为响应（true或false响应）。<code>fscnca</code>命令返回每个特征的权值，权值大的特征代表预测标签时更重要。对传感器漂移故障来说，大权值指示着它们是有显著预测能力的特征，其他特征作用较小</p>
+<div class="sourceCode" id="cb149"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb149-1" data-line-number="1">idxResponse = strcmp(featureData.Properties.VariableNames,<span class="st">&#39;SensorDrift&#39;</span>);</a>
+<a class="sourceLine" id="cb149-2" data-line-number="2">idxLastFeature = find(idxResponse)-<span class="fl">1</span>; <span class="co">% 最后一个可作为潜在预测变量的特征索引</span></a>
+<a class="sourceLine" id="cb149-3" data-line-number="3">featureAnalysis = fscnca(featureData{:,<span class="fl">1</span>:idxLastFeature},featureData.SensorDrift); </a>
+<a class="sourceLine" id="cb149-4" data-line-number="4">featureAnalysis.FeatureWeights</a></code></pre></div>
+<p align=center><img src="..\algo_dev\sensorDriftFeatureWeights.PNG" style="zoom:120%;" /></p>
+<div class="sourceCode" id="cb150"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb150-1" data-line-number="1">idxSelectedFeature = featureAnalysis.FeatureWeights &gt; <span class="fl">0.1</span>;</a>
+<a class="sourceLine" id="cb150-2" data-line-number="2">classifySD = [featureData(:,idxSelectedFeature), featureData(:,idxResponse)]</a></code></pre></div>
+<p align=center><img src="..\algo_dev\sensorDriftFeatureClassifySD.PNG" style="zoom:120%;" /></p>
+</section>
+<section align=left>
+<p>一组累计和范围值的柱状图可以说明为什么该特征是对传感器漂移故障识别有显著作用的</p>
+<div class="sourceCode" id="cb151"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb151-1" data-line-number="1">figure</a>
+<a class="sourceLine" id="cb151-2" data-line-number="2">histogram(classifySD.SigRangeCumSum(classifySD.SensorDrift),<span class="st">&#39;BinWidth&#39;</span>,<span class="fl">5e3</span>)</a>
+<a class="sourceLine" id="cb151-3" data-line-number="3">xlabel(<span class="st">&#39;Signal cumulative sum range&#39;</span>)</a>
+<a class="sourceLine" id="cb151-4" data-line-number="4">ylabel(<span class="st">&#39;Count&#39;</span>)</a>
+<a class="sourceLine" id="cb151-5" data-line-number="5">hold on</a>
+<a class="sourceLine" id="cb151-6" data-line-number="6">histogram(classifySD.SigRangeCumSum(~classifySD.SensorDrift),<span class="st">&#39;BinWidth&#39;</span>,<span class="fl">5e3</span>)</a>
+<a class="sourceLine" id="cb151-7" data-line-number="7">hold off</a>
+<a class="sourceLine" id="cb151-8" data-line-number="8">legend(<span class="st">&#39;Sensor drift fault&#39;</span>,<span class="st">&#39;No sensor drift fault&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\algo_dev\sensorDriftFeatureHistogram.png" style="zoom:110%;" /></p>
+<p>柱状图显示，信号累计和范围是一个对检测传感器漂移故障很好的特征，即使可能还需要另外的特征配合。因为当信号累计范围值小于0.5时，会有假阳现象出现</p>
+</section>
+<section align=left>
+<p><strong>对轴磨损故障</strong></p>
+<p>同上过程，使用<code>fscnca</code>命令后得到三个对检测故障明显的故障，分别是信号李雅普诺夫指数、峰值频率和谱峭度中的峰值频率</p>
+<div class="sourceCode" id="cb152"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb152-1" data-line-number="1">idxResponse = strcmp(featureData.Properties.VariableNames,<span class="st">&#39;ShaftWear&#39;</span>);</a>
+<a class="sourceLine" id="cb152-2" data-line-number="2">featureAnalysis = fscnca(featureData{:,<span class="fl">1</span>:idxLastFeature},featureData.ShaftWear);</a>
+<a class="sourceLine" id="cb152-3" data-line-number="3">featureAnalysis.FeatureWeights</a></code></pre></div>
+<p align=center><img src="..\algo_dev\shaftWearFeatureWeights.PNG" style="zoom:120%;" /></p>
+</section>
+<section align=left>
+<div class="sourceCode" id="cb153"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb153-1" data-line-number="1">idxSelectedFeature = featureAnalysis.FeatureWeights &gt; <span class="fl">0.1</span>;</a>
+<a class="sourceLine" id="cb153-2" data-line-number="2">classifySW = [featureData(:,idxSelectedFeature), featureData(:,idxResponse)]</a></code></pre></div>
+<p align=center><img src="..\algo_dev\shaftWearClassifySW.PNG" style="zoom:120%;" /></p>
+<p>信号李雅普诺夫分布柱状图显示了为什么单独使用这个特征不是好的预测变量</p>
+</section>
+<section align=left>
+<div class="sourceCode" id="cb154"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb154-1" data-line-number="1">figure</a>
+<a class="sourceLine" id="cb154-2" data-line-number="2">histogram(classifySW.SigLyapExponent(classifySW.ShaftWear))</a>
+<a class="sourceLine" id="cb154-3" data-line-number="3">xlabel(<span class="st">&#39;Signal lyapunov exponent&#39;</span>)</a>
+<a class="sourceLine" id="cb154-4" data-line-number="4">ylabel(<span class="st">&#39;Count&#39;</span>)</a>
+<a class="sourceLine" id="cb154-5" data-line-number="5">hold on</a>
+<a class="sourceLine" id="cb154-6" data-line-number="6">histogram(classifySW.SigLyapExponent(~classifySW.ShaftWear))</a>
+<a class="sourceLine" id="cb154-7" data-line-number="7">hold off</a>
+<a class="sourceLine" id="cb154-8" data-line-number="8">legend(<span class="st">&#39;Shaft wear fault&#39;</span>,<span class="st">&#39;No shaft wear fault&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\algo_dev\SWClassifierHisto.png" style="zoom:120%;" /></p>
+<p>轴磨损故障特征选择说明了，对于这个故障类型的分类，选择多特征共同建模是有必要的。从上图中可以看出，即使是使用了最明显的特征作为预测变量，健康数据和故障数据的分布依然是很相似的，无法正确分类故障</p>
+</section>
+<section align=left>
+<p><strong>对齿轮齿故障</strong></p>
+<p><code>fscnca</code>命令显示，对于该故障同样有三个明显的特征可用，分别是信号累计和范围、信号李雅普诺夫指数和谱峭度中的峰值频率。选择这三个特征在分类齿轮齿故障时，表现不好，因此使用六个最重要的特征</p>
+<div class="sourceCode" id="cb155"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb155-1" data-line-number="1">idxResponse = strcmp(featureData.Properties.VariableNames,<span class="st">&#39;ToothFault&#39;</span>);</a>
+<a class="sourceLine" id="cb155-2" data-line-number="2">featureAnalysis = fscnca(featureData{:,<span class="fl">1</span>:idxLastFeature},featureData.ToothFault); </a>
+<a class="sourceLine" id="cb155-3" data-line-number="3">[~,idxSelectedFeature] = sort(featureAnalysis.FeatureWeights);</a>
+<a class="sourceLine" id="cb155-4" data-line-number="4">classifyTF = [featureData(:,idxSelectedFeature(end-<span class="fl">5</span>:end)), featureData(:,idxResponse)]</a></code></pre></div>
+<p align=center><img src="..\algo_dev\classifyTF.PNG" style="zoom:100%;" /></p>
+</section>
+<section align=left>
+<div class="sourceCode" id="cb156"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb156-1" data-line-number="1">figure</a>
+<a class="sourceLine" id="cb156-2" data-line-number="2">histogram(classifyTF.SigRangeCumSum(classifyTF.ToothFault))</a>
+<a class="sourceLine" id="cb156-3" data-line-number="3">xlabel(<span class="st">&#39;Signal cumulative sum range&#39;</span>)</a>
+<a class="sourceLine" id="cb156-4" data-line-number="4">ylabel(<span class="st">&#39;Count&#39;</span>)</a>
+<a class="sourceLine" id="cb156-5" data-line-number="5">hold on</a>
+<a class="sourceLine" id="cb156-6" data-line-number="6">histogram(classifyTF.SigRangeCumSum(~classifyTF.ToothFault))</a>
+<a class="sourceLine" id="cb156-7" data-line-number="7">hold off</a>
+<a class="sourceLine" id="cb156-8" data-line-number="8">legend(<span class="st">&#39;Gear tooth fault&#39;</span>,<span class="st">&#39;No gear tooth fault&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\algo_dev\classifyTFHisto.png" style="zoom:120%;" /></p>
+</section>
+<section align=left>
+<p>对上述结果，可以使用多项式核的支持向量机模型以分类齿轮齿故障。将特征表划分为训练、测试和验证数据集。用<code>fitcsvm</code>命令加以训练数据训练出一个支持向量分类器</p>
+<div class="sourceCode" id="cb157"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb157-1" data-line-number="1">rng(<span class="st">&#39;default&#39;</span>) <span class="co">% 随机种子</span></a>
+<a class="sourceLine" id="cb157-2" data-line-number="2">cvp = cvpartition(size(classifyTF,<span class="fl">1</span>),<span class="st">&#39;KFold&#39;</span>,<span class="fl">5</span>); <span class="co">% 随机划分训练和验证数据</span></a>
+<a class="sourceLine" id="cb157-3" data-line-number="3">classifierTF = fitcsvm(...</a>
+<a class="sourceLine" id="cb157-4" data-line-number="4">    classifyTF(cvp.training(<span class="fl">1</span>),<span class="fl">1</span>:end-<span class="fl">1</span>), ...</a>
+<a class="sourceLine" id="cb157-5" data-line-number="5">    classifyTF(cvp.training(<span class="fl">1</span>),end), ...</a>
+<a class="sourceLine" id="cb157-6" data-line-number="6">    <span class="st">&#39;KernelFunction&#39;</span>,<span class="st">&#39;polynomial&#39;</span>, ...</a>
+<a class="sourceLine" id="cb157-7" data-line-number="7">    <span class="st">&#39;PolynomialOrder&#39;</span>,<span class="fl">2</span>, ...</a>
+<a class="sourceLine" id="cb157-8" data-line-number="8">    <span class="st">&#39;KernelScale&#39;</span>,<span class="st">&#39;auto&#39;</span>, ...</a>
+<a class="sourceLine" id="cb157-9" data-line-number="9">    <span class="st">&#39;BoxConstraint&#39;</span>,<span class="fl">1</span>, ...</a>
+<a class="sourceLine" id="cb157-10" data-line-number="10">    <span class="st">&#39;Standardize&#39;</span>,true, ...</a>
+<a class="sourceLine" id="cb157-11" data-line-number="11">    <span class="st">&#39;ClassNames&#39;</span>,[false; true]);</a></code></pre></div>
+</section>
+<section align=left>
+<p>用训练得到的模型使用<code>predict</code>方法对测试数据预测分类并使用混淆矩阵查看模型表现</p>
+<div class="sourceCode" id="cb158"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb158-1" data-line-number="1"><span class="co">% 将分类器应用于测试数据评估效果</span></a>
+<a class="sourceLine" id="cb158-2" data-line-number="2">actualValue = classifyTF{cvp.test(<span class="fl">1</span>),end};</a>
+<a class="sourceLine" id="cb158-3" data-line-number="3">predictedValue = predict(classifierTF, classifyTF(cvp.test(<span class="fl">1</span>),<span class="fl">1</span>:end-<span class="fl">1</span>));</a>
+<a class="sourceLine" id="cb158-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb158-5" data-line-number="5"><span class="co">% 画出混淆矩阵检验模型效果</span></a>
+<a class="sourceLine" id="cb158-6" data-line-number="6">confdata = confusionmat(actualValue,predictedValue);</a>
+<a class="sourceLine" id="cb158-7" data-line-number="7">h = heatmap(confdata, ...</a>
+<a class="sourceLine" id="cb158-8" data-line-number="8">    <span class="st">&#39;YLabel&#39;</span>, <span class="st">&#39;Actual gear tooth fault&#39;</span>, ...</a>
+<a class="sourceLine" id="cb158-9" data-line-number="9">    <span class="st">&#39;YDisplayLabels&#39;</span>, {<span class="st">&#39;False&#39;</span>,<span class="st">&#39;True&#39;</span>}, ...</a>
+<a class="sourceLine" id="cb158-10" data-line-number="10">    <span class="st">&#39;XLabel&#39;</span>, <span class="st">&#39;Predicted gear tooth fault&#39;</span>, ...</a>
+<a class="sourceLine" id="cb158-11" data-line-number="11">    <span class="st">&#39;XDisplayLabels&#39;</span>, {<span class="st">&#39;False&#39;</span>,<span class="st">&#39;True&#39;</span>}, ...</a>
+<a class="sourceLine" id="cb158-12" data-line-number="12">    <span class="st">&#39;ColorbarVisible&#39;</span>,<span class="st">&#39;off&#39;</span>);   </a></code></pre></div>
+<p align=center><img src="..\algo_dev\confusionMatrixTransmission.png" style="zoom:90%;" /></p>
+<p>混淆矩阵可以看出，对无故障的数据都能正确识别出，但对于有齿轮齿故障数据，误将其中的一个样本划分成了无故障。这时，增加使用的特征数可以有效提升模型表现</p>
+</section>
+</section>
+<section align=left>
+<h4 id="第七步总结"><strong>第七步：总结</strong></h4>
+<p>本案例展示了如何使用Simulink模拟故障数据，并使用集成对象清洗并提取数据特征，然后将被提取的特征用来建立分类器模型，以识别不同的故障类型</p>
+</section>
+<section>
+<p style="font-size:44px;"><strong>参考：</strong><a href="https://ww2.mathworks.cn/help/predmaint/ug/Use-Simulink-to-Generate-Fault-Data.html" target="_blank">https://ww2.mathworks.cn/help/predmaint/ug/Use-Simulink-to-Generate-Fault-Data.html</a></p>
+	    </section>
+		</div>
+  </div>
+
+  <script src="../reveal.js/lib/js/head.min.js"></script>
+  <script src="../reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Push each slide change to the browser history
+        history: true,
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: '../reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: '../reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: '../reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>

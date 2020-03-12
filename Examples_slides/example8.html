@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>案例8</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../reveal.js/css/reveal.css">
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../reveal.js/css/theme/beige.css" id="theme">
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? '../reveal.js/css/print/pdf.css' : '../reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+    </script>
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+  <!--[if lt IE 9]>
+  <script src="../reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+<section>
+<h2 id="案例8增广卡尔曼滤波方法用于故障检测"><span id="jump5">案例8：增广卡尔曼滤波方法用于故障检测</span></h2>
+</section>
+<section align=left>
+<p>本案例了将介绍，如何使用增广卡尔曼滤波方法进行故障检测。本案例使用增广卡尔曼滤波方法应用于简单直流电机的摩擦力的在线估计。一旦估计出的摩擦力发生明显突变，将被视作故障。本案例使用系统识别工具箱中的函数，并不要求安装有预测性维护工具箱</p>
+</section>
+<section align=left>
+<h4 id="第一步电机建模"><strong>第一步：电机建模</strong></h4>
+<section>
+<p>拥有转动惯量<span class="math inline"><em>J</em></span>，阻尼系数<span class="math inline"><em>c</em></span>的电机被扭矩<span class="math inline"><em>u</em></span>驱动。电机的角速度为<span class="math inline"><em>ω</em></span>，输出为角加速度<span class="math inline"><em>ω̇</em></span>。方程如下： <br /><span class="math display">$$
+\dot \omega = \frac{(u-c\omega)}J
+$$</span><br /> 为了利用增广卡尔曼滤波方法估计阻尼系数<span class="math inline"><em>c</em></span>，引入阻尼系数的辅助状态并将其导数设置为0 ，即<span class="math display"><em>ċ</em> = 0</span><br /> 于是，模型状态量，<span class="math inline"><em>x</em> = [<em>ω</em>; <em>c</em>]</span>，与测量量<span class="math inline"><em>y</em> = <em>ω</em></span>的关系方程如下： <span class="math display">$$
+\left[
+\begin{matrix}
+\dot \omega \\
+\dot c
+\end{matrix}
+\right]=\left[\begin{matrix}
+(u-c\omega)/J \\
+0
+\end{matrix}\right]
+\\
+y=\left[
+\begin{matrix}
+\omega \\
+(u-c\omega)/J
+\end{matrix}
+\right]
+$$</section>
+<section align=left>
+</span><br /> 此时，时间连续的方程将使用近似估计的方法转化为离散方程，<span class="math inline">$\dot x=\frac{x_{n+1}-x_n}{T_s}$</span>，其中<span class="math inline"><em>T</em><sub><em>s</em></sub></span>为离散采样周期。这样将被应用于<code>pdmMotorModelStateFcn</code>和<code>pdmMotorModelMeasurementFcn</code>函数中的离散模型方程如下： <br /><span class="math display">$$
+\left[\begin{matrix}
+\omega_{n+1} \\
+c_{n+1}
+\end{matrix}\right]
+=
+\left[\begin{matrix}
+\omega_{n}+(u_n-c_n\omega_n)T_S/J \\
+c_{n}
+\end{matrix}\right]\\
+y_n=\left[\begin{matrix}
+\omega_n \\
+(u_n-c_n\omega_n)/J
+\end{matrix}\right]
+$$</span><br /> 设定电机参数</p>
+<div class="sourceCode" id="cb159"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb159-1" data-line-number="1">J  = <span class="fl">10</span>;    <span class="co">% 转动惯量</span></a>
+<a class="sourceLine" id="cb159-2" data-line-number="2">Ts = <span class="fl">0.01</span>;  <span class="co">% 采样时间</span></a></code></pre></div>
+<p>设定初始状态</p>
+<div class="sourceCode" id="cb160"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb160-1" data-line-number="1">x0 = [...</a>
+<a class="sourceLine" id="cb160-2" data-line-number="2">    <span class="fl">0</span>; ...  <span class="co">% 角速度</span></a>
+<a class="sourceLine" id="cb160-3" data-line-number="3">    <span class="fl">1</span>];     <span class="co">% 摩擦力</span></a></code></pre></div>
+</section>
+<section align=left>
+<p>模型状态更新代码如下：</p>
+<div class="sourceCode" id="cb161"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb161-1" data-line-number="1">function x1 = pdmMotorModelStateFcn(x0,varargin)</a>
+<a class="sourceLine" id="cb161-2" data-line-number="2"><span class="co">%PDMMOTORMODELSTATEFCN</span></a>
+<a class="sourceLine" id="cb161-3" data-line-number="3"><span class="co">%</span></a>
+<a class="sourceLine" id="cb161-4" data-line-number="4"><span class="co">% 电机状态更新方程，使用摩擦力作为状态量</span></a>
+<a class="sourceLine" id="cb161-5" data-line-number="5"><span class="co">%</span></a>
+<a class="sourceLine" id="cb161-6" data-line-number="6"><span class="co">%  x1 = pdmMotorModelStateFcn(x0,u,J,Ts)</span></a>
+<a class="sourceLine" id="cb161-7" data-line-number="7"><span class="co">%</span></a>
+<a class="sourceLine" id="cb161-8" data-line-number="8"><span class="co">%  输入：</span></a>
+<a class="sourceLine" id="cb161-9" data-line-number="9"><span class="co">%   x0 - 初始状态量 [角速度； 摩擦力]</span></a>
+<a class="sourceLine" id="cb161-10" data-line-number="10"><span class="co">%   u  - 电机扭矩输入</span></a>
+<a class="sourceLine" id="cb161-11" data-line-number="11"><span class="co">%   J  - 电机转动惯量</span></a>
+<a class="sourceLine" id="cb161-12" data-line-number="12"><span class="co">%   Ts - 采样时间</span></a>
+<a class="sourceLine" id="cb161-13" data-line-number="13"><span class="co">%</span></a>
+<a class="sourceLine" id="cb161-14" data-line-number="14"><span class="co">%  输出:</span></a>
+<a class="sourceLine" id="cb161-15" data-line-number="15"><span class="co">%   x1 - 下一时刻状态更新</span></a>
+<a class="sourceLine" id="cb161-16" data-line-number="16"><span class="co">%</span></a>
+<a class="sourceLine" id="cb161-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb161-18" data-line-number="18"><span class="co">%  Copyright 2016-2017 The MathWorks, Inc.</span></a>
+<a class="sourceLine" id="cb161-19" data-line-number="19"></a>
+<a class="sourceLine" id="cb161-20" data-line-number="20"><span class="co">% 从输入中提取数据</span></a>
+<a class="sourceLine" id="cb161-21" data-line-number="21">u  = varargin{<span class="fl">1</span>};   <span class="co">% 输入</span></a>
+<a class="sourceLine" id="cb161-22" data-line-number="22">J  = varargin{<span class="fl">2</span>};   <span class="co">% 系统惯量</span></a>
+<a class="sourceLine" id="cb161-23" data-line-number="23">Ts = varargin{<span class="fl">3</span>};   <span class="co">% 采样时间</span></a>
+<a class="sourceLine" id="cb161-24" data-line-number="24"></a>
+<a class="sourceLine" id="cb161-25" data-line-number="25"><span class="co">% 状态更新方程</span></a>
+<a class="sourceLine" id="cb161-26" data-line-number="26">x1 = [...</a>
+<a class="sourceLine" id="cb161-27" data-line-number="27">    x0(<span class="fl">1</span>)+Ts/J*(u-x0(<span class="fl">1</span>)*x0(<span class="fl">2</span>)); ...</a>
+<a class="sourceLine" id="cb161-28" data-line-number="28">    x0(<span class="fl">2</span>)];</a>
+<a class="sourceLine" id="cb161-29" data-line-number="29">end</a></code></pre></div>
+<p>模型状态测量代码如下：</p>
+<div class="sourceCode" id="cb162"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb162-1" data-line-number="1">function y = pdmMotorModelMeasurementFcn(x,varargin)</a>
+<a class="sourceLine" id="cb162-2" data-line-number="2"><span class="co">%PDMMOTORMODELMEASUREMENTFCN</span></a>
+<a class="sourceLine" id="cb162-3" data-line-number="3"><span class="co">%</span></a>
+<a class="sourceLine" id="cb162-4" data-line-number="4"><span class="co">% 电机测量方程，使用摩擦力作为状态量</span></a>
+<a class="sourceLine" id="cb162-5" data-line-number="5"><span class="co">%</span></a>
+<a class="sourceLine" id="cb162-6" data-line-number="6"><span class="co">%  y = pdmMotorModelMeasurementFcn(x0,u,J,Ts)</span></a>
+<a class="sourceLine" id="cb162-7" data-line-number="7"><span class="co">%</span></a>
+<a class="sourceLine" id="cb162-8" data-line-number="8"><span class="co">%  输入:</span></a>
+<a class="sourceLine" id="cb162-9" data-line-number="9"><span class="co">%    x  - 电机状态量 [角速度； 摩擦力]</span></a>
+<a class="sourceLine" id="cb162-10" data-line-number="10"><span class="co">%    u  - 电机扭矩输入</span></a>
+<a class="sourceLine" id="cb162-11" data-line-number="11"><span class="co">%    J  - 电机转动惯量</span></a>
+<a class="sourceLine" id="cb162-12" data-line-number="12"><span class="co">%    Ts - 采样时间</span></a>
+<a class="sourceLine" id="cb162-13" data-line-number="13"><span class="co">%</span></a>
+<a class="sourceLine" id="cb162-14" data-line-number="14"><span class="co">%  输出:</span></a>
+<a class="sourceLine" id="cb162-15" data-line-number="15"><span class="co">%    y - 电机状态元素测量量 [角速度; 角加速度]</span></a>
+<a class="sourceLine" id="cb162-16" data-line-number="16"><span class="co">%</span></a>
+<a class="sourceLine" id="cb162-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb162-18" data-line-number="18"><span class="co">%  Copyright 2016-2017 The MathWorks, Inc.</span></a>
+<a class="sourceLine" id="cb162-19" data-line-number="19"></a>
+<a class="sourceLine" id="cb162-20" data-line-number="20"><span class="co">% 从输入中提取数据</span></a>
+<a class="sourceLine" id="cb162-21" data-line-number="21">u  = varargin{<span class="fl">1</span>};   <span class="co">% 输入</span></a>
+<a class="sourceLine" id="cb162-22" data-line-number="22">J  = varargin{<span class="fl">2</span>};   <span class="co">% 系统惯量</span></a>
+<a class="sourceLine" id="cb162-23" data-line-number="23"></a>
+<a class="sourceLine" id="cb162-24" data-line-number="24"><span class="co">% 输出方程</span></a>
+<a class="sourceLine" id="cb162-25" data-line-number="25">y = [...</a>
+<a class="sourceLine" id="cb162-26" data-line-number="26">    x(<span class="fl">1</span>); ...</a>
+<a class="sourceLine" id="cb162-27" data-line-number="27">    (u-x(<span class="fl">1</span>)*x(<span class="fl">2</span>))/J];</a>
+<a class="sourceLine" id="cb162-28" data-line-number="28">end</a></code></pre></div>
+</section>
+<section align=left>
+<p>电机状态迁移时，历经状态（过程）噪声扰动q，同时还有测量噪声r，噪声部分可累加，方程更新如下： <br /><span class="math display">$$
+\left[\begin{matrix}
+\omega_{n+1}\\c_{n+1}
+\end{matrix}
+\right
+]=\left[\begin{matrix}
+\omega_{n}+(u_n-c_n\omega_n)T_s/J\\c_{n}
+\end{matrix}
+\right
+]+q\\
+y_n=\left[\begin{matrix}
+\omega_{n}\\(u_{n}-c_n\omega_n)/J
+\end{matrix}
+\right
+]+r
+$$</span><br /> 过程和测量噪声均值为0，即<span class="math inline"><em>E</em>[<em>q</em>] = <em>E</em>[<em>r</em>] = 0</span>，同时协方差<span class="math inline"><em>Q</em> = <em>E</em>[<em>q</em><em>q</em>′]</span>，<span class="math inline"><em>R</em> = <em>E</em>[<em>r</em><em>r</em>′]</span>。摩擦力状态具有较高的噪声干扰水平。这也反映了这样一个事实，即我们希望摩擦力在电机运行时发生变化，并希望过滤方法能追踪这种状态。加速度和速度状态噪声水平较低，但速度和加速度的测量相对来说是有噪声干扰的</p>
+<p>现在我们指定过程噪声的协方差</p>
+<div class="sourceCode" id="cb163"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb163-1" data-line-number="1">Q = [...</a>
+<a class="sourceLine" id="cb163-2" data-line-number="2">    <span class="fl">1e-6</span> <span class="fl">0</span>; ...   <span class="co">% 角速度</span></a>
+<a class="sourceLine" id="cb163-3" data-line-number="3">    <span class="fl">0</span> <span class="fl">1e-2</span>];      <span class="co">% 摩擦力</span></a></code></pre></div>
+<p>指定测量过程噪声的协方差</p>
+<div class="sourceCode" id="cb164"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb164-1" data-line-number="1">R = [...</a>
+<a class="sourceLine" id="cb164-2" data-line-number="2">    <span class="fl">1e-4</span> <span class="fl">0</span>; ...  <span class="co">% 速度测量</span></a>
+<a class="sourceLine" id="cb164-3" data-line-number="3">    <span class="fl">0</span> <span class="fl">1e-4</span>];     <span class="co">% 加速度测量</span></a></code></pre></div>
+</section>
+</section>
+<section align=left>
+<h4 id="第二步创建卡尔曼滤波"><strong>第二步：创建卡尔曼滤波</strong></h4>
+<section align=left>
+<p>下面，创建增广卡尔曼滤波估计模型状态。我们尤其关注阻尼状态，因为该状态量的急剧变化指示着故障的发生</p>
+<p>在Matlab中创建一个增广卡尔曼滤波<code>extendedKalmanFilter</code>对象，并且指定状态迁移和测量函数的雅各布矩阵</p>
+<div class="sourceCode" id="cb165"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb165-1" data-line-number="1">ekf = extendedKalmanFilter(...</a>
+<a class="sourceLine" id="cb165-2" data-line-number="2">    @pdmMotorModelStateFcn, ...</a>
+<a class="sourceLine" id="cb165-3" data-line-number="3">    @pdmMotorModelMeasurementFcn, ...</a>
+<a class="sourceLine" id="cb165-4" data-line-number="4">    x0,...</a>
+<a class="sourceLine" id="cb165-5" data-line-number="5">    <span class="st">&#39;StateCovariance&#39;</span>,            [<span class="fl">1</span> <span class="fl">0</span>; <span class="fl">0</span> <span class="fl">1000</span>], ...[<span class="fl">1</span> <span class="fl">0</span> <span class="fl">0</span>; <span class="fl">0</span> <span class="fl">1</span> <span class="fl">0</span>; <span class="fl">0</span> <span class="fl">0</span> <span class="fl">100</span>], ...</a>
+<a class="sourceLine" id="cb165-6" data-line-number="6">    <span class="st">&#39;ProcessNoise&#39;</span>,               Q, ...</a>
+<a class="sourceLine" id="cb165-7" data-line-number="7">    <span class="st">&#39;MeasurementNoise&#39;</span>,           R, ...</a>
+<a class="sourceLine" id="cb165-8" data-line-number="8">    <span class="st">&#39;StateTransitionJacobianFcn&#39;</span>, @pdmMotorModelStateJacobianFcn, ...</a>
+<a class="sourceLine" id="cb165-9" data-line-number="9">    <span class="st">&#39;MeasurementJacobianFcn&#39;</span>,     @pdmMotorModelMeasJacobianFcn);</a></code></pre></div>
+</section>
+<section align=left>
+<p>其中状态迁移和测量的雅各布函数如下：</p>
+<div class="sourceCode" id="cb166"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb166-1" data-line-number="1">function Jac = pdmMotorModelStateJacobianFcn(x,varargin)</a>
+<a class="sourceLine" id="cb166-2" data-line-number="2"><span class="co">%PDMMOTORMODELSTATEJACOBIANFCN</span></a>
+<a class="sourceLine" id="cb166-3" data-line-number="3"><span class="co">%</span></a>
+<a class="sourceLine" id="cb166-4" data-line-number="4"><span class="co">% Jacobian of motor model state equations. See pdmMotorModelStateFcn for</span></a>
+<a class="sourceLine" id="cb166-5" data-line-number="5"><span class="co">% the model equations.</span></a>
+<a class="sourceLine" id="cb166-6" data-line-number="6"><span class="co">%</span></a>
+<a class="sourceLine" id="cb166-7" data-line-number="7"><span class="co">%  Jac = pdmMotorModelJacobianFcn(x,u,J,Ts)</span></a>
+<a class="sourceLine" id="cb166-8" data-line-number="8"><span class="co">%</span></a>
+<a class="sourceLine" id="cb166-9" data-line-number="9"><span class="co">%  输入:</span></a>
+<a class="sourceLine" id="cb166-10" data-line-number="10"><span class="co">%    x  - 状态量 [角速度； 摩擦力]</span></a>
+<a class="sourceLine" id="cb166-11" data-line-number="11"><span class="co">%    u  - 电机扭矩输入</span></a>
+<a class="sourceLine" id="cb166-12" data-line-number="12"><span class="co">%    J  - 电机转动惯量</span></a>
+<a class="sourceLine" id="cb166-13" data-line-number="13"><span class="co">%    Ts - 采样时间</span></a>
+<a class="sourceLine" id="cb166-14" data-line-number="14"><span class="co">%</span></a>
+<a class="sourceLine" id="cb166-15" data-line-number="15"><span class="co">%  输出:</span></a>
+<a class="sourceLine" id="cb166-16" data-line-number="16"><span class="co">%    Jac - x处的状态雅各布矩阵</span></a>
+<a class="sourceLine" id="cb166-17" data-line-number="17"><span class="co">%</span></a>
+<a class="sourceLine" id="cb166-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb166-19" data-line-number="19"><span class="co">%  Copyright 2016-2017 The MathWorks, Inc.</span></a>
+<a class="sourceLine" id="cb166-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb166-21" data-line-number="21"><span class="co">% 模型特性</span></a>
+<a class="sourceLine" id="cb166-22" data-line-number="22">J  = varargin{<span class="fl">2</span>};</a>
+<a class="sourceLine" id="cb166-23" data-line-number="23">Ts = varargin{<span class="fl">3</span>};</a>
+<a class="sourceLine" id="cb166-24" data-line-number="24"></a>
+<a class="sourceLine" id="cb166-25" data-line-number="25"><span class="co">% 雅各布矩阵</span></a>
+<a class="sourceLine" id="cb166-26" data-line-number="26">Jac = [...</a>
+<a class="sourceLine" id="cb166-27" data-line-number="27">    <span class="fl">1</span>-Ts/J*x(<span class="fl">2</span>) -Ts/J*x(<span class="fl">1</span>); ...</a>
+<a class="sourceLine" id="cb166-28" data-line-number="28">    <span class="fl">0</span> <span class="fl">1</span>];</a>
+<a class="sourceLine" id="cb166-29" data-line-number="29">end</a></code></pre></div>
+<div class="sourceCode" id="cb167"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb167-1" data-line-number="1">function J = pdmMotorModelMeasJacobianFcn(x,varargin)</a>
+<a class="sourceLine" id="cb167-2" data-line-number="2"><span class="co">%PDMMOTORMODELMEASJACOBIANFCN</span></a>
+<a class="sourceLine" id="cb167-3" data-line-number="3"><span class="co">%</span></a>
+<a class="sourceLine" id="cb167-4" data-line-number="4"><span class="co">% Jacobian of motor model measurement equations. See</span></a>
+<a class="sourceLine" id="cb167-5" data-line-number="5"><span class="co">% pdmMotorModelMeasurementFcn for the model equations.</span></a>
+<a class="sourceLine" id="cb167-6" data-line-number="6"><span class="co">%</span></a>
+<a class="sourceLine" id="cb167-7" data-line-number="7"><span class="co">%  Jac = pdmMotorModelMeasJacobianFcn(x,u,J,Ts)</span></a>
+<a class="sourceLine" id="cb167-8" data-line-number="8"><span class="co">%</span></a>
+<a class="sourceLine" id="cb167-9" data-line-number="9"><span class="co">%  输入:</span></a>
+<a class="sourceLine" id="cb167-10" data-line-number="10"><span class="co">%    x  - 状态量 [角速度； 摩擦力]</span></a>
+<a class="sourceLine" id="cb167-11" data-line-number="11"><span class="co">%    u  - 电机扭矩输入</span></a>
+<a class="sourceLine" id="cb167-12" data-line-number="12"><span class="co">%    J  - 电机转动惯量</span></a>
+<a class="sourceLine" id="cb167-13" data-line-number="13"><span class="co">%    Ts - 采样时间</span></a>
+<a class="sourceLine" id="cb167-14" data-line-number="14"><span class="co">%</span></a>
+<a class="sourceLine" id="cb167-15" data-line-number="15"><span class="co">%  输出:</span></a>
+<a class="sourceLine" id="cb167-16" data-line-number="16"><span class="co">%    Jac - x处的状态雅各布矩阵</span></a>
+<a class="sourceLine" id="cb167-17" data-line-number="17"><span class="co">%</span></a>
+<a class="sourceLine" id="cb167-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb167-19" data-line-number="19"><span class="co">%  Copyright 2016-2017 The MathWorks, Inc.</span></a>
+<a class="sourceLine" id="cb167-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb167-21" data-line-number="21"><span class="co">% 系统变量</span></a>
+<a class="sourceLine" id="cb167-22" data-line-number="22">J  = varargin{<span class="fl">2</span>};   <span class="co">% 系统转动惯量</span></a>
+<a class="sourceLine" id="cb167-23" data-line-number="23"></a>
+<a class="sourceLine" id="cb167-24" data-line-number="24"><span class="co">% 雅各布矩阵</span></a>
+<a class="sourceLine" id="cb167-25" data-line-number="25">J = [ ...</a>
+<a class="sourceLine" id="cb167-26" data-line-number="26">    <span class="fl">1</span> <span class="fl">0</span>;</a>
+<a class="sourceLine" id="cb167-27" data-line-number="27">    -x(<span class="fl">2</span>)/J -x(<span class="fl">1</span>)/J];</a>
+<a class="sourceLine" id="cb167-28" data-line-number="28">end</a></code></pre></div>
+<p>增广卡尔曼滤波有事先定义的状态迁移和测量函数作为输入参数。初始状态值<span class="math inline"><em>x</em><sub>0</sub></span>、初始状态协方差、测量和过程噪声协方差也都是增广卡尔曼滤波的输入。在本案例中，精确的雅各布函数能从状态迁移函数<span class="math inline"><em>f</em></span>和测量函数<span class="math inline"><em>h</em></span>中得到</p>
+</section>
+</section>
+<section align=left>
+<h4 id="第三步模拟"><strong>第三步：模拟</strong></h4>
+<section>
+<p>为了模拟这一过程，创建一个循环，并在电机中引入故障（电机摩擦力的剧烈变化）。在循环中，使用增广卡尔曼滤波估计模型状态并特别追踪摩擦力的状态，以此检测摩擦力是否发生了显著变化</p>
+<p>电机通过往复的脉冲串来进行加速和减速模拟，这种电机的操作模式类似于产线上的分拣机器人</p>
+<div class="sourceCode" id="cb168"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb168-1" data-line-number="1">t  = <span class="fl">0</span>:Ts:<span class="fl">20</span>;                  <span class="co">% 时间，20s的长度，采样周期为Ts</span></a>
+<a class="sourceLine" id="cb168-2" data-line-number="2">u  = double(mod(t,<span class="fl">1</span>)&lt;<span class="fl">0.5</span>)-<span class="fl">0.5</span>; <span class="co">% 脉冲串，周期为1s，50%占空比</span></a>
+<a class="sourceLine" id="cb168-3" data-line-number="3">nt = numel(t);                 <span class="co">% 时间点个数</span></a>
+<a class="sourceLine" id="cb168-4" data-line-number="4">nx = size(x0,<span class="fl">1</span>);               <span class="co">% 状态个数</span></a>
+<a class="sourceLine" id="cb168-5" data-line-number="5">ySig = zeros([<span class="fl">2</span>, nt]);         <span class="co">% 测量的电机输出</span></a>
+<a class="sourceLine" id="cb168-6" data-line-number="6">xSigTrue = zeros([nx, nt]);    <span class="co">% 未测量的电机状态</span></a>
+<a class="sourceLine" id="cb168-7" data-line-number="7">xSigEst = zeros([nx, nt]);     <span class="co">% 电机状态估计值</span></a>
+<a class="sourceLine" id="cb168-8" data-line-number="8">xstd = zeros([nx nx nt]);      <span class="co">% 状态估计标准差 </span></a>
+<a class="sourceLine" id="cb168-9" data-line-number="9">ySigEst = zeros([<span class="fl">2</span>, nt]);      <span class="co">% 模型输出估计</span></a>
+<a class="sourceLine" id="cb168-10" data-line-number="10">fMean = zeros(<span class="fl">1</span>,nt);           <span class="co">% 摩擦力估计均值</span></a>
+<a class="sourceLine" id="cb168-11" data-line-number="11">fSTD = zeros(<span class="fl">1</span>,nt);            <span class="co">% 摩擦力估计标准差 </span></a>
+<a class="sourceLine" id="cb168-12" data-line-number="12">fKur = zeros(<span class="fl">2</span>,nt);            <span class="co">% 摩擦力估计峰度</span></a>
+<a class="sourceLine" id="cb168-13" data-line-number="13">fChanged = false(<span class="fl">1</span>,nt);        <span class="co">% 检测摩擦力改变的标志</span></a></code></pre></div>
+<p>模拟电机时，加入类似于构建增广卡尔曼滤波器时所使用的Q和R噪声协方差值的过程和测量噪声。对摩擦力，使用更小的摩擦力噪声值，因为摩擦力在非故障发生的情况下几乎恒定。仿真过程中人为地触发故障</p>
+<div class="sourceCode" id="cb169"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb169-1" data-line-number="1">rng(<span class="st">&#39;default&#39;</span>);</a>
+<a class="sourceLine" id="cb169-2" data-line-number="2">Qv = chol(Q);   <span class="co">% 过程噪声的标准差</span></a>
+<a class="sourceLine" id="cb169-3" data-line-number="3">Qv(end) = <span class="fl">1e-2</span>; <span class="co">% 更小的摩擦力噪声</span></a>
+<a class="sourceLine" id="cb169-4" data-line-number="4">Rv = chol(R);   <span class="co">% 测量噪声的标准差</span></a></code></pre></div>
+</section>
+<section align=left>
+<p>使用状态更新方程模拟仿真模型，并将过程噪声添加到模型状态中。进入仿真10秒后，添加变化到电机摩擦力中。使用模型测量函数模拟电机传感器，并添加测量噪声到模型输出中</p>
+<div class="sourceCode" id="cb170"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb170-1" data-line-number="1">for ct = <span class="fl">1</span>:numel(t)</a>
+<a class="sourceLine" id="cb170-2" data-line-number="2">   </a>
+<a class="sourceLine" id="cb170-3" data-line-number="3">   <span class="co">% 模型输出更新</span></a>
+<a class="sourceLine" id="cb170-4" data-line-number="4">   y = pdmMotorModelMeasurementFcn(x0,u(ct),J,Ts);</a>
+<a class="sourceLine" id="cb170-5" data-line-number="5">   y = y+Rv*randn(<span class="fl">2</span>,<span class="fl">1</span>);   <span class="co">% 添加测量噪声</span></a>
+<a class="sourceLine" id="cb170-6" data-line-number="6">   ySig(:,ct) = y;</a>
+<a class="sourceLine" id="cb170-7" data-line-number="7">   </a>
+<a class="sourceLine" id="cb170-8" data-line-number="8">   <span class="co">% 模型状态更新 </span></a>
+<a class="sourceLine" id="cb170-9" data-line-number="9">   xSigTrue(:,ct) = x0;</a>
+<a class="sourceLine" id="cb170-10" data-line-number="10">   x1 = pdmMotorModelStateFcn(x0,u(ct),J,Ts);</a>
+<a class="sourceLine" id="cb170-11" data-line-number="11">   <span class="co">% 引入摩擦力变化</span></a>
+<a class="sourceLine" id="cb170-12" data-line-number="12">   if t(ct) == <span class="fl">10</span></a>
+<a class="sourceLine" id="cb170-13" data-line-number="13">       x1(<span class="fl">2</span>) = <span class="fl">10</span>;  <span class="co">% 阶跃变化</span></a>
+<a class="sourceLine" id="cb170-14" data-line-number="14">   end</a>
+<a class="sourceLine" id="cb170-15" data-line-number="15">   x1n = x1+Qv*randn(nx,<span class="fl">1</span>);  <span class="co">% 添加过程噪声</span></a>
+<a class="sourceLine" id="cb170-16" data-line-number="16">   x1n(<span class="fl">2</span>) = max(x1n(<span class="fl">2</span>),<span class="fl">0.1</span>); <span class="co">% 限定摩擦力的下界</span></a>
+<a class="sourceLine" id="cb170-17" data-line-number="17">   x0 = x1n; <span class="co">% 存储当前状态，为下一次迭代做准备</span></a>
+<a class="sourceLine" id="cb170-18" data-line-number="18">   </a>
+<a class="sourceLine" id="cb170-19" data-line-number="19">   <span class="co">% =================================================================</span></a>
+<a class="sourceLine" id="cb170-20" data-line-number="20">   <span class="co">% 以下部分将使用增广卡尔曼滤波进行状态估计</span></a>
+<a class="sourceLine" id="cb170-21" data-line-number="21">   <span class="co">% 要从电机的测量量中估计得到电机的状态量，使用增广卡尔曼滤波的predict和correct命令</span></a>
+<a class="sourceLine" id="cb170-22" data-line-number="22">   x_corr = correct(ekf,y,u(ct),J,Ts); <span class="co">% 基于当前测量值修正状态估计值</span></a>
+<a class="sourceLine" id="cb170-23" data-line-number="23">   xSigEst(:,ct) = x_corr;</a>
+<a class="sourceLine" id="cb170-24" data-line-number="24">   xstd(:,:,ct) = chol(ekf.StateCovariance);</a>
+<a class="sourceLine" id="cb170-25" data-line-number="25">   predict(ekf,u(ct),J,Ts);            <span class="co">% 给定当前状态和输入，预测下一状态量</span></a>
+<a class="sourceLine" id="cb170-26" data-line-number="26">   </a>
+<a class="sourceLine" id="cb170-27" data-line-number="27">   <span class="co">% =================================================================</span></a>
+<a class="sourceLine" id="cb170-28" data-line-number="28">   <span class="co">% 为检测摩擦力的变化，使用4s长度的滑动窗口计算摩擦力估计的均值和标准差。经过初始7秒时间后，锁定计算得到的均值和标准差。初始阶段计算得到的均值为无故障时的摩擦力均值。7秒后，如果估计得到的摩擦力大于无故障摩擦力均值超过3个标准差时，将被认定为摩擦力的显著变化。为减少噪声的影响和摩擦力估计的变化性，当和3σ边界对比时，使用摩擦力估计的均值</span></a>
+<a class="sourceLine" id="cb170-29" data-line-number="29">   if t(ct) &lt; <span class="fl">7</span> </a>
+<a class="sourceLine" id="cb170-30" data-line-number="30">       <span class="co">% 计算摩擦力估计的均值和标准差</span></a>
+<a class="sourceLine" id="cb170-31" data-line-number="31">       idx = max(<span class="fl">1</span>,ct-<span class="fl">400</span>):max(<span class="fl">1</span>,ct-<span class="fl">1</span>); <span class="co">% Ts = 0.01 seconds</span></a>
+<a class="sourceLine" id="cb170-32" data-line-number="32">       fMean(ct) = mean( xSigEst(<span class="fl">2</span>, idx) );</a>
+<a class="sourceLine" id="cb170-33" data-line-number="33">       fSTD(ct)  = std( xSigEst(<span class="fl">2</span>, idx) );</a>
+<a class="sourceLine" id="cb170-34" data-line-number="34">   else</a>
+<a class="sourceLine" id="cb170-35" data-line-number="35">       <span class="co">% 存储计算得到的均值和标准差避免重复计算</span></a>
+<a class="sourceLine" id="cb170-36" data-line-number="36">       fMean(ct) = fMean(ct-<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb170-37" data-line-number="37">       fSTD(ct)  = fSTD(ct-<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb170-38" data-line-number="38">       <span class="co">% 使用期望的摩擦力均值和标准差检测摩擦力变化</span></a>
+<a class="sourceLine" id="cb170-39" data-line-number="39">       estFriction = mean(xSigEst(<span class="fl">2</span>,max(<span class="fl">1</span>,ct-<span class="fl">10</span>):ct));</a>
+<a class="sourceLine" id="cb170-40" data-line-number="40">       fChanged(ct) = (estFriction &gt; fMean(ct)+<span class="fl">3</span>*fSTD(ct)) || (estFriction &lt; fMean(ct)-<span class="fl">3</span>*fSTD(ct));</a>
+<a class="sourceLine" id="cb170-41" data-line-number="41">   end</a>
+<a class="sourceLine" id="cb170-42" data-line-number="42">   if fChanged(ct) &amp;&amp; ~fChanged(ct-<span class="fl">1</span>) </a>
+<a class="sourceLine" id="cb170-43" data-line-number="43">       <span class="co">% 检测摩擦力变化信号的上升沿 |fChanged|.</span></a>
+<a class="sourceLine" id="cb170-44" data-line-number="44">       fprintf(<span class="st">&#39;Significant friction change at %f\n&#39;</span>,t(ct));</a>
+<a class="sourceLine" id="cb170-45" data-line-number="45">   end</a>
+<a class="sourceLine" id="cb170-46" data-line-number="46">   <span class="co">% =================================================================</span></a>
+<a class="sourceLine" id="cb170-47" data-line-number="47">   <span class="co">% 使用估计得到的状态计算输出估计。计算测量和估计输出的误差，并计算误差的统计信息。误差的统计信息可以被用来检测摩擦力变化。稍后将详细讨论</span></a>
+<a class="sourceLine" id="cb170-48" data-line-number="48">   ySigEst(:,ct) = pdmMotorModelMeasurementFcn(x_corr,u(ct),J,Ts);   </a>
+<a class="sourceLine" id="cb170-49" data-line-number="49">   idx = max(<span class="fl">1</span>,ct-<span class="fl">400</span>):ct;</a>
+<a class="sourceLine" id="cb170-50" data-line-number="50">   fKur(:,ct) = [...</a>
+<a class="sourceLine" id="cb170-51" data-line-number="51">       kurtosis(ySigEst(<span class="fl">1</span>,idx)-ySig(<span class="fl">1</span>,idx)); ...</a>
+<a class="sourceLine" id="cb170-52" data-line-number="52">       kurtosis(ySigEst(<span class="fl">2</span>,idx)-ySig(<span class="fl">2</span>,idx))];</a>
+<a class="sourceLine" id="cb170-53" data-line-number="53">end</a></code></pre></div>
+<p align=center><img src="..\algo_dev\EKFResult.PNG" style="zoom:200%;"/></p>
+</section>
+</section>
+<section align=left>
+<h4 id="第四步增广卡尔曼滤波方法表现"><strong>第四步：增广卡尔曼滤波方法表现</strong></h4>
+<section>
+<p>可以看出，摩擦力变化发生在10.45秒时。接下来，我们将描述该故障检测规则如何产生。首先检验仿真结果和过滤器表现</p>
+<div class="sourceCode" id="cb171"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb171-1" data-line-number="1">figure, </a>
+<a class="sourceLine" id="cb171-2" data-line-number="2">subplot(<span class="fl">211</span>), plot(t,ySig(<span class="fl">1</span>,:),t,ySig(<span class="fl">2</span>,:));</a>
+<a class="sourceLine" id="cb171-3" data-line-number="3">title(<span class="st">&#39;Motor Outputs&#39;</span>)</a>
+<a class="sourceLine" id="cb171-4" data-line-number="4">legend(<span class="st">&#39;Measured Angular Velocity&#39;</span>,<span class="st">&#39;Measured Angular Acceleration&#39;</span>, <span class="st">&#39;Location&#39;</span>,<span class="st">&#39;SouthWest&#39;</span>)</a>
+<a class="sourceLine" id="cb171-5" data-line-number="5">subplot(<span class="fl">212</span>), plot(t,u);</a>
+<a class="sourceLine" id="cb171-6" data-line-number="6">title(<span class="st">&#39;Motor Input - Torque&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\algo_dev\EFKperformance.png" style="zoom: 120%;" /></p>
+<p>模型输入输出显示，很难直接从测量信号中检测到摩擦力的变化。增广卡尔曼滤波方法是我们能估计到系统状态，尤其是摩擦力的状态</p>
+</section>
+<section align=left>
+<p>下面我们可以比较真实模型状态和估计得到的状态。估计得到的状态展示时，加上了3σ置信区间</p>
+<div class="sourceCode" id="cb172"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb172-1" data-line-number="1">figure, </a>
+<a class="sourceLine" id="cb172-2" data-line-number="2">subplot(<span class="fl">211</span>),plot(t,xSigTrue(<span class="fl">1</span>,:), t,xSigEst(<span class="fl">1</span>,:), ...</a>
+<a class="sourceLine" id="cb172-3" data-line-number="3">    [t nan t],[xSigEst(<span class="fl">1</span>,:)+<span class="fl">3</span>*squeeze(xstd(<span class="fl">1</span>,<span class="fl">1</span>,:))&#39;, nan, xSigEst(<span class="fl">1</span>,:)-<span class="fl">3</span>*squeeze(xstd(<span class="fl">1</span>,<span class="fl">1</span>,:))&#39;])</a>
+<a class="sourceLine" id="cb172-4" data-line-number="4">axis([<span class="fl">0</span> <span class="fl">20</span> -<span class="fl">0.06</span> <span class="fl">0.06</span>]), </a>
+<a class="sourceLine" id="cb172-5" data-line-number="5">legend(<span class="st">&#39;True value&#39;</span>,<span class="st">&#39;Estimated value&#39;</span>,<span class="st">&#39;Confidence interval&#39;</span>)</a>
+<a class="sourceLine" id="cb172-6" data-line-number="6">title(<span class="st">&#39;Motor State - Velocity&#39;</span>)</a>
+<a class="sourceLine" id="cb172-7" data-line-number="7">subplot(<span class="fl">212</span>),plot(t,xSigTrue(<span class="fl">2</span>,:), t,xSigEst(<span class="fl">2</span>,:),  ...</a>
+<a class="sourceLine" id="cb172-8" data-line-number="8">    [t nan t],[xSigEst(<span class="fl">2</span>,:)+<span class="fl">3</span>*squeeze(xstd(<span class="fl">2</span>,<span class="fl">2</span>,:))&#39; nan xSigEst(<span class="fl">2</span>,:)-<span class="fl">3</span>*squeeze(xstd(<span class="fl">2</span>,<span class="fl">2</span>,:))&#39;])</a>
+<a class="sourceLine" id="cb172-9" data-line-number="9">axis([<span class="fl">0</span> <span class="fl">20</span> -<span class="fl">10</span> <span class="fl">15</span>])</a>
+<a class="sourceLine" id="cb172-10" data-line-number="10">title(<span class="st">&#39;Motor State - Friction&#39;</span>);</a></code></pre></div>
+<p align=center><img src="..\algo_dev\EFKperformance3sigma.png" style="zoom:110%;" /></p>
+
+<p>可以看出，滤波器估计追踪着真实值，同时保有有界的置信区间。对估计误差的检验将为我们提供更多反映滤波器表现的内容</p>
+</section>
+<section align=left>
+<div class="sourceCode" id="cb173"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb173-1" data-line-number="1">figure, </a>
+<a class="sourceLine" id="cb173-2" data-line-number="2">subplot(<span class="fl">211</span>),plot(t,xSigTrue(<span class="fl">1</span>,:)-xSigEst(<span class="fl">1</span>,:))</a>
+<a class="sourceLine" id="cb173-3" data-line-number="3">title(<span class="st">&#39;Velocity State Error&#39;</span>)</a>
+<a class="sourceLine" id="cb173-4" data-line-number="4">subplot(<span class="fl">212</span>),plot(t,xSigTrue(<span class="fl">2</span>,:)-xSigEst(<span class="fl">2</span>,:))</a>
+<a class="sourceLine" id="cb173-5" data-line-number="5">title(<span class="st">&#39;Friction State Error&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\algo_dev\EFKperformanceError.png" style="zoom:120%;" /></p>
+<p>误差曲线表明，滤波器能适应10秒时的摩擦力变化，随后能将估计误差降低到0。然而误差曲线却不能用来做故障检测，因为它们的绘制依赖于真是状态值</p>
+</section>
+<section align=left>
+<p>比较测量状态值和加速度、速度的估计状态值，可以建立故障检测机制</p>
+<div class="sourceCode" id="cb174"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb174-1" data-line-number="1">figure</a>
+<a class="sourceLine" id="cb174-2" data-line-number="2">subplot(<span class="fl">211</span>), plot(t,ySig(<span class="fl">1</span>,:)-ySigEst(<span class="fl">1</span>,:))</a>
+<a class="sourceLine" id="cb174-3" data-line-number="3">title(<span class="st">&#39;Velocity Measurement Error&#39;</span>)</a>
+<a class="sourceLine" id="cb174-4" data-line-number="4">subplot(<span class="fl">212</span>),plot(t,ySig(<span class="fl">2</span>,:)-ySigEst(<span class="fl">2</span>,:))</a>
+<a class="sourceLine" id="cb174-5" data-line-number="5">title(<span class="st">&#39;Acceleration Measurement Error&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\algo_dev\EFKperformanceVelocityAccl.png" style="zoom:120%;" /></p>
+<p>在10秒引入故障时，加速度误差曲线表现出微小的误差均值变化。可以看看该误差项的统计信息，判断通过它是否能够检测出故障。加速度和速度误差通常属于正太分布（噪声模型都服从高斯模型）。因此，当误差分布因为摩擦力的变化并导致误差分布发生变化时，误差分布可能会从对称变化为非对称时，这时加速度误差的峰度也许可以帮助识别故障</p>
+</section>
+<section align=left>
+<div class="sourceCode" id="cb175"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb175-1" data-line-number="1">figure,</a>
+<a class="sourceLine" id="cb175-2" data-line-number="2">subplot(<span class="fl">211</span>),plot(t,fKur(<span class="fl">1</span>,:))</a>
+<a class="sourceLine" id="cb175-3" data-line-number="3">title(<span class="st">&#39;Velocity Error Kurtosis&#39;</span>)</a>
+<a class="sourceLine" id="cb175-4" data-line-number="4">subplot(<span class="fl">212</span>),plot(t,fKur(<span class="fl">2</span>,:))</a>
+<a class="sourceLine" id="cb175-5" data-line-number="5">title(<span class="st">&#39;Acceleration Error Kurtosis&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\algo_dev\EKFResultKurtosis.png" style="zoom:120%;" /></p>
+<p>忽略前4秒，因此时估计器还在收敛过程中，且数据正在逐步收集，此时误差的峰度在3的附近微小变动，这正对应着标准高斯分布的峰度值（3σ）。这样的话，误差的统计信息在此案例中便不能用于自动化故障检测。在此应用中，使用误差的峰度也是很难的，因为过滤器是逐步适应的，并且不断地将误差降为0，只有在给出短时间窗口时，其误差分布才不同于0</p>
+</section>
+<section align=left>
+
+<p>于是在本应用例子中，使用摩擦力的估计值地变化便能最好地自动化检测电机故障。使用已知无故障数据得到的摩擦力的估计值（均值和标准差）可以构建摩擦力的预期边界（3σ边界），这使得当边界条件被打破时，故障检测变得简单。以下绘图突出了这一故障检测方法</p>
+<div class="sourceCode" id="cb176"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb176-1" data-line-number="1">figure</a>
+<a class="sourceLine" id="cb176-2" data-line-number="2">plot(t,xSigEst(<span class="fl">2</span>,:),[t nan t],[fMean+<span class="fl">3</span>*fSTD,nan,fMean-<span class="fl">3</span>*fSTD])</a>
+<a class="sourceLine" id="cb176-3" data-line-number="3">title(<span class="st">&#39;Friction Change Detection&#39;</span>)</a>
+<a class="sourceLine" id="cb176-4" data-line-number="4">legend(<span class="st">&#39;Estimated Friction&#39;</span>,<span class="st">&#39;No-Fault Friction Bounds&#39;</span>)</a>
+<a class="sourceLine" id="cb176-5" data-line-number="5">axis([<span class="fl">0</span> <span class="fl">20</span> -<span class="fl">10</span> <span class="fl">20</span>])</a>
+<a class="sourceLine" id="cb176-6" data-line-number="6">grid on</a></code></pre></div>
+<p align=center><img src="..\algo_dev\EKFResultBoundary.png" style="zoom:120%;" /></p>
+</section>
+</section>
+<section align=left>
+<h4 id="第五步总结"><strong>第五步：总结</strong></h4>
+<p>本例展示了如何使用增广卡尔曼滤波器估计简单直流电机的摩擦力，并将该摩擦力用于故障检测</p>
+</section>
+<section>
+<p style="font-size:44px;"><strong>参考：</strong><a href="https://ww2.mathworks.cn/help/predmaint/ug/Fault-Detection-Using-an-Extended-Kalman-Filter.html" target="_blank">https://ww2.mathworks.cn/help/predmaint/ug/Fault-Detection-Using-an-Extended-Kalman-Filter.html</a></p>
+	    </section>
+		</div>
+  </div>
+
+  <script src="../reveal.js/lib/js/head.min.js"></script>
+  <script src="../reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Push each slide change to the browser history
+        history: true,
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: '../reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: '../reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: '../reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>

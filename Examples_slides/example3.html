@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>案例3</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../reveal.js/css/reveal.css">
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../reveal.js/css/theme/beige.css" id="theme">
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? '../reveal.js/css/print/pdf.css' : '../reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+    </script>
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+  <!--[if lt IE 9]>
+  <script src="../reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+	<section>
+<h2 id="案例3使用稳态实验进行离心泵故障诊断">案例3：使用稳态实验进行离心泵故障诊断</h2>
+</section>
+<section align="left">
+<p>该案例展示了如何使用基于模型的方法进行不同类型故障的监测和诊断，该案例遵循Rolf Isermann在故障诊断应用程序一书中给出的离心泵分析</p>
+</section>
+<section align="left">
+<h4 id="第一步离心泵相关先验知识介绍"><strong>第一步：离心泵相关先验知识介绍</strong></h4>
+<section>
+<p>离心泵用途：离心泵通过将来自电机或内燃机产生的旋转动能转化为流体的流体动能来达到输送液体的目的，液体进入泵叶轮后被叶轮加速，并呈放射状向外流入扩散器</p>
+<p>离心泵常见故障：</p>
+<ul>
+<li>气穴现象：流体内部形成的气泡破裂时可能会导致叶轮损伤</li>
+<li>液体中溶解有气体：压降导致的气体溶解于液体中</li>
+<li>空转：无液体进入导致缺乏冷却或轴承过温</li>
+<li>物理侵蚀：硬颗粒或气穴导致的泵体损伤</li>
+<li>化学腐蚀：腐蚀性液体导致的损伤</li>
+<li>轴承磨损：通过金属磨损、金属疲劳、点蚀导致的机械损伤</li>
+<li>减压孔堵塞：导致过载或破坏轴向轴承</li>
+<li>滑动环密封堵塞：导致更强的摩擦和更低的工作效率</li>
+<li>密封破损的增加：导致效率损失</li>
+<li>沉积：有机物沉淀或其他化学反应生成物沉淀</li>
+<li>震荡：转子损坏或沉积导致的转子不平衡，会造成轴承损伤</li>
+</ul>
+</section>
+<section>
+<p>典型可用的传感器：</p>
+<ul>
+<li><p>入口和出口的压强差<span class="math inline"><em>Δ</em><em>p</em></span></p></li>
+<li>转速<span class="math inline"><em>ω</em></span></li>
+<li>电机或发动机转矩<span class="math inline"><em>M</em><sub><em>m</em><em>o</em><em>t</em></sub></span>和泵转矩<span class="math inline"><em>M</em><sub><em>p</em></sub></span></li>
+<li>泵出口的液体流出率<span class="math inline"><em>Q</em></span></li>
+<li>驱动电机电流、电压、温度</li>
+<li><p>液体温度、沉积物</p></li>
+</ul>
+</section>
+</section>
+<section align="left">
+<h4 id="第二步泵和管路系统的数学模型"><strong>第二步：泵和管路系统的数学模型</strong></h4>
+<section>
+<p>由欧拉涡轮方程得到如下压差<span class="math inline"><em>Δ</em><em>p</em></span>，转速<span class="math inline"><em>ω</em></span>，液体流出率<span class="math inline"><em>Q</em></span>的关系： <br /><span class="math display"><em>H</em><sub><em>t</em><em>h</em></sub>?=?<em>h</em><sub>1</sub><em>ω</em><sup>2</sup>???<em>h</em><sub>2</sub><em>ω</em><em>Q</em></span><br /> 其中<span class="math inline">$H_{th}=\frac{\Delta p}{\rho g}$</span>表示理论扬程（理想状态下无损失），单位为米。<span class="math inline"><em>h</em><sub>1</sub></span>和<span class="math inline"><em>h</em><sub>2</sub></span>是比例常数。考虑摩擦损失和冲击损失时，实际扬程为： <br /><span class="math display"><em>H</em>?=?<em>h</em><sub><em>n</em><em>n</em></sub><em>ω</em><sup>2</sup>???<em>h</em><sub><em>n</em><em>v</em></sub><em>ω</em><em>Q</em>???<em>h</em><sub><em>v</em><em>v</em></sub><em>Q</em><sup>2</sup></span><br /> 此处，<span class="math inline"><em>h</em><sub><em>n</em><em>n</em></sub></span>，<span class="math inline"><em>h</em><sub><em>n</em><em>v</em></sub></span>，<span class="math inline"><em>h</em><sub><em>v</em><em>v</em></sub></span>是被看作是模型参数的比例常数。对应的泵扭矩为： <br /><span class="math display">$$
+M_p=\rho g(h_{nn}\omega Q-h_{nv}Q^2-h_{vv}\frac{Q^3}{\omega})
+$$</span><br /> 当电机和泵机械部分施加的扭矩使转速提升时，满足以下关系： <br /><span class="math display">$$
+J_p\frac{d\omega (t)}{dt}=M_{mot}(t)-M_p(t)-M_f(t)
+$$</span><br /> 
+</section>
+<section>
+此处，<span class="math inline"><em>J</em><sub><em>P</em></sub></span>为电机和泵的惯量比，<span class="math inline"><em>M</em><sub><em>f</em></sub></span>由库仑摩擦力矩<span class="math inline"><em>M</em><sub><em>f</em>0</sub></span>和粘性摩擦力矩<span class="math inline"><em>M</em><sub><em>f</em>1</sub><em>ω</em>(<em>t</em>)</span>组成： <br /><span class="math display"><em>M</em><sub><em>f</em></sub>(<em>t</em>)?=?<em>M</em><sub><em>f</em>0</sub><em>s</em><em>i</em><em>g</em><em>n</em>(<em>ω</em>(<em>t</em>))?+?<em>M</em><sub><em>f</em>1</sub><em>ω</em>(<em>t</em>)</span><br /> 同时，泵被连接到管道系统中，并将液体从较低的储罐传输到较高的储罐。力矩平衡方程如下： <br /><span class="math display">$$
+H(t)=a_F\frac{dQ(t)}{dt}+h_{rr}Q^2(t)+H_{static}
+$$</span><br /> 此处，<span class="math inline"><em>h</em><sub><em>r</em><em>r</em></sub></span>为管道系统的阻力系数，<span class="math inline">$a_F=\frac{l}{gA}$</span>，<span class="math inline"><em>l</em></span>表示管道长度，<span class="math inline"><em>A</em></span>表示管道横截面积，<span class="math inline"><em>H</em><sub><em>s</em><em>t</em><em>a</em><em>t</em><em>i</em><em>c</em></sub></span>表示泵上的储存高度。模型参数<span class="math inline"><em>h</em><sub><em>n</em><em>n</em></sub></span>、<span class="math inline"><em>h</em><sub><em>n</em><em>v</em></sub></span>、<span class="math inline"><em>h</em><sub><em>v</em><em>v</em></sub></span>要么从物理学知识方面得到，要么通过将测量到的传感器信号放入模型的输入/输出中进行拟合估计得到。所使用的模型可能取决于泵运行时的操作工况，例如当泵总是以恒定角速度运行时，则可能不需要使用泵-管道系统的完整非线性模型</p>
+</section>
+</section>
+<section align="left">
+<h4 id="第三步相关故障检测技术"><strong>第三步：相关故障检测技术</strong></h4>
+<p>故障检测可通过比较从测量数据中提取的特定特征值和正常运行时得到的阈值的差实现。此时，不同故障的可检测性、可分离性取决于实验的性质和测量的可用性。比如，带压力监测的恒速分析只能检测引发较大压力变化的故障，然而它并不能有效评估故障发生原因。这时，通过测量压差、电机转矩和液体流出率可以检测和分离许多故障源，如气穴、空转、大的沉积、电机故障等</p>
+<p>基于模型的方法使用以下技术：</p>
+<ol type="1">
+<li>参数估计：使用来自健康状态（标称）的测量数据建模，估计出模型参数并对其不确定性进行量化。然后，测试系统测得数据被重新估计得到参数值，该参数值被用来和标称值（标称状态得到的模型参数估计）对比诊断故障。该技术便是本案例讨论的话题</li>
+<li>残差生成：先对健康状态数据建模得到模型，然后通过模型在测试系统上的输出和测试系统测得的实际观测量做残差计算得到残差信号，之后分析残差信号的峰值、方差及其他特性来检测故障。可以设计不同的残差用来区分不同故障源导致的故障。该技术在<a href="example4.html" target="_blank">案例4</a>中讨论</li>
+</ol>
+</section>
+<section align="left">
+<h4 id="第四步恒速实验通过参数估计进行故障分析"><strong>第四步：恒速实验——通过参数估计进行故障分析</strong></h4>
+<section>
+<p>一种对泵进行校准和监测的常见方法是使泵以恒定的角速度运行，并记录泵的静压头和液体流出率。通过改变管道系统阀门位置，液体流出体积可以被调节。流量的增加会造成泵扬程的减少，该泵测量得到的扬程特性可以被用来和供应商提供的数据值对比，其中产生的任意差值都可能指示着潜在的故障。通过Simulink中管道-泵系统的模拟，可以获得输出水头和液体流出率的测量值</p>
+<p>当标称转速为2900 RPM时，理想状态下供应商提供的健康水泵的泵扬程特性如下所示：</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb33-1" data-line-number="1">load PumpCharacteristicsData Q0 H0 M0 <span class="co">% 供应商提供的泵扬程数据</span></a>
+<a class="sourceLine" id="cb33-2" data-line-number="2">figure</a>
+<a class="sourceLine" id="cb33-3" data-line-number="3">plot(Q0, H0, <span class="st">&#39;--&#39;</span>);  </a>
+<a class="sourceLine" id="cb33-4" data-line-number="4">xlabel(<span class="st">&#39;Discharge Rate Q (m^3/h)&#39;</span>)</a>
+<a class="sourceLine" id="cb33-5" data-line-number="5">ylabel(<span class="st">&#39;Pump Head (m)&#39;</span>)</a>
+<a class="sourceLine" id="cb33-6" data-line-number="6">title(<span class="st">&#39;Pump Delivery Head Characteristics at 2900 RPM&#39;</span>)</a>
+<a class="sourceLine" id="cb33-7" data-line-number="7">grid on</a>
+<a class="sourceLine" id="cb33-8" data-line-number="8">legend(<span class="st">&#39;Healthy pump&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\HIDesign\healthPumpDeliveryHead.png" style="zoom: 75%;" /></p>
+</section>
+<section>
+<p>能导致泵特性明显改变的故障如下：</p>
+<ol type="1">
+<li>间隙处的磨损</li>
+<li>叶轮出口的磨损</li>
+<li>叶轮出口的沉积物</li>
+</ol>
+<p>分析故障水泵时，受不同故障程度影响水泵的转速、转矩、液体流出率等测量数据被记录。例如当故障源发生在间隙垫圈时，测量得到的泵扬程特性在特性曲线上表现为明显的移位，如下：</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb34-1" data-line-number="1">load PumpCharacteristicsData Q1 H1 M1  <span class="co">% 从带有大间隙水泵处测得的数据</span></a>
+<a class="sourceLine" id="cb34-2" data-line-number="2">hold on</a>
+<a class="sourceLine" id="cb34-3" data-line-number="3">plot(Q1, H1);  </a>
+<a class="sourceLine" id="cb34-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb34-5" data-line-number="5">load PumpCharacteristicsData Q2 H2 M2  <span class="co">% 从带有小间隙水泵处测得的数据</span></a>
+<a class="sourceLine" id="cb34-6" data-line-number="6">plot(Q2, H2);  </a>
+<a class="sourceLine" id="cb34-7" data-line-number="7">legend(<span class="st">&#39;Healthy pump&#39;</span>,<span class="st">&#39;Large clearance&#39;</span>,<span class="st">&#39;Small clearance&#39;</span>)</a>
+<a class="sourceLine" id="cb34-8" data-line-number="8">hold off</a></code></pre></div>
+<p align=center><img src="..\HIDesign\multiPumpDeliveryHead.png" style="zoom:72%;" /></p>
+</section>
+<section>
+<p>类似的变化也可以从转矩-流量特性和其他故障类型中看到</p>
+<p>对于自动化故障诊断，需要将观察得到的变化转化为定量信息。其中一种可行的方案是将参数化曲线于上图所示的扬程-水流特性曲线中拟合。利用泵-管道动力学控制方程，并利用简化的扭矩关系，得到以下方程： <br /><span class="math display">$$
+H\approx h_{nn}\omega^2-h_{nv}\omega Q-h_{vv}Q^2 \\
+M_p\approx k_0\omega Q-k_1Q^2+k_2\omega^2
+$$</span><br /> 其中，<span class="math inline"><em>h</em><sub><em>n</em><em>n</em></sub></span>，<span class="math inline"><em>h</em><sub><em>n</em><em>v</em></sub></span>，<span class="math inline"><em>h</em><sub><em>v</em><em>v</em></sub></span>，<span class="math inline"><em>k</em><sub>0</sub></span>，<span class="math inline"><em>k</em><sub>1</sub></span>，<span class="math inline"><em>k</em><sub>2</sub></sp  <link rel="stylesheet" href="  <  <link rel="stylesheet" href="../reveal.js/css/theme/black.css" id="theme">
+e"><em>Q</em></span>，<span class="math inline"><em>H</em></span>和<span class="math inline"><em>M</em><sub><em>P</em></sub></span>的值，这些参数可以用线性最小二乘估计得到。此时，这些参数便是用来开发故障检测和诊断算法的特征</p>
+</section>
+</section>
+<section align=left>
+<h4 id="第五步初步分析比较参数值"><strong>第五步：初步分析——比较参数值</strong></h4>
+<section>
+<p>计算并画出上图3条曲线对应的参数估计值，<span class="math inline"><em>Q</em></span>，<span class="math inline"><em>H</em></span>和<span class="math inline"><em>M</em><sub><em>P</em></sub></span>使用测量值，<span class="math inline"><em>ω</em>?=?2900<em>R</em><em>P</em><em>M</em></span>作为标称泵转速</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb35-1" data-line-number="1">w = <span class="fl">2900</span>; <span class="co">% RPM</span></a>
+<a class="sourceLine" id="cb35-2" data-line-number="2"><span class="co">% 健康泵</span></a>
+<a class="sourceLine" id="cb35-3" data-line-number="3">[hnn_0, hnv_0, hvv_0, k0_0, k1_0, k2_0] = linearFit(<span class="fl">0</span>, {w, Q0, H0, M0});</a>
+<a class="sourceLine" id="cb35-4" data-line-number="4"><span class="co">% 大间隙泵</span></a>
+<a class="sourceLine" id="cb35-5" data-line-number="5">[hnn_1, hnv_1, hvv_1, k0_1, k1_1, k2_1] = linearFit(<span class="fl">0</span>, {w, Q1, H1, M1});</a>
+<a class="sourceLine" id="cb35-6" data-line-number="6"><span class="co">% 小间隙泵</span></a>
+<a class="sourceLine" id="cb35-7" data-line-number="7">[hnn_2, hnv_2, hvv_2, k0_2, k1_2, k2_2] = linearFit(<span class="fl">0</span>, {w, Q2, H2, M2});</a>
+<a class="sourceLine" id="cb35-8" data-line-number="8">X = [hnn_0 hnn_1 hnn_2; hnv_0  hnv_1  hnv_2; hvv_0  hvv_1  hvv_2]&#39;;</a>
+<a class="sourceLine" id="cb35-9" data-line-number="9">disp(array2table(X,<span class="st">&#39;VariableNames&#39;</span>,{<span class="st">&#39;hnn&#39;</span>,<span class="st">&#39;hnv&#39;</span>,<span class="st">&#39;hvv&#39;</span>},...</a>
+<a class="sourceLine" id="cb35-10" data-line-number="10">    <span class="st">&#39;RowNames&#39;</span>,{<span class="st">&#39;Healthy&#39;</span>,<span class="st">&#39;Large Clearance&#39;</span>, <span class="st">&#39;Small Clearance&#39;</span>}))</a></code></pre></div>
+<p>得到结果如下：</p>
+<p align=center><img src="..\HIDesign\paraEstimated.PNG" style="zoom:120%;" /></p>
+</section>
+<section>
+<p>其中<code>linearFit</code>为定义的外部函数，如下：</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb36-1" data-line-number="1">function varargout = linearFit(Form, Data)</a>
+<a class="sourceLine" id="cb36-2" data-line-number="2"><span class="co">%linearFit 线性最小二乘针对泵扬程和扭矩参数的解</span></a>
+<a class="sourceLine" id="cb36-3" data-line-number="3"><span class="co">%</span></a>
+<a class="sourceLine" id="cb36-4" data-line-number="4"><span class="co">% 如果Form==0，接收单条输入返回单条输出，即处理过程仅针对一次实验</span></a>
+<a class="sourceLine" id="cb36-5" data-line-number="5"><span class="co">% 如果Form==1，接收集成数据并返回紧凑型参数向量，即处理过程针对多次实验（集成）</span></a>
+<a class="sourceLine" id="cb36-6" data-line-number="6">if Form==<span class="fl">0</span></a>
+<a class="sourceLine" id="cb36-7" data-line-number="7">   w = Data{<span class="fl">1</span>};</a>
+<a class="sourceLine" id="cb36-8" data-line-number="8">   Q = Data{<span class="fl">2</span>};</a>
+<a class="sourceLine" id="cb36-9" data-line-number="9">   H = Data{<span class="fl">3</span>};</a>
+<a class="sourceLine" id="cb36-10" data-line-number="10">   M = Data{<span class="fl">4</span>};</a>
+<a class="sourceLine" id="cb36-11" data-line-number="11">   n = length(Q);</a>
+<a class="sourceLine" id="cb36-12" data-line-number="12">   if isscalar(w), w = w*ones(n,<span class="fl">1</span>); end</a>
+<a class="sourceLine" id="cb36-13" data-line-number="13">   Q = Q(:); H = H(:); M = M(:);</a>
+<a class="sourceLine" id="cb36-14" data-line-number="14">   Predictor = [w.^<span class="fl">2</span>, w.*Q, Q.^<span class="fl">2</span>];</a>
+<a class="sourceLine" id="cb36-15" data-line-number="15">   Theta1 = Predictor\H;</a>
+<a class="sourceLine" id="cb36-16" data-line-number="16">   hnn =  Theta1(<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb36-17" data-line-number="17">   hnv = -Theta1(<span class="fl">2</span>);</a>
+<a class="sourceLine" id="cb36-18" data-line-number="18">   hvv = -Theta1(<span class="fl">3</span>);</a>
+<a class="sourceLine" id="cb36-19" data-line-number="19">   Theta2 = Predictor\M;</a>
+<a class="sourceLine" id="cb36-20" data-line-number="20">   k0 =  Theta2(<span class="fl">2</span>);</a>
+<a class="sourceLine" id="cb36-21" data-line-number="21">   k1 = -Theta2(<span class="fl">3</span>);</a>
+<a class="sourceLine" id="cb36-22" data-line-number="22">   k2 =  Theta2(<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb36-23" data-line-number="23">   varargout = {hnn, hnv, hvv, k0, k1, k2};</a>
+<a class="sourceLine" id="cb36-24" data-line-number="24">else</a>
+<a class="sourceLine" id="cb36-25" data-line-number="25">   H = cellfun(@(x)x.Head,Data,<span class="st">&#39;uni&#39;</span>,<span class="fl">0</span>);</a>
+<a class="sourceLine" id="cb36-26" data-line-number="26">   Q = cellfun(@(x)x.Discharge,Data,<span class="st">&#39;uni&#39;</span>,<span class="fl">0</span>);</a>
+<a class="sourceLine" id="cb36-27" data-line-number="27">   M = cellfun(@(x)x.Torque,Data,<span class="st">&#39;uni&#39;</span>,<span class="fl">0</span>);</a>
+<a class="sourceLine" id="cb36-28" data-line-number="28">   W = cellfun(@(x)x.Speed,Data,<span class="st">&#39;uni&#39;</span>,<span class="fl">0</span>);</a>
+<a class="sourceLine" id="cb36-29" data-line-number="29">   N = numel(H);</a>
+<a class="sourceLine" id="cb36-30" data-line-number="30"></a>
+<a class="sourceLine" id="cb36-31" data-line-number="31">   Theta1 = zeros(<span class="fl">3</span>,N);</a>
+<a class="sourceLine" id="cb36-32" data-line-number="32">   Theta2 = zeros(<span class="fl">3</span>,N);</a>
+<a class="sourceLine" id="cb36-33" data-line-number="33">   </a>
+<a class="sourceLine" id="cb36-34" data-line-number="34">   for kexp = <span class="fl">1</span>:N</a>
+<a class="sourceLine" id="cb36-35" data-line-number="35">      Predictor = [W{kexp}.^<span class="fl">2</span>, W{kexp}.*Q{kexp}, Q{kexp}.^<span class="fl">2</span>];</a>
+<a class="sourceLine" id="cb36-36" data-line-number="36">      X1 = Predictor\H{kexp};</a>
+<a class="sourceLine" id="cb36-37" data-line-number="37">      hnn =  X1(<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb36-38" data-line-number="38">      hnv = -X1(<span class="fl">2</span>);</a>
+<a class="sourceLine" id="cb36-39" data-line-number="39">      hvv = -X1(<span class="fl">3</span>);</a>
+<a class="sourceLine" id="cb36-40" data-line-number="40">      X2 = Predictor\M{kexp};</a>
+<a class="sourceLine" id="cb36-41" data-line-number="41">      k0 =  X2(<span class="fl">2</span>);</a>
+<a class="sourceLine" id="cb36-42" data-line-number="42">      k1 = -X2(<span class="fl">3</span>);</a>
+<a class="sourceLine" id="cb36-43" data-line-number="43">      k2 =  X2(<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb36-44" data-line-number="44">      </a>
+<a class="sourceLine" id="cb36-45" data-line-number="45">      Theta1(:,kexp) = [hnn; hnv; hvv];</a>
+<a class="sourceLine" id="cb36-46" data-line-number="46">      Theta2(:,kexp) = [k0; k1; k2];</a>
+<a class="sourceLine" id="cb36-47" data-line-number="47">   end</a>
+<a class="sourceLine" id="cb36-48" data-line-number="48">   varargout = {Theta1&#39;, Theta2&#39;};</a>
+<a class="sourceLine" id="cb36-49" data-line-number="49">end</a>
+<a class="sourceLine" id="cb36-50" data-line-number="50">end</a></code></pre></div>
+</section>
+<section>
+<p><span class="math inline"><em>k</em><sub>0</sub></span>，<span class="math inline"><em>k</em><sub>1</sub></span>，<span class="math inline"><em>k</em><sub>2</sub></span>的估计值展示如下：</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb37-1" data-line-number="1">Y = [k0_0 k0_1 k0_2; k1_0  k1_1  k1_2; k2_0  k2_1  k2_2]&#39;;</a>
+<a class="sourceLine" id="cb37-2" data-line-number="2">disp(array2table(Y,<span class="st">&#39;VariableNames&#39;</span>,{<span class="st">&#39;k0&#39;</span>,<span class="st">&#39;k1&#39;</span>,<span class="st">&#39;k2&#39;</span>},...</a>
+<a class="sourceLine" id="cb37-3" data-line-number="3">    <span class="st">&#39;RowNames&#39;</span>,{<span class="st">&#39;Healthy&#39;</span>,<span class="st">&#39;Large Clearance&#39;</span>, <span class="st">&#39;Small Clearance&#39;</span>}))</a></code></pre></div>
+<p align=center><img src="..\HIDesign\paraEstimatedK.PNG" style="zoom:120%;" /></p>
+</section>
+<section>
+<p>由结果分析出以下三点：</p>
+<ul>
+<li>随着间隙距较大时，<span class="math inline"><em>h</em><sub><em>n</em><em>n</em></sub></span>和<span class="math inline"><em>k</em><sub>0</sub></span>取值减小，但对于小间隙的情况又大于标称值</li>
+<li><span class="math inline"><em>h</em><sub><em>v</em><em>v</em></sub></span>和<span class="math inline"><em>k</em><sub>2</sub></span>的值对于大间隙变大，对于小间隙变小</li>
+<li><span class="math inline"><em>h</em><sub><em>n</em><em>v</em></sub></span>和<span class="math inline"><em>k</em><sub>1</sub></span>对于间隙距的依赖关系不明</li>
+</ul>
+</section>
+</section>
+<section align=left>
+<h4 id="第六步考虑不确定性分析"><strong>第六步：考虑不确定性分析</strong></h4>
+<section>
+<p>初步分析的结果展示了模型参数如何随故障情况的变化而变化。然而，即使对于健康水泵，测量导致的噪点，流体污染，粘度变化以及电机运行时的滑转扭矩特性等因素都会对测量数据造成偏差。这些测量时的变数都给参数估计带来了不确定型</p>
+<p>现采集五组来自健康无故障运行在2900 RPM转速下同时调节节流阀处于10个不同位置的水泵数据，如下：</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb38-1" data-line-number="1">load FaultDiagnosisData HealthyEnsemble</a>
+<a class="sourceLine" id="cb38-2" data-line-number="2">H = cellfun(@(x)x.Head,HealthyEnsemble,<span class="st">&#39;uni&#39;</span>,<span class="fl">0</span>);</a>
+<a class="sourceLine" id="cb38-3" data-line-number="3">Q = cellfun(@(x)x.Discharge,HealthyEnsemble,<span class="st">&#39;uni&#39;</span>,<span class="fl">0</span>);</a>
+<a class="sourceLine" id="cb38-4" data-line-number="4">plot(cat(<span class="fl">2</span>,Q{:}),cat(<span class="fl">2</span>,H{:}),<span class="st">&#39;k.&#39;</span>)</a>
+<a class="sourceLine" id="cb38-5" data-line-number="5">title(<span class="st">&#39;Pump Head Characteristics Ensemble for 5 Test Runs&#39;</span>)</a>
+<a class="sourceLine" id="cb38-6" data-line-number="6">xlabel(<span class="st">&#39;Flow rate (m^3/hed)&#39;</span>)</a>
+<a class="sourceLine" id="cb38-7" data-line-number="7">ylabel(<span class="st">&#39;Pump head (m)&#39;</span>)</a></code></pre></div>
+</section>
+<section>
+<p align=center><img src="..\HIDesign\healthyEnsemble.png" style="zoom: 120%;" /></p>
+<p>图像显示即使对于运行于实际工况中的健康水泵，特性曲线也会有较大偏差，这种偏差应该在诊断模型建模时被考虑到。下一节将讨论这种情况下的故障诊断和带噪点数据分离的技术</p>
+</section>
+</section>
+<section align=left>
+<h4 id="第七步异常检测"><strong>第七步：异常检测</strong></h4>
+<section>
+<p>在大多数情形下，往往只能获得健康水泵数据。在这种情况下，可以使用可用测量数据来创建健康状态的统计描述，如使用参数向量的均值和协方差等。之后将测试水泵的测量数据和得到的标称统计结果进行对比，依次确定测试水泵是否健康。通常，故障水泵测试数据得到的特征值会被检测为异常值</p>
+<p>以下代码用来估计泵扬程和扭矩参数值的均值和协方差</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb39-1" data-line-number="1">load FaultDiagnosisData HealthyEnsemble</a>
+<a class="sourceLine" id="cb39-2" data-line-number="2">[HealthyTheta1, HealthyTheta2] = linearFit(<span class="fl">1</span>, HealthyEnsemble);  <span class="co">%线性拟合得到h和k系列参数向量</span></a>
+<a class="sourceLine" id="cb39-3" data-line-number="3">meanTheta1 = mean(HealthyTheta1,<span class="fl">1</span>);  <span class="co">%hnn,hnv,hvv等值的平均值</span></a>
+<a class="sourceLine" id="cb39-4" data-line-number="4">meanTheta2 = mean(HealthyTheta2,<span class="fl">1</span>);  <span class="co">%k0,k1,k2等值的平均值</span></a>
+<a class="sourceLine" id="cb39-5" data-line-number="5">covTheta1  = cov(HealthyTheta1);  <span class="co">%hnn,hnv,hvv等值的协方差</span></a>
+<a class="sourceLine" id="cb39-6" data-line-number="6">covTheta2  = cov(HealthyTheta2);  <span class="co">%k0,k1,k2等值的协方差</span></a></code></pre></div>
+</section>
+<section>
+<p>之后便可可视化估计得到的模型参数值，因测量得到数据的不确定性，此处加上一个置信度为74%的置信区间，相对应着两个标准差（<span class="math inline">$\sqrt{chi2inv(0.74,3)}\approx2$</span>，3表示自由度，此过程为卡方分布中的已知置信度和自由度求范围的问题）</p>
+<p>绘图前，先定义一个画三维平面的函数如下：</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb40-1" data-line-number="1">function helperPlotConfidenceEllipsoid(M,C,n,color)</a>
+<a class="sourceLine" id="cb40-2" data-line-number="2"><span class="co">%helperPlotConfidenceEllipsoid Plot confidence region for 3D data.</span></a>
+<a class="sourceLine" id="cb40-3" data-line-number="3"><span class="co">%</span></a>
+<a class="sourceLine" id="cb40-4" data-line-number="4"><span class="co">% This function is only in support of</span></a>
+<a class="sourceLine" id="cb40-5" data-line-number="5"><span class="co">% CentrifugalPumpFaultDiagnosisUsingSteadyStateExperimentsExample. It may</span></a>
+<a class="sourceLine" id="cb40-6" data-line-number="6"><span class="co">% change in a future release.</span></a>
+<a class="sourceLine" id="cb40-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb40-8" data-line-number="8"><span class="co">% Copyright 2017 The MathWorks, Inc.</span></a>
+<a class="sourceLine" id="cb40-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb40-10" data-line-number="10"><span class="co">%Compute the surface points of a N standard deviations ellipsoid</span></a>
+<a class="sourceLine" id="cb40-11" data-line-number="11"><span class="co">%corresponding to the provided mean (M) and covariance (C) data.</span></a>
+<a class="sourceLine" id="cb40-12" data-line-number="12">[U,L] = eig(C);</a>
+<a class="sourceLine" id="cb40-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb40-14" data-line-number="14"><span class="co">% For n standard deviation spread of data, the radii of the ellipsoid will</span></a>
+<a class="sourceLine" id="cb40-15" data-line-number="15"><span class="co">% be given by n*SQRT(eigenvalues) </span></a>
+<a class="sourceLine" id="cb40-16" data-line-number="16">l = <span class="fl">50</span>;</a>
+<a class="sourceLine" id="cb40-17" data-line-number="17">radii = n*sqrt(diag(L)); </a>
+<a class="sourceLine" id="cb40-18" data-line-number="18">[xc,yc,zc] = ellipsoid(<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span>,radii(<span class="fl">1</span>),radii(<span class="fl">2</span>),radii(<span class="fl">3</span>),l);</a>
+<a class="sourceLine" id="cb40-19" data-line-number="19"><span class="co">%</span></a>
+<a class="sourceLine" id="cb40-20" data-line-number="20">a = kron(U(:,<span class="fl">1</span>),xc); b = kron(U(:,<span class="fl">2</span>),yc); c = kron(U(:,<span class="fl">3</span>),zc);</a>
+<a class="sourceLine" id="cb40-21" data-line-number="21">data = a+b+c; </a>
+<a class="sourceLine" id="cb40-22" data-line-number="22">nc = size(data,<span class="fl">2</span>);</a>
+<a class="sourceLine" id="cb40-23" data-line-number="23">x = data(<span class="fl">1</span>:nc,:)+M(<span class="fl">1</span>); </a>
+<a class="sourceLine" id="cb40-24" data-line-number="24">y = data(nc+<span class="fl">1</span>:<span class="fl">2</span>*nc,:)+M(<span class="fl">2</span>); </a>
+<a class="sourceLine" id="cb40-25" data-line-number="25">z = data(<span class="fl">2</span>*nc+<span class="fl">1</span>:end,:)+M(<span class="fl">3</span>);</a>
+<a class="sourceLine" id="cb40-26" data-line-number="26"></a>
+<a class="sourceLine" id="cb40-27" data-line-number="27">if isscalar(color), color = color*ones(<span class="fl">1</span>,<span class="fl">3</span>); end</a>
+<a class="sourceLine" id="cb40-28" data-line-number="28">ColorMap(:,:,<span class="fl">1</span>) = color(<span class="fl">1</span>)*ones(l+<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb40-29" data-line-number="29">ColorMap(:,:,<span class="fl">2</span>) = color(<span class="fl">2</span>)*ones(l+<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb40-30" data-line-number="30">ColorMap(:,:,<span class="fl">3</span>) = color(<span class="fl">3</span>)*ones(l+<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb40-31" data-line-number="31"></a>
+<a class="sourceLine" id="cb40-32" data-line-number="32">sc = surf(x,y,z,ColorMap); </a>
+<a class="sourceLine" id="cb40-33" data-line-number="33">shading interp</a>
+<a class="sourceLine" id="cb40-34" data-line-number="34">alpha(sc,<span class="fl">0.4</span>); </a>
+<a class="sourceLine" id="cb40-35" data-line-number="35">camlight headlight </a>
+<a class="sourceLine" id="cb40-36" data-line-number="36">lighting phong</a></code></pre></div>
+</section>
+<section>
+<p>之后画出<span class="math inline"><em>h</em><sub><em>n</em><em>n</em></sub></span>，<span class="math inline"><em>h</em><sub><em>n</em><em>v</em></sub></span>，<span class="math inline"><em>h</em><sub><em>v</em><em>v</em></sub></span>三个模型参数构成的椭圆平面</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb41-1" data-line-number="1"><span class="co">% 泵扬程参数的置信椭圆面</span></a>
+<a class="sourceLine" id="cb41-2" data-line-number="2">f = figure;</a>
+<a class="sourceLine" id="cb41-3" data-line-number="3">f.Position(<span class="fl">3</span>) = f.Position(<span class="fl">3</span>)*<span class="fl">2</span>;</a>
+<a class="sourceLine" id="cb41-4" data-line-number="4">subplot(<span class="fl">121</span>)</a>
+<a class="sourceLine" id="cb41-5" data-line-number="5">helperPlotConfidenceEllipsoid(meanTheta1,covTheta1,<span class="fl">2</span>,<span class="fl">0.6</span>);   </a>
+<a class="sourceLine" id="cb41-6" data-line-number="6">xlabel(<span class="st">&#39;hnn&#39;</span>)</a>
+<a class="sourceLine" id="cb41-7" data-line-number="7">ylabel(<span class="st">&#39;hnv&#39;</span>)</a>
+<a class="sourceLine" id="cb41-8" data-line-number="8">zlabel(<span class="st">&#39;hvv&#39;</span>)</a>
+<a class="sourceLine" id="cb41-9" data-line-number="9">title(<span class="st">&#39;2-sd Confidence Ellipsoid for Pump Head Parameters&#39;</span>)</a>
+<a class="sourceLine" id="cb41-10" data-line-number="10">hold on</a></code></pre></div>
+<p>以及<span class="math inline"><em>k</em><sub>0</sub></span>，<span class="math inline"><em>k</em><sub>1</sub></span>，<span class="math inline"><em>k</em><sub>2</sub></span>三个模型参数构成的椭圆平面</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb42-1" data-line-number="1"><span class="co">% 泵转矩参数的置信椭圆面</span></a>
+<a class="sourceLine" id="cb42-2" data-line-number="2">subplot(<span class="fl">122</span>)</a>
+<a class="sourceLine" id="cb42-3" data-line-number="3">helperPlotConfidenceEllipsoid(meanTheta2,covTheta2,<span class="fl">2</span>,<span class="fl">0.6</span>); </a>
+<a class="sourceLine" id="cb42-4" data-line-number="4">xlabel(<span class="st">&#39;k0&#39;</span>)</a>
+<a class="sourceLine" id="cb42-5" data-line-number="5">ylabel(<span class="st">&#39;k1&#39;</span>)</a>
+<a class="sourceLine" id="cb42-6" data-line-number="6">zlabel(<span class="st">&#39;k2&#39;</span>)</a>
+<a class="sourceLine" id="cb42-7" data-line-number="7">title(<span class="st">&#39;2-sd Confidence Ellipsoid for Pump Torque Parameters&#39;</span>)</a>
+<a class="sourceLine" id="cb42-8" data-line-number="8">hold on</a></code></pre></div>
+</section>
+<section>
+<p>得到图像如下：</p>
+<p align=center><img data-src="..\HIDesign\ellipsoidWithoutPoint.png" style="zoom: 120%;"/></p>
+<p>这两个椭圆面基本框定了<span class="math inline"><em>h</em><sub><em>n</em><em>n</em></sub></span>，<span class="math inline"><em>h</em><sub><em>n</em><em>v</em></sub></span>，<span class="math inline"><em>h</em><sub><em>v</em><em>v</em></sub></span>，<span class="math inline"><em>k</em><sub>0</sub></span>，<span class="math inline"><em>k</em><sub>1</sub></span>，<span class="math inline"><em>k</em><sub>2</sub></span>六个模型参数值在74%置信区间时的正常值范围</p>
+</section>
+<section>
+<p>对之后测量得到的水泵数据，可通过同样的处理把散点绘制到图像中，如下加载测试数据后的情况：</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb43-1" data-line-number="1">load FaultDiagnosisData TestEnsemble</a></code></pre></div>
+<p>测试数据中包含了一组10条时序测量数据，表征了水泵阀门处于10个不同位置时的水泵转速、扭矩、扬程和流出率数据。所有测试数据对应的水泵都有不同程度的间隙缝问题</p>
+<p>现查看其中一条数据的前5个时间点如下：</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb44-1" data-line-number="1">disp(TestEnsemble{<span class="fl">1</span>}(<span class="fl">1</span>:<span class="fl">5</span>,:)) <span class="co">% 第一条数据测得的前5行</span></a></code></pre></div>
+<p align=center><img src="..\HIDesign\testDataPreview.PNG" style="zoom: 120%;" /></p>
+</section>
+<section>
+<p>对测试数据，同样画出他们估计得到的模型参数值相对于正常值范围的图像如下：</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb45-1" data-line-number="1"><span class="co">% TestTheta1: 泵扬程参数</span></a>
+<a class="sourceLine" id="cb45-2" data-line-number="2"><span class="co">% TestTheta2: 泵扭矩参数</span></a>
+<a class="sourceLine" id="cb45-3" data-line-number="3">[TestTheta1,TestTheta2] = linearFit(<span class="fl">1</span>, TestEnsemble);</a>
+<a class="sourceLine" id="cb45-4" data-line-number="4">subplot(<span class="fl">121</span>)</a>
+<a class="sourceLine" id="cb45-5" data-line-number="5">plot3(TestTheta1(:,<span class="fl">1</span>),TestTheta1(:,<span class="fl">2</span>),TestTheta1(:,<span class="fl">3</span>),<span class="st">&#39;g*&#39;</span>)</a>
+<a class="sourceLine" id="cb45-6" data-line-number="6">view([-<span class="fl">42.7</span> <span class="fl">10</span>])</a>
+<a class="sourceLine" id="cb45-7" data-line-number="7">subplot(<span class="fl">122</span>)</a>
+<a class="sourceLine" id="cb45-8" data-line-number="8">plot3(TestTheta2(:,<span class="fl">1</span>),TestTheta2(:,<span class="fl">2</span>),TestTheta2(:,<span class="fl">3</span>),<span class="st">&#39;g*&#39;</span>)</a>
+<a class="sourceLine" id="cb45-9" data-line-number="9">view([-<span class="fl">28.3</span> <span class="fl">18</span>])</a></code></pre></div>
+<p align=center><img data-src="..\HIDesign\ellipsoidWithPoint.png" style="zoom: 94%;"/></p>
+<p>从图上可以看出，哪些位于椭圆外部的绿色点可以看作异常点，椭圆内的点可能来自健康水泵或者逃过了针对该故障模式检测的异常水泵（即该方法不适用于其他泵异常情况）。同时可以看出，有些在泵扬程模型参数图中的异常点在泵扭矩模型参数图中不一定会被认定为异常点，这可能是因为左图和右图能检测到的故障源不同，或者压力和扭矩的测量存在潜在的可靠性问题</p>
+</section>
+</section>
+<section align=left>
+<h4 id="第八步使用置信区域定量化异常检测"><strong>第八步：使用置信区域定量化异常检测</strong></h4>
+<section>
+<p>至此仍然存在一个问题，故障程度的评估，可简单理解为第七步中的点距离椭圆面的距离该如何量化描述。此时马氏距离<code>mahal</code>可以被用来描述测试样本距离正常样本的偏离程度，如下：</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb46-1" data-line-number="1">ParDist1 = mahal(TestTheta1, HealthyTheta1);  <span class="co">% 泵扬程参数</span></a></code></pre></div>
+<p>当使用74%作为可接受的健康数据参数偏差时，任意在<code>ParDist1</code>中大于<span class="math inline">2<sup>2</sup>?=?4</span>的值都将被视为异常值（因为通过函数<code>mahal</code>计算得到的是马氏距离的平方，而2表示卡方分布中，74%置信区间位置相对均值的偏离值，即马氏距离平方为<span class="math inline">2<sup>2</sup>?=?4</span>），即指示着泵故障</p>
+</section>
+<section>
+<p>下面将这些距离值加入到上述的绘图中，异常值将被标注为红线，在此之前再次引入一个外部函数<code>helperAddDistanceLines</code>用来给点到椭圆的距离度量加上实线表示</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb47-1" data-line-number="1">function helperAddDistanceLines(PlotNo, Distance, Mean, TestTheta, Threshold)</a>
+<a class="sourceLine" id="cb47-2" data-line-number="2"><span class="co">%helperAddDistanceLines Add Mahanobis distance lines to the confidence region plot.</span></a>
+<a class="sourceLine" id="cb47-3" data-line-number="3"><span class="co">%</span></a>
+<a class="sourceLine" id="cb47-4" data-line-number="4"><span class="co">% This function is only in support of</span></a>
+<a class="sourceLine" id="cb47-5" data-line-number="5"><span class="co">% CentrifugalPumpFaultDiagnosisUsingSteadyStateExperimentsExample. It may</span></a>
+<a class="sourceLine" id="cb47-6" data-line-number="6"><span class="co">% change in a future release.</span></a>
+<a class="sourceLine" id="cb47-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb47-8" data-line-number="8"><span class="co">% Copyright 2017 The MathWorks, Inc.</span></a>
+<a class="sourceLine" id="cb47-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb47-10" data-line-number="10">subplot(<span class="fl">1</span>,<span class="fl">2</span>,PlotNo)</a>
+<a class="sourceLine" id="cb47-11" data-line-number="11">hold on</a>
+<a class="sourceLine" id="cb47-12" data-line-number="12">for ct = <span class="fl">1</span>:size(TestTheta,<span class="fl">1</span>)</a>
+<a class="sourceLine" id="cb47-13" data-line-number="13">   if Distance(ct)&gt;Threshold^<span class="fl">2</span></a>
+<a class="sourceLine" id="cb47-14" data-line-number="14">      Color = [<span class="fl">1</span> <span class="fl">0</span> <span class="fl">0</span>];</a>
+<a class="sourceLine" id="cb47-15" data-line-number="15">   else</a>
+<a class="sourceLine" id="cb47-16" data-line-number="16">      Color = [<span class="fl">0</span> <span class="fl">1</span> <span class="fl">.2</span>];</a>
+<a class="sourceLine" id="cb47-17" data-line-number="17">   end</a>
+<a class="sourceLine" id="cb47-18" data-line-number="18">   line([Mean(<span class="fl">1</span>);TestTheta(ct,<span class="fl">1</span>)],...</a>
+<a class="sourceLine" id="cb47-19" data-line-number="19">      [Mean(<span class="fl">2</span>);TestTheta(ct,<span class="fl">2</span>)],...</a>
+<a class="sourceLine" id="cb47-20" data-line-number="20">      [Mean(<span class="fl">3</span>); TestTheta(ct,<span class="fl">3</span>)],<span class="st">&#39;Color&#39;</span>,Color)</a>
+<a class="sourceLine" id="cb47-21" data-line-number="21">   text(TestTheta(ct,<span class="fl">1</span>),TestTheta(ct,<span class="fl">2</span>),TestTheta(ct,<span class="fl">3</span>),num2str(Distance(ct),<span class="fl">2</span>))</a>
+<a class="sourceLine" id="cb47-22" data-line-number="22">end</a></code></pre></div>
+</section>
+<section>
+<p>对泵扬程数据，结果如下：</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb48-1" data-line-number="1">Threshold = <span class="fl">2</span>;</a>
+<a class="sourceLine" id="cb48-2" data-line-number="2">disp(table((<span class="fl">1</span>:length(ParDist1))&#39;,ParDist1, ParDist1&gt;Threshold^<span class="fl">2</span>,...</a>
+<a class="sourceLine" id="cb48-3" data-line-number="3">    <span class="st">&#39;VariableNames&#39;</span>,{<span class="st">&#39;PumpNumber&#39;</span>,<span class="st">&#39;SampleDistance&#39;</span>,<span class="st">&#39;Anomalous&#39;</span>}))</a></code></pre></div>
+<p align=center><img src="..\HIDesign\anomalyResultHead.PNG" style="zoom:120%;" /></p>
+</section>
+<section>
+<p>对泵扭矩数据，结果如下：</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb49-1" data-line-number="1">ParDist2 = mahal(TestTheta2, HealthyTheta2);  <span class="co">% 泵扭矩参数</span></a>
+<a class="sourceLine" id="cb49-2" data-line-number="2">disp(table((<span class="fl">1</span>:length(ParDist2))&#39;,ParDist2, ParDist2&gt;Threshold^<span class="fl">2</span>,...</a>
+<a class="sourceLine" id="cb49-3" data-line-number="3">    <span class="st">&#39;VariableNames&#39;</span>,{<span class="st">&#39;PumpNumber&#39;</span>,<span class="st">&#39;SampleDistance&#39;</span>,<span class="st">&#39;Anomalous&#39;</span>}))</a></code></pre></div>
+<p align=center><img src="..\HIDesign\anomalyResultTorque.PNG" style="zoom:120%;" /></p>
+</section>
+<section>
+<p>将结果绘制到椭圆面图像中：</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb50-1" data-line-number="1">helperAddDistanceLines(<span class="fl">1</span>, ParDist1, meanTheta1, TestTheta1, Threshold);</a>
+<a class="sourceLine" id="cb50-2" data-line-number="2">helperAddDistanceLines(<span class="fl">2</span>, ParDist2, meanTheta2, TestTheta2, Threshold);</a>
+<a class="sourceLine" id="cb50-3" data-line-number="3">view([<span class="fl">8.1</span> <span class="fl">17.2</span>])</a></code></pre></div>
+<p align=center><img data-src="..\HIDesign\ellipsoidWithPointAndLines.png" style="zoom:120%;"/></p>
+<p>这样，不仅能识别水泵是否有故障，同时还能量化故障的严重程度</p>
+</section>
+</section>
+<section align=left>
+<h4 id="第九步使用一类支持向量机one-class-svm算法定量化异常检测"><strong>第九步：使用一类支持向量机（one-class SVM）算法定量化异常检测</strong></h4>
+<section>
+<p>另一种有效的方式便是使用健康水泵得到的模型参数估计值建立一类支持向量机（one-class SVM）分类算法模型，该算法一般用做异常点检测，训练数据都属于一类，即健康数据。如前面得出的结论所述，<span class="math inline"><em>h</em><sub><em>n</em><em>n</em></sub></span>，<span class="math inline"><em>h</em><sub><em>v</em><em>v</em></sub></span>在指示潜在故障方面更明显，因此使用这两个变量作为分类算法的输入</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb51-1" data-line-number="1">nc = size(HealthyTheta1,<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb51-2" data-line-number="2">rng(<span class="fl">2</span>)  <span class="co">% 随机种子生成，以便结果可以再现</span></a>
+<a class="sourceLine" id="cb51-3" data-line-number="3">SVMOneClass1 = fitcsvm(HealthyTheta1(:,[<span class="fl">1</span> <span class="fl">3</span>]),ones(nc,<span class="fl">1</span>),...</a>
+<a class="sourceLine" id="cb51-4" data-line-number="4">    <span class="st">&#39;KernelScale&#39;</span>,<span class="st">&#39;auto&#39;</span>,...</a>
+<a class="sourceLine" id="cb51-5" data-line-number="5">    <span class="st">&#39;Standardize&#39;</span>,true,...</a>
+<a class="sourceLine" id="cb51-6" data-line-number="6">    <span class="st">&#39;OutlierFraction&#39;</span>,<span class="fl">0.0455</span>);</a></code></pre></div>
+</section>
+<section>
+<p>模型拟合完成后，通过以下代码可视化模型边界及各个测试点相对模型的位置</p>
+<p>绘图函数<code>helperPlotSVM</code>如下：</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb52-1" data-line-number="1">function helperPlotSVM(SVMModel,TestData)</a>
+<a class="sourceLine" id="cb52-2" data-line-number="2"><span class="co">%helperPlotSVM Generate SVM boundary and view outliers.</span></a>
+<a class="sourceLine" id="cb52-3" data-line-number="3"><span class="co">%</span></a>
+<a class="sourceLine" id="cb52-4" data-line-number="4"><span class="co">% This function is only in support of</span></a>
+<a class="sourceLine" id="cb52-5" data-line-number="5"><span class="co">% CentrifugalPumpFaultDiagnosisUsingSteadyStateExperimentsExample. It may</span></a>
+<a class="sourceLine" id="cb52-6" data-line-number="6"><span class="co">% change in a future release.</span></a>
+<a class="sourceLine" id="cb52-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb52-8" data-line-number="8"><span class="co">% Copyright 2017-2018 The MathWorks, Inc.</span></a>
+<a class="sourceLine" id="cb52-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb52-10" data-line-number="10">svInd = SVMModel.IsSupportVector;</a>
+<a class="sourceLine" id="cb52-11" data-line-number="11">dd = min(abs(diff(TestData)))/<span class="fl">10</span>;</a>
+<a class="sourceLine" id="cb52-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb52-13" data-line-number="13">[X1,X2] = meshgrid(min(TestData(:,<span class="fl">1</span>)):dd(<span class="fl">1</span>):max(TestData(:,<span class="fl">1</span>)),...</a>
+<a class="sourceLine" id="cb52-14" data-line-number="14">   min(TestData(:,<span class="fl">2</span>)):dd(<span class="fl">2</span>):max(TestData(:,<span class="fl">2</span>)));</a>
+<a class="sourceLine" id="cb52-15" data-line-number="15">[~,score] = predict(SVMModel,[X1(:),X2(:)]);</a>
+<a class="sourceLine" id="cb52-16" data-line-number="16">scoreGrid = reshape(score,size(X1,<span class="fl">1</span>),size(X2,<span class="fl">2</span>));</a>
+<a class="sourceLine" id="cb52-17" data-line-number="17">[~,score1] = predict(SVMModel,TestData);</a>
+<a class="sourceLine" id="cb52-18" data-line-number="18">outlierInd = score1&gt;<span class="fl">0</span>;</a>
+<a class="sourceLine" id="cb52-19" data-line-number="19"></a>
+<a class="sourceLine" id="cb52-20" data-line-number="20">plot(TestData(:,<span class="fl">1</span>),TestData(:,<span class="fl">2</span>),<span class="st">&#39;k.&#39;</span>)</a>
+<a class="sourceLine" id="cb52-21" data-line-number="21">hold on</a>
+<a class="sourceLine" id="cb52-22" data-line-number="22">plot(TestData(svInd,<span class="fl">1</span>),TestData(svInd,<span class="fl">2</span>),<span class="st">&#39;go&#39;</span>,<span class="st">&#39;MarkerSize&#39;</span>,<span class="fl">6</span>)</a>
+<a class="sourceLine" id="cb52-23" data-line-number="23">plot(TestData(outlierInd,<span class="fl">1</span>),TestData(outlierInd,<span class="fl">2</span>),<span class="st">&#39;ro&#39;</span>,<span class="st">&#39;MarkerSize&#39;</span>,<span class="fl">10</span>)</a>
+<a class="sourceLine" id="cb52-24" data-line-number="24">[C,h] = contour(X1,X2,scoreGrid);</a>
+<a class="sourceLine" id="cb52-25" data-line-number="25">clabel(C,h,<span class="fl">0</span>,<span class="st">&#39;Color&#39;</span>,<span class="st">&#39;k&#39;</span>,<span class="st">&#39;LabelSpacing&#39;</span>,<span class="fl">50</span>,<span class="st">&#39;FontSize&#39;</span>,<span class="fl">6</span>);</a>
+<a class="sourceLine" id="cb52-26" data-line-number="26">colorbar;</a>
+<a class="sourceLine" id="cb52-27" data-line-number="27">legend(<span class="st">&#39;Data&#39;</span>,<span class="st">&#39;Support Vector&#39;</span>,<span class="st">&#39;Outliers&#39;</span>)</a>
+<a class="sourceLine" id="cb52-28" data-line-number="28">hold off</a>
+<a class="sourceLine" id="cb52-29" data-line-number="29">end</a></code></pre></div>
+</section>
+<section>
+<p>针对泵扬程模型参数的可视化结果如下：</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb53-1" data-line-number="1">figure</a>
+<a class="sourceLine" id="cb53-2" data-line-number="2">helperPlotSVM(SVMOneClass1,TestTheta1(:,[<span class="fl">1</span> <span class="fl">3</span>]))</a>
+<a class="sourceLine" id="cb53-3" data-line-number="3">title(<span class="st">&#39;SVM Anomaly Detection for Pump Head Parameters&#39;</span>)</a>
+<a class="sourceLine" id="cb53-4" data-line-number="4">xlabel(<span class="st">&#39;hnn&#39;</span>)</a>
+<a class="sourceLine" id="cb53-5" data-line-number="5">ylabel(<span class="st">&#39;hvv&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\HIDesign\oneClassSVM4H.png" style="zoom:120%;" /></p>
+</section>
+<section>
+<p>针对泵扭矩模型参数的可视化结果如下：</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb54-1" data-line-number="1">SVMOneClass2 = fitcsvm(HealthyTheta2(:,[<span class="fl">1</span> <span class="fl">3</span>]),ones(nc,<span class="fl">1</span>),...</a>
+<a class="sourceLine" id="cb54-2" data-line-number="2">    <span class="st">&#39;KernelScale&#39;</span>,<span class="st">&#39;auto&#39;</span>,...</a>
+<a class="sourceLine" id="cb54-3" data-line-number="3">    <span class="st">&#39;Standardize&#39;</span>,true,...</a>
+<a class="sourceLine" id="cb54-4" data-line-number="4">    <span class="st">&#39;OutlierFraction&#39;</span>,<span class="fl">0.0455</span>);</a>
+<a class="sourceLine" id="cb54-5" data-line-number="5">figure</a>
+<a class="sourceLine" id="cb54-6" data-line-number="6">helperPlotSVM(SVMOneClass2,TestTheta2(:,[<span class="fl">1</span> <span class="fl">3</span>]))</a>
+<a class="sourceLine" id="cb54-7" data-line-number="7">title(<span class="st">&#39;SVM Anomaly Detection for Torque Parameters&#39;</span>)</a>
+<a class="sourceLine" id="cb54-8" data-line-number="8">xlabel(<span class="st">&#39;k0&#39;</span>)</a>
+<a class="sourceLine" id="cb54-9" data-line-number="9">ylabel(<span class="st">&#39;k2&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\HIDesign\oneClassSVM4K.png" style="zoom:100%;" /></p>
+<p>两图中，等高线0以内的数据点都被认定为异常点</p>
+</section>
+</section>
+<section align=left>
+<h4 id="第十步以稳态参数为特征进行故障分离"><strong>第十步：以稳态参数为特征进行故障分离</strong></h4>
+<section>
+<p>假如测试故障水泵的故障类型可知时，可以开发出不但能检测到故障而且能识别故障类型的算法</p>
+<h4 id="使用似然比检验区分间隙距故障"><strong>使用似然比检验区分间隙距故障</strong></h4>
+<p>首先，可将间隙距的变化划分为两大类，变大和变小（泵扬程特性曲线中的红线和黄线）。之后加载测试水泵数据，这些水泵的间隙距事先都已知晓（变大或变小）。最后便可以依此建立一个三大类的分类模型，这三类分别是：</p>
+<ul>
+<li>正常间距（健康水泵）</li>
+<li>大间距</li>
+<li>小间距</li>
+</ul>
+<p>代码如下：</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb55-1" data-line-number="1">load LabeledGapClearanceData HealthyEnsemble LargeGapEnsemble SmallGapEnsemble</a></code></pre></div>
+<p>该集成数据包含了50个水泵数据（50次独立实验），之后像之前一样使用线性稳态模型拟合并得到针对泵扬程和扭矩数据的模型参数估计值</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb56-1" data-line-number="1">[HealthyTheta1, HealthyTheta2] = linearFit(<span class="fl">1</span>,HealthyEnsemble);</a>
+<a class="sourceLine" id="cb56-2" data-line-number="2">[LargeTheta1, LargeTheta2]     = linearFit(<span class="fl">1</span>,LargeGapEnsemble);</a>
+<a class="sourceLine" id="cb56-3" data-line-number="3">[SmallTheta1, SmallTheta2]     = linearFit(<span class="fl">1</span>,SmallGapEnsemble);</a></code></pre></div>
+</section>
+<section>
+<p>之后使用柱形图函数<code>helperPlotHistogram</code>可视化得到的模型参数估计值的分布图</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb57-1" data-line-number="1">function helperPlotHistogram(Theta1, Theta2, Theta3, names)</a>
+<a class="sourceLine" id="cb57-2" data-line-number="2"><span class="co">%helperPlotHistogram Plot histograms of pump parameters.</span></a>
+<a class="sourceLine" id="cb57-3" data-line-number="3"><span class="co">%</span></a>
+<a class="sourceLine" id="cb57-4" data-line-number="4"><span class="co">% This function is only in support of</span></a>
+<a class="sourceLine" id="cb57-5" data-line-number="5"><span class="co">% CentrifugalPumpFaultDiagnosisUsingSteadyStateExperimentsExample. It may</span></a>
+<a class="sourceLine" id="cb57-6" data-line-number="6"><span class="co">% change in a future release.</span></a>
+<a class="sourceLine" id="cb57-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb57-8" data-line-number="8"><span class="co">% Copyright 2017 The MathWorks, Inc.</span></a>
+<a class="sourceLine" id="cb57-9" data-line-number="9">f = figure;</a>
+<a class="sourceLine" id="cb57-10" data-line-number="10">subplot(<span class="fl">311</span>)</a>
+<a class="sourceLine" id="cb57-11" data-line-number="11">localAdjustMarkers(histfit(Theta1(:,<span class="fl">1</span>)));</a>
+<a class="sourceLine" id="cb57-12" data-line-number="12">hold on</a>
+<a class="sourceLine" id="cb57-13" data-line-number="13">localAdjustMarkers(histfit(Theta2(:,<span class="fl">1</span>)))</a>
+<a class="sourceLine" id="cb57-14" data-line-number="14">localAdjustMarkers(histfit(Theta3(:,<span class="fl">1</span>)))</a>
+<a class="sourceLine" id="cb57-15" data-line-number="15">ylabel(names{<span class="fl">1</span>})</a>
+<a class="sourceLine" id="cb57-16" data-line-number="16">if strcmp(names{<span class="fl">1</span>},<span class="st">&#39;hnn&#39;</span>)</a>
+<a class="sourceLine" id="cb57-17" data-line-number="17">   title(<span class="st">&#39;Fault Mode Histograms: Head Parameters&#39;</span>)</a>
+<a class="sourceLine" id="cb57-18" data-line-number="18">else</a>
+<a class="sourceLine" id="cb57-19" data-line-number="19">   title(<span class="st">&#39;Fault Mode Histograms: Torque Parameters&#39;</span>)</a>
+<a class="sourceLine" id="cb57-20" data-line-number="20">end</a>
+<a class="sourceLine" id="cb57-21" data-line-number="21">L = findall(gca,<span class="st">&#39;Type&#39;</span>,<span class="st">&#39;line&#39;</span>,<span class="st">&#39;Tag&#39;</span>,<span class="st">&#39;PDF&#39;</span>);</a>
+<a class="sourceLine" id="cb57-22" data-line-number="22">uistack(L,<span class="st">&#39;top&#39;</span>);</a>
+<a class="sourceLine" id="cb57-23" data-line-number="23"></a>
+<a class="sourceLine" id="cb57-24" data-line-number="24">subplot(<span class="fl">312</span>)</a>
+<a class="sourceLine" id="cb57-25" data-line-number="25">hg = histfit(Theta1(:,<span class="fl">2</span>));</a>
+<a class="sourceLine" id="cb57-26" data-line-number="26">hasbehavior(hg(<span class="fl">2</span>),<span class="st">&#39;legend&#39;</span>,false)</a>
+<a class="sourceLine" id="cb57-27" data-line-number="27">localAdjustMarkers(hg)</a>
+<a class="sourceLine" id="cb57-28" data-line-number="28">hold on</a>
+<a class="sourceLine" id="cb57-29" data-line-number="29">hg = histfit(Theta2(:,<span class="fl">2</span>));</a>
+<a class="sourceLine" id="cb57-30" data-line-number="30">hasbehavior(hg(<span class="fl">2</span>),<span class="st">&#39;legend&#39;</span>,false)</a>
+<a class="sourceLine" id="cb57-31" data-line-number="31">localAdjustMarkers(hg)</a>
+<a class="sourceLine" id="cb57-32" data-line-number="32">hg = histfit(Theta3(:,<span class="fl">2</span>));</a>
+<a class="sourceLine" id="cb57-33" data-line-number="33">hasbehavior(hg(<span class="fl">2</span>),<span class="st">&#39;legend&#39;</span>,false);</a>
+<a class="sourceLine" id="cb57-34" data-line-number="34">localAdjustMarkers(hg)</a>
+<a class="sourceLine" id="cb57-35" data-line-number="35">ylabel(names{<span class="fl">2</span>})</a>
+<a class="sourceLine" id="cb57-36" data-line-number="36">legend(<span class="st">&#39;Healthy&#39;</span>,<span class="st">&#39;Large&#39;</span>, <span class="st">&#39;Small&#39;</span>)</a>
+<a class="sourceLine" id="cb57-37" data-line-number="37">L = findall(gca,<span class="st">&#39;Type&#39;</span>,<span class="st">&#39;line&#39;</span>,<span class="st">&#39;Tag&#39;</span>,<span class="st">&#39;PDF&#39;</span>);</a>
+<a class="sourceLine" id="cb57-38" data-line-number="38">uistack(L,<span class="st">&#39;top&#39;</span>);</a>
+<a class="sourceLine" id="cb57-39" data-line-number="39"></a>
+<a class="sourceLine" id="cb57-40" data-line-number="40">subplot(<span class="fl">313</span>)</a>
+<a class="sourceLine" id="cb57-41" data-line-number="41">localAdjustMarkers(histfit(Theta1(:,<span class="fl">3</span>)))</a>
+<a class="sourceLine" id="cb57-42" data-line-number="42">hold on</a>
+<a class="sourceLine" id="cb57-43" data-line-number="43">localAdjustMarkers(histfit(Theta2(:,<span class="fl">3</span>)))</a>
+<a class="sourceLine" id="cb57-44" data-line-number="44">localAdjustMarkers(histfit(Theta3(:,<span class="fl">3</span>)))</a>
+<a class="sourceLine" id="cb57-45" data-line-number="45">ylabel(names{<span class="fl">3</span>})</a>
+<a class="sourceLine" id="cb57-46" data-line-number="46">L = findall(gca,<span class="st">&#39;Type&#39;</span>,<span class="st">&#39;line&#39;</span>,<span class="st">&#39;Tag&#39;</span>,<span class="st">&#39;PDF&#39;</span>);</a>
+<a class="sourceLine" id="cb57-47" data-line-number="47">uistack(L,<span class="st">&#39;top&#39;</span>);</a>
+<a class="sourceLine" id="cb57-48" data-line-number="48"></a>
+<a class="sourceLine" id="cb57-49" data-line-number="49">f.Position(<span class="fl">4</span>) = f.Position(<span class="fl">4</span>)*<span class="fl">1.8571</span>;</a>
+<a class="sourceLine" id="cb57-50" data-line-number="50">centerfig(f)</a>
+<a class="sourceLine" id="cb57-51" data-line-number="51"></a>
+<a class="sourceLine" id="cb57-52" data-line-number="52"><span class="co">%--------------------------------------------------------------------------</span></a>
+<a class="sourceLine" id="cb57-53" data-line-number="53">function localAdjustMarkers(hh)</a>
+<a class="sourceLine" id="cb57-54" data-line-number="54"><span class="co">% 配置概率密度函数曲线标记以提升可读性</span></a>
+<a class="sourceLine" id="cb57-55" data-line-number="55"></a>
+<a class="sourceLine" id="cb57-56" data-line-number="56">Col = hh(<span class="fl">1</span>).FaceColor;</a>
+<a class="sourceLine" id="cb57-57" data-line-number="57">hh(<span class="fl">2</span>).Color = Col*<span class="fl">0.7</span>;</a>
+<a class="sourceLine" id="cb57-58" data-line-number="58">hh(<span class="fl">1</span>).FaceColor = min(Col*<span class="fl">1.2</span>,[<span class="fl">1</span> <span class="fl">1</span> <span class="fl">1</span>]);</a>
+<a class="sourceLine" id="cb57-59" data-line-number="59">hh(<span class="fl">1</span>).EdgeColor = Col*<span class="fl">0.9</span>;</a>
+<a class="sourceLine" id="cb57-60" data-line-number="60">hh(<span class="fl">1</span>).FaceAlpha = <span class="fl">0.5</span>;</a>
+<a class="sourceLine" id="cb57-61" data-line-number="61">hh(<span class="fl">2</span>).Tag = <span class="st">&#39;PDF&#39;</span>;</a></code></pre></div>
+</section>
+<section>
+<p>泵扬程模型参数分布图：</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb58-1" data-line-number="1">helperPlotHistogram(HealthyTheta1, LargeTheta1, SmallTheta1, {<span class="st">&#39;hnn&#39;</span>,<span class="st">&#39;hnv&#39;</span>,<span class="st">&#39;hvv&#39;</span>})</a></code></pre></div>
+<p align=center><img src="..\HIDesign\paraDistributionHead.png" style="zoom:80%;" /></p>
+<p>图上结果显示，参数<span class="math inline"><em>h</em><sub><em>n</em><em>n</em></sub></span>具有比较好的故障模式分离能力，参数<span class="math inline"><em>h</em><sub><em>n</em><em>v</em></sub></span>和<span class="math inline"><em>h</em><sub><em>v</em><em>v</em></sub></span>的概率密度函数在三种模式下具有较大的重叠部分，不太合适用来分离这三种故障模式</p>
+</section>
+<section>
+<p>泵扭矩模型参数分布图：</p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb59-1" data-line-number="1">helperPlotHistogram(HealthyTheta2, LargeTheta2, SmallTheta2, {<span class="st">&#39;k0&#39;</span>,<span class="st">&#39;k1&#39;</span>,<span class="st">&#39;k2&#39;</span>})</a></code></pre></div>
+<p align=center><img src="..\HIDesign\paraDistributionTorque.png" style="zoom:70%;" /></p>
+<p>从上图可以看出，对于泵扭矩模型估计参数分布来说，<span class="math inline"><em>k</em><sub>0</sub></span>，<span class="math inline"><em>k</em><sub>1</sub></span>，<span class="math inline"><em>k</em><sub>2</sub></span>三个参数都不太能很好地区分三种故障模式。好在均值和方差方面的一些变化依然可以很好地被三类分类器使用。假如概率密度函数在均值和方差的分离方面表现出了比较好的能力，便可以设计一个似然比检验评估测试数据更可能属于哪一类</p>
+</section>
+<section>
+<p>首先设定三个假说：</p>
+<ul>
+<li><span class="math inline"><em>H</em><sub>0</sub></span>：泵扬程模型参数属于正常水泵</li>
+<li><span class="math inline"><em>H</em><sub>1</sub></span>：泵扬程模型参数属于大间隙水泵</li>
+<li><span class="math inline"><em>H</em><sub>2</sub></span>：泵扬程模型参数属于小间隙水泵</li>
+</ul>
+</section>
+<section>
+<p>之后测试数据得到的模型参数，该数据的类被分配给三个函数中概率密度函数值最大的那一类，例如假设<span class="math inline"><em>H</em><sub>0</sub></span>成立即参数的类为正常水泵，则<span class="math inline"><em>p</em>(<em>H</em><sub>0</sub>)?&gt;?<em>p</em>(<em>H</em><sub>1</sub>)</span>。之后得到的结果按照真实值和预测值画出混淆矩阵如下（最大似然检验函数定义为<code>pumpModeLikelihoodTest</code>）：</p>
+<div class="sourceCode" id="cb60"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb60-1" data-line-number="1">function pumpModeLikelihoodTest(HealthyTheta, LargeTheta, SmallTheta)</a>
+<a class="sourceLine" id="cb60-2" data-line-number="2"><span class="co">%pumpModeLikelihoodTest Generate predictions based on PDF values and plot confusion matrix.</span></a>
+<a class="sourceLine" id="cb60-3" data-line-number="3"><span class="co">%mvnpdf函数用来计算概率密度函数值</span></a>
+<a class="sourceLine" id="cb60-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb60-5" data-line-number="5">m1 = mean(HealthyTheta);</a>
+<a class="sourceLine" id="cb60-6" data-line-number="6">c1 = cov(HealthyTheta);</a>
+<a class="sourceLine" id="cb60-7" data-line-number="7">m2 = mean(LargeTheta);</a>
+<a class="sourceLine" id="cb60-8" data-line-number="8">c2 = cov(LargeTheta);</a>
+<a class="sourceLine" id="cb60-9" data-line-number="9">m3 = mean(SmallTheta);</a>
+<a class="sourceLine" id="cb60-10" data-line-number="10">c3 = cov(SmallTheta);</a>
+<a class="sourceLine" id="cb60-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb60-12" data-line-number="12">N = size(HealthyTheta,<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb60-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb60-14" data-line-number="14"><span class="co">% True classes</span></a>
+<a class="sourceLine" id="cb60-15" data-line-number="15"><span class="co">% 1: Healthy: group label is 1.</span></a>
+<a class="sourceLine" id="cb60-16" data-line-number="16">X1t = ones(N,<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb60-17" data-line-number="17"><span class="co">% 2: Large gap: group label is 2.</span></a>
+<a class="sourceLine" id="cb60-18" data-line-number="18">X2t = <span class="fl">2</span>*ones(N,<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb60-19" data-line-number="19"><span class="co">% 3: Small gap: group label is 3.</span></a>
+<a class="sourceLine" id="cb60-20" data-line-number="20">X3t = <span class="fl">3</span>*ones(N,<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb60-21" data-line-number="21"></a>
+<a class="sourceLine" id="cb60-22" data-line-number="22"><span class="co">% Compute predicted classes as those for which the joint PDF has the maximum value.</span></a>
+<a class="sourceLine" id="cb60-23" data-line-number="23">X1 = zeros(N,<span class="fl">3</span>); </a>
+<a class="sourceLine" id="cb60-24" data-line-number="24">X2 = zeros(N,<span class="fl">3</span>); </a>
+<a class="sourceLine" id="cb60-25" data-line-number="25">X3 = zeros(N,<span class="fl">3</span>); </a>
+<a class="sourceLine" id="cb60-26" data-line-number="26">for ct = <span class="fl">1</span>:N</a>
+<a class="sourceLine" id="cb60-27" data-line-number="27">   <span class="co">% Membership probability density for healthy parameter sample</span></a>
+<a class="sourceLine" id="cb60-28" data-line-number="28">   HealthySample  = HealthyTheta(ct,:);</a>
+<a class="sourceLine" id="cb60-29" data-line-number="29">   x1 = mvnpdf(HealthySample, m1, c1);</a>
+<a class="sourceLine" id="cb60-30" data-line-number="30">   x2 = mvnpdf(HealthySample, m2, c2);</a>
+<a class="sourceLine" id="cb60-31" data-line-number="31">   x3 = mvnpdf(HealthySample, m3, c3);</a>
+<a class="sourceLine" id="cb60-32" data-line-number="32">   X1(ct,:) = [x1 x2 x3];</a>
+<a class="sourceLine" id="cb60-33" data-line-number="33">   </a>
+<a class="sourceLine" id="cb60-34" data-line-number="34">   <span class="co">% Membership probability density for large gap pump parameter</span></a>
+<a class="sourceLine" id="cb60-35" data-line-number="35">   LargeSample  = LargeTheta(ct,:);</a>
+<a class="sourceLine" id="cb60-36" data-line-number="36">   x1 = mvnpdf(LargeSample, m1, c1);</a>
+<a class="sourceLine" id="cb60-37" data-line-number="37">   x2 = mvnpdf(LargeSample, m2, c2);</a>
+<a class="sourceLine" id="cb60-38" data-line-number="38">   x3 = mvnpdf(LargeSample, m3, c3);</a>
+<a class="sourceLine" id="cb60-39" data-line-number="39">   X2(ct,:) = [x1 x2 x3];</a>
+<a class="sourceLine" id="cb60-40" data-line-number="40">   </a>
+<a class="sourceLine" id="cb60-41" data-line-number="41">   <span class="co">% Membership probability density for small gap pump parameter</span></a>
+<a class="sourceLine" id="cb60-42" data-line-number="42">   SmallSample  = SmallTheta(ct,:);</a>
+<a class="sourceLine" id="cb60-43" data-line-number="43">   x1 = mvnpdf(SmallSample, m1, c1);  </a>
+<a class="sourceLine" id="cb60-44" data-line-number="44">   x2 = mvnpdf(SmallSample, m2, c2);</a>
+<a class="sourceLine" id="cb60-45" data-line-number="45">   x3 = mvnpdf(SmallSample, m3, c3);</a>
+<a class="sourceLine" id="cb60-46" data-line-number="46">   X3(ct,:) = [x1 x2 x3];</a>
+<a class="sourceLine" id="cb60-47" data-line-number="47">end</a>
+<a class="sourceLine" id="cb60-48" data-line-number="48"></a>
+<a class="sourceLine" id="cb60-49" data-line-number="49">[~,PredictedGroup] = max([X1;X2;X3],[],<span class="fl">2</span>);</a>
+<a class="sourceLine" id="cb60-50" data-line-number="50">TrueGroup = [X1t; X2t; X3t];</a>
+<a class="sourceLine" id="cb60-51" data-line-number="51">C = confusionmat(TrueGroup,PredictedGroup);</a>
+<a class="sourceLine" id="cb60-52" data-line-number="52">heatmap(C, ...</a>
+<a class="sourceLine" id="cb60-53" data-line-number="53">    <span class="st">&#39;YLabel&#39;</span>, <span class="st">&#39;Actual condition&#39;</span>, ...</a>
+<a class="sourceLine" id="cb60-54" data-line-number="54">    <span class="st">&#39;YDisplayLabels&#39;</span>, {<span class="st">&#39;Healthy&#39;</span>,<span class="st">&#39;Large Gap&#39;</span>,<span class="st">&#39;Small Gap&#39;</span>}, ...</a>
+<a class="sourceLine" id="cb60-55" data-line-number="55">    <span class="st">&#39;XLabel&#39;</span>, <span class="st">&#39;Predicted condition&#39;</span>, ...</a>
+<a class="sourceLine" id="cb60-56" data-line-number="56">    <span class="st">&#39;XDisplayLabels&#39;</span>, {<span class="st">&#39;Healthy&#39;</span>,<span class="st">&#39;Large Gap&#39;</span>,<span class="st">&#39;Small Gap&#39;</span>}, ...</a>
+<a class="sourceLine" id="cb60-57" data-line-number="57">    <span class="st">&#39;ColorbarVisible&#39;</span>,<span class="st">&#39;off&#39;</span>);</a>
+<a class="sourceLine" id="cb60-58" data-line-number="58">end</a></code></pre></div>
+</section>
+<section>
+<div class="sourceCode" id="cb61"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb61-1" data-line-number="1"><span class="co">% 泵扬程混淆矩阵</span></a>
+<a class="sourceLine" id="cb61-2" data-line-number="2">figure</a>
+<a class="sourceLine" id="cb61-3" data-line-number="3">pumpModeLikelihoodTest(HealthyTheta1, LargeTheta1, SmallTheta1)</a></code></pre></div>
+<p align=center><img src="..\HIDesign\headConfusionMaxtrix.png" style="zoom:120%;" /></p>
+<p>混淆矩阵显示，各种故障模式被很好的分离，这一点从<span class="math inline"><em>h</em><sub><em>n</em><em>n</em></sub></span>的分布图象中也能看出</p>
+</section>
+<section>
+<div class="sourceCode" id="cb62"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb62-1" data-line-number="1"><span class="co">% 泵扭矩混淆矩阵</span></a>
+<a class="sourceLine" id="cb62-2" data-line-number="2">pumpModeLikelihoodTest(HealthyTheta2, LargeTheta2, SmallTheta2)</a></code></pre></div>
+<p align=center><img src="..\HIDesign\torqueConfusionMaxtrix.png" style="zoom:120%;" /></p>
+<p>相比泵扬程的结果，泵扭矩的结果稍稍差一点，但依然有比较高的97%分类正确率，即使从参数分布的图像看来，三种模式具有很多的重合部分。这是因为概率密度函数值的计算不仅被均值影响也会被方差影响（意思是虽然从均值是看三者比较接近，但结合方差信息后便能比较好的区分）</p>
+</section>
+<section>
+<h4 id="使用bagging树模型做故障模式多分类"><strong>使用Bagging树模型做故障模式多分类</strong></h4>
+<p>当需要将故障从一堆故障模式中确定出来时，本方法更合适。考虑以下模式：</p>
+<ol type="1">
+<li>健康</li>
+<li>间隙距磨损</li>
+<li>叶轮出口小量沉积</li>
+<li>叶轮进口沉积</li>
+<li>叶轮出口物理磨损</li>
+<li>叶片折断</li>
+<li>气穴</li>
+</ol>
+<p>此时，分类问题变的困难，因为可用的参数尚且只有3种，而操作模式有7种。</p>
+</section>
+<section>
+<p>这时，就可以使用Bagging树分类模型（基于决策树的集成算法，随机森林便是Baggin树模型的进阶版本）加以区分。输入为来自以上7种情况下，50条带标记的数据。先对每条数据估计得到参数，然后使用来自每种模式的参数估计子集来训练分类器，代码如下：</p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb63-1" data-line-number="1">load MultipleFaultsData</a>
+<a class="sourceLine" id="cb63-2" data-line-number="2"><span class="co">% 计算泵扬程参数</span></a>
+<a class="sourceLine" id="cb63-3" data-line-number="3">HealthyTheta = linearFit(<span class="fl">1</span>, HealthyEnsemble);</a>
+<a class="sourceLine" id="cb63-4" data-line-number="4">Fault1Theta  = linearFit(<span class="fl">1</span>, Fault1Ensemble);</a>
+<a class="sourceLine" id="cb63-5" data-line-number="5">Fault2Theta  = linearFit(<span class="fl">1</span>, Fault2Ensemble);</a>
+<a class="sourceLine" id="cb63-6" data-line-number="6">Fault3Theta  = linearFit(<span class="fl">1</span>, Fault3Ensemble);</a>
+<a class="sourceLine" id="cb63-7" data-line-number="7">Fault4Theta  = linearFit(<span class="fl">1</span>, Fault4Ensemble);</a>
+<a class="sourceLine" id="cb63-8" data-line-number="8">Fault5Theta  = linearFit(<span class="fl">1</span>, Fault5Ensemble);</a>
+<a class="sourceLine" id="cb63-9" data-line-number="9">Fault6Theta  = linearFit(<span class="fl">1</span>, Fault6Ensemble);</a>
+<a class="sourceLine" id="cb63-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb63-11" data-line-number="11"><span class="co">% 对每种操作工况打上对应的标签</span></a>
+<a class="sourceLine" id="cb63-12" data-line-number="12">Label = {<span class="st">&#39;Healthy&#39;</span>,<span class="st">&#39;ClearanceGapWear&#39;</span>,<span class="st">&#39;ImpellerOutletDeposit&#39;</span>,...</a>
+<a class="sourceLine" id="cb63-13" data-line-number="13">    <span class="st">&#39;ImpellerInletDeposit&#39;</span>,<span class="st">&#39;AbrasiveWear&#39;</span>,<span class="st">&#39;BrokenBlade&#39;</span>,<span class="st">&#39;Cavitation&#39;</span>};</a>
+<a class="sourceLine" id="cb63-14" data-line-number="14">VarNames = {<span class="st">&#39;hnn&#39;</span>,<span class="st">&#39;hnv&#39;</span>,<span class="st">&#39;hvv&#39;</span>,<span class="st">&#39;Condition&#39;</span>};</a>
+<a class="sourceLine" id="cb63-15" data-line-number="15"><span class="co">% 将参数和对应的标签集成为table型数据</span></a>
+<a class="sourceLine" id="cb63-16" data-line-number="16">N = <span class="fl">50</span>; </a>
+<a class="sourceLine" id="cb63-17" data-line-number="17">T0 = [array2table(HealthyTheta),repmat(Label(<span class="fl">1</span>),[N,<span class="fl">1</span>])];</a>
+<a class="sourceLine" id="cb63-18" data-line-number="18">T0.Properties.VariableNames = VarNames;</a>
+<a class="sourceLine" id="cb63-19" data-line-number="19">T1 = [array2table(Fault1Theta), repmat(Label(<span class="fl">2</span>),[N,<span class="fl">1</span>])];</a>
+<a class="sourceLine" id="cb63-20" data-line-number="20">T1.Properties.VariableNames = VarNames;</a>
+<a class="sourceLine" id="cb63-21" data-line-number="21">T2 = [array2table(Fault2Theta), repmat(Label(<span class="fl">3</span>),[N,<span class="fl">1</span>])];</a>
+<a class="sourceLine" id="cb63-22" data-line-number="22">T2.Properties.VariableNames = VarNames;</a>
+<a class="sourceLine" id="cb63-23" data-line-number="23">T3 = [array2table(Fault3Theta), repmat(Label(<span class="fl">4</span>),[N,<span class="fl">1</span>])];</a>
+<a class="sourceLine" id="cb63-24" data-line-number="24">T3.Properties.VariableNames = VarNames;</a>
+<a class="sourceLine" id="cb63-25" data-line-number="25">T4 = [array2table(Fault4Theta), repmat(Label(<span class="fl">5</span>),[N,<span class="fl">1</span>])];</a>
+<a class="sourceLine" id="cb63-26" data-line-number="26">T4.Properties.VariableNames = VarNames;</a>
+<a class="sourceLine" id="cb63-27" data-line-number="27">T5 = [array2table(Fault5Theta), repmat(Label(<span class="fl">6</span>),[N,<span class="fl">1</span>])];</a>
+<a class="sourceLine" id="cb63-28" data-line-number="28">T5.Properties.VariableNames = VarNames;</a>
+<a class="sourceLine" id="cb63-29" data-line-number="29">T6 = [array2table(Fault6Theta), repmat(Label(<span class="fl">7</span>),[N,<span class="fl">1</span>])];</a>
+<a class="sourceLine" id="cb63-30" data-line-number="30">T6.Properties.VariableNames = VarNames;</a>
+<a class="sourceLine" id="cb63-31" data-line-number="31"></a>
+<a class="sourceLine" id="cb63-32" data-line-number="32"><span class="co">% 堆叠所有数据</span></a>
+<a class="sourceLine" id="cb63-33" data-line-number="33"><span class="co">% 从50条种选出30条建模</span></a>
+<a class="sourceLine" id="cb63-34" data-line-number="34">TrainingData = [T0(<span class="fl">1</span>:<span class="fl">30</span>,:);T1(<span class="fl">1</span>:<span class="fl">30</span>,:);T2(<span class="fl">1</span>:<span class="fl">30</span>,:);T3(<span class="fl">1</span>:<span class="fl">30</span>,:);T4(<span class="fl">1</span>:<span class="fl">30</span>,:);T5(<span class="fl">1</span>:<span class="fl">30</span>,:);T6(<span class="fl">1</span>:<span class="fl">30</span>,:)];</a>
+<a class="sourceLine" id="cb63-35" data-line-number="35"></a>
+<a class="sourceLine" id="cb63-36" data-line-number="36"><span class="co">% 使用模型参数建立拥有20棵子决策树的集成模型</span></a>
+<a class="sourceLine" id="cb63-37" data-line-number="37">rng(<span class="fl">3</span>) <span class="co">% 为了可再现设置的随机种子</span></a>
+<a class="sourceLine" id="cb63-38" data-line-number="38">Mdl = TreeBagger(<span class="fl">20</span>, TrainingData, <span class="st">&#39;Condition&#39;</span>,...</a>
+<a class="sourceLine" id="cb63-39" data-line-number="39">   <span class="st">&#39;OOBPrediction&#39;</span>,<span class="st">&#39;on&#39;</span>,...</a>
+<a class="sourceLine" id="cb63-40" data-line-number="40">   <span class="st">&#39;OOBPredictorImportance&#39;</span>,<span class="st">&#39;on&#39;</span>)</a></code></pre></div>
+<p>得到如下模型：</p>
+<p align=center><img data-src="..\HIDesign\BaggingModel.PNG" style="zoom:80%;"/></p>
+</section>
+<section>
+<p>装袋决策树模型的表现可以通过研究袋外观测的误分类率和树棵数的函数关系来体现，如下：</p>
+<div class="sourceCode" id="cb64"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb64-1" data-line-number="1"><span class="co">% 计算袋外观测误差</span></a>
+<a class="sourceLine" id="cb64-2" data-line-number="2">figure</a>
+<a class="sourceLine" id="cb64-3" data-line-number="3">plot(oobError(Mdl))</a>
+<a class="sourceLine" id="cb64-4" data-line-number="4">xlabel(<span class="st">&#39;Number of trees&#39;</span>)</a>
+<a class="sourceLine" id="cb64-5" data-line-number="5">ylabel(<span class="st">&#39;Misclassification probability&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\HIDesign\bagError.png" style="zoom:120%;" /></p>
+<p>最后，使用未知的测试数据检验模型表现</p>
+</section>
+</section>
+<section align=left>
+<h4 id="第十一步总结"><strong>第十一步：总结</strong></h4>
+<p>好的故障诊断策略能很好的减少宕机时间和部件更换成本，这依赖于丰富的对系统认知的专家知识，它可以结合测量得到的传感器数据来检测和分离不同的故障</p>
+<p>在本案例中，基于对水泵运行的动力学模型的了解以及参数估计方法得到了模型对应的参数估计值，之后使用这些值作为训练数据训练开发新的故障诊断算法，如异常检测算法，似然比检测，多分类器等</p>
+<p>为了更好地将这些知识应用于其他方面，现总结整个案例过程如下：</p>
+<ol type="1">
+<li>将水泵运行至标称转速2900 RPM，调节节流阀值不同位置，记下对应的液体流出率、泵转速、压差和扭矩</li>
+<li>估计泵扬程和泵扭矩对应方程中的参数</li>
+<li>假如不确定性水平（或称噪音水平）较低，并且参数估计值可靠，便可以直接用该值对比得到的标称值，两者之间的差代表了故障性质</li>
+<li>对一般有噪声的情况下，首先用异常检测方法判断是否真的有故障存在于系统中。这一步可以通过对比得到的参数估计值和它们在泵健康情况下得到的历史均值和协方差判断</li>
+<li>如果有故障，使用故障分类方法（如似然比检验或多分类模型）分离可能的故障源。分类方法的选择可取决于传感器数据的可用性、可靠性、故障严重性、基于故障模式的历史信息（比如有对应标签的数据）可用性</li>
+</ol>
+</section>
+</section>
+<section>
+<p style="font-size:44px;"><strong>参考</strong>：<a href="https://ww2.mathworks.cn/help/predmaint/ug/fault-diagnosis-of-centrifugal-pumps-using-steady-state-experiments.html" target="_blank">https://ww2.mathworks.cn/help/predmaint/ug/fault-diagnosis-of-centrifugal-pumps-using-steady-state-experiments.html</a></p>
+</section>
+	    </div>
+  </div>
+
+  <script src="../reveal.js/lib/js/head.min.js"></script>
+  <script src="../reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Push each slide change to the browser history
+        history: true,
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: '../reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: '../reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: '../reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>

@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>案例10</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../reveal.js/css/reveal.css">
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../reveal.js/css/theme/beige.css" id="theme">
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? '../reveal.js/css/print/pdf.css' : '../reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+    </script>
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+  <!--[if lt IE 9]>
+  <script src="../reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+	<section>
+<h2 id="案例10风电机组高速轴承故障预测">案例10：风电机组高速轴承故障预测</h2>
+</section>
+<section align=left>
+<p>本案例将展示如何使用构建指数退化模型预测风电机组轴承寿命预测的实时系统。指数退化模型基于参数先验和最新的测量值预测RUL（历史全寿命运行数据将有助于估计模型先验参数，但不是必需的）。模型可以被用来实时检测明显的退化趋势，同时当得到新的观测数据时，可更新先验参数。本案例遵循以下典型的故障预测工作流程：数据导入与探索、特征提取与处理、特征重要性排序和融合、模型训练和预测以及结果分析</p>
+</section>
+<section align=left>
+<h4 id="第一步数据集描述"><strong>第一步：数据集描述</strong></h4>
+<section>
+<p>数据集采集自一台被20齿行星齿轮驱动的2兆瓦风电机组高速轴。在连续的50天内，每天测得一组6秒时长的振动信号（3月17日测得了两组信号，本案例中，被当作两天的数据）。轴承中，内圈故障发生并导致轴承在50天内失效</p>
+<p>工具箱中包含了该数据集，要使用该数据集的压缩包，可复制数据集到当前目录下，并启用写权限</p>
+<div class="sourceCode" id="cb178"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb178-1" data-line-number="1">copyfile(...</a>
+<a class="sourceLine" id="cb178-2" data-line-number="2">    fullfile(matlabroot, <span class="st">&#39;toolbox&#39;</span>, <span class="st">&#39;predmaint&#39;</span>, ...</a>
+<a class="sourceLine" id="cb178-3" data-line-number="3">    <span class="st">&#39;predmaintdemos&#39;</span>, <span class="st">&#39;windTurbineHighSpeedBearingPrognosis&#39;</span>), ...</a>
+<a class="sourceLine" id="cb178-4" data-line-number="4">    <span class="st">&#39;WindTurbineHighSpeedBearingPrognosis-Data-master&#39;</span>)</a>
+<a class="sourceLine" id="cb178-5" data-line-number="5">fileattrib(fullfile(<span class="st">&#39;WindTurbineHighSpeedBearingPrognosis-Data-master&#39;</span>, <span class="st">&#39;*.mat&#39;</span>), <span class="st">&#39;+w&#39;</span>)</a></code></pre></div>
+<p>压缩数据的测量步长为5天</p>
+<div class="sourceCode" id="cb179"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb179-1" data-line-number="1">timeUnit = <span class="st">&#39;\times 5 day&#39;</span>;</a></code></pre></div>
+<p>如要获得全量的数据，可访问本链接 https://github.com/mathworks/WindTurbineHighSpeedBearingPrognosis-Data下载完整的数据集为压缩文件并保存在当下目录中。可使用以下命令解压缩，此时全量数据的步长为1天</p>
+<div class="sourceCode" id="cb180"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb180-1" data-line-number="1">if exist(<span class="st">&#39;WindTurbineHighSpeedBearingPrognosis-Data-master.zip&#39;</span>, <span class="st">&#39;file&#39;</span>)</a>
+<a class="sourceLine" id="cb180-2" data-line-number="2">    unzip(<span class="st">&#39;WindTurbineHighSpeedBearingPrognosis-Data-master.zip&#39;</span>)</a>
+<a class="sourceLine" id="cb180-3" data-line-number="3">    timeUnit = <span class="st">&#39;day&#39;</span>;</a>
+<a class="sourceLine" id="cb180-4" data-line-number="4">end</a></code></pre></div>
+<p>本案例中的结果来自全量数据集，因此推荐下载全量数据运行此案例。来自压缩数据的结果事实上并不一定有意义</p>
+</section>
+</section>
+<section align=left>
+<h4 id="第二步数据集导入"><strong>第二步：数据集导入</strong></h4>
+<section align=left>
+<p>使用工具箱自带函数<code>fileEnsembleDatastore</code>创建风电机组数据的集成数据对象。数据中包含振动信号和转速信号。<code>fileEnsembleDatastore</code>将解析文件名并提取数据信息到<code>IndependentVariable</code>中。可查看本案例的支持文件获取更多信息</p>
+<div class="sourceCode" id="cb181"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb181-1" data-line-number="1">hsbearing = fileEnsembleDatastore(...</a>
+<a class="sourceLine" id="cb181-2" data-line-number="2">    fullfile(<span class="st">&#39;.&#39;</span>, <span class="st">&#39;WindTurbineHighSpeedBearingPrognosis-Data-master&#39;</span>), ...</a>
+<a class="sourceLine" id="cb181-3" data-line-number="3">    <span class="st">&#39;.mat&#39;</span>);</a>
+<a class="sourceLine" id="cb181-4" data-line-number="4">hsbearing.DataVariables = [&quot;vibration&quot;, &quot;tach&quot;];       <span class="co">% 设定数据变量名</span></a>
+<a class="sourceLine" id="cb181-5" data-line-number="5">hsbearing.IndependentVariables = &quot;Date&quot;;</a>
+<a class="sourceLine" id="cb181-6" data-line-number="6">hsbearing.SelectedVariables = [&quot;Date&quot;, &quot;vibration&quot;, &quot;tach&quot;];</a>
+<a class="sourceLine" id="cb181-7" data-line-number="7">hsbearing.ReadFcn = @helperReadData;                   <span class="co">% 命名读数据函数</span></a>
+<a class="sourceLine" id="cb181-8" data-line-number="8">hsbearing.WriteToMemberFcn = @helperWriteToHSBearing;  <span class="co">% 命名写数据函数</span></a>
+<a class="sourceLine" id="cb181-9" data-line-number="9">tall(hsbearing)                                        <span class="co">% 将数据组合成tall型</span></a></code></pre></div>
+<p align=center><img src="..\\rulPred\bearingTallData.PNG" style="zoom:120%;" /></p>
+</section>
+<section align=left>
+<p>其中，帮助函数<code>helperReadData</code>和<code>helperWriteToHSBearing</code>如下：</p>
+<div class="sourceCode" id="cb182"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb182-1" data-line-number="1">function data = helperReadData(filename, variables)</a>
+<a class="sourceLine" id="cb182-2" data-line-number="2"><span class="co">% Read data variables for the fileEnsemble</span></a>
+<a class="sourceLine" id="cb182-3" data-line-number="3"><span class="co">%</span></a>
+<a class="sourceLine" id="cb182-4" data-line-number="4"><span class="co">% Inputs:</span></a>
+<a class="sourceLine" id="cb182-5" data-line-number="5"><span class="co">% filename  - a string of the file name to read from.</span></a>
+<a class="sourceLine" id="cb182-6" data-line-number="6"><span class="co">% variables - a string array containing variable names to read.</span></a>
+<a class="sourceLine" id="cb182-7" data-line-number="7"><span class="co">%             It must be a subset of DataVariables specified</span></a>
+<a class="sourceLine" id="cb182-8" data-line-number="8"><span class="co">%             in fileEnsembleDatastore.</span></a>
+<a class="sourceLine" id="cb182-9" data-line-number="9"><span class="co">% Output:</span></a>
+<a class="sourceLine" id="cb182-10" data-line-number="10"><span class="co">% data      - return a table with a single row</span></a>
+<a class="sourceLine" id="cb182-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb182-12" data-line-number="12"><span class="co">% Copyright 2017-2018 The MathWorks, Inc.</span></a>
+<a class="sourceLine" id="cb182-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb182-14" data-line-number="14">data = table;</a>
+<a class="sourceLine" id="cb182-15" data-line-number="15">mfile = matfile(filename); <span class="co">% Allows partial loading</span></a>
+<a class="sourceLine" id="cb182-16" data-line-number="16">for ct = <span class="fl">1</span>:numel(variables)</a>
+<a class="sourceLine" id="cb182-17" data-line-number="17">    if strcmp(variables{ct}, &quot;Date&quot;)</a>
+<a class="sourceLine" id="cb182-18" data-line-number="18">        <span class="co">% Extract the datetime information from the file names</span></a>
+<a class="sourceLine" id="cb182-19" data-line-number="19">        <span class="co">% as the independent variable of the ensemble datastore</span></a>
+<a class="sourceLine" id="cb182-20" data-line-number="20">        [~, fname] = fileparts(filename);</a>
+<a class="sourceLine" id="cb182-21" data-line-number="21">        token = regexp(fname, <span class="st">&#39;data-(\w+)&#39;</span>, <span class="st">&#39;tokens&#39;</span>);</a>
+<a class="sourceLine" id="cb182-22" data-line-number="22">        data.Date = datetime(token{<span class="fl">1</span>}{<span class="fl">1</span>}, <span class="st">&#39;InputFormat&#39;</span>, <span class="st">&#39;yyyyMMdd&#39;&#39;T&#39;&#39;HHmmss&#39;&#39;Z&#39;&#39;&#39;</span>);</a>
+<a class="sourceLine" id="cb182-23" data-line-number="23">    else</a>
+<a class="sourceLine" id="cb182-24" data-line-number="24">        val = mfile.(variables{ct});</a>
+<a class="sourceLine" id="cb182-25" data-line-number="25">        <span class="co">% Convert non-scalar values into a single cell</span></a>
+<a class="sourceLine" id="cb182-26" data-line-number="26">        if numel(val) &gt; <span class="fl">1</span></a>
+<a class="sourceLine" id="cb182-27" data-line-number="27">            val = {val};</a>
+<a class="sourceLine" id="cb182-28" data-line-number="28">        end</a>
+<a class="sourceLine" id="cb182-29" data-line-number="29">        data.(variables{ct}) = val;</a>
+<a class="sourceLine" id="cb182-30" data-line-number="30">    end</a>
+<a class="sourceLine" id="cb182-31" data-line-number="31">end</a>
+<a class="sourceLine" id="cb182-32" data-line-number="32">end</a></code></pre></div>
+<div class="sourceCode" id="cb183"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb183-1" data-line-number="1">function helperWriteToHSBearing(filename, data)</a>
+<a class="sourceLine" id="cb183-2" data-line-number="2"><span class="co">% Write data to the fileEnsemble</span></a>
+<a class="sourceLine" id="cb183-3" data-line-number="3"><span class="co">% Inputs:</span></a>
+<a class="sourceLine" id="cb183-4" data-line-number="4"><span class="co">% filename - a string of the file name to write to.</span></a>
+<a class="sourceLine" id="cb183-5" data-line-number="5"><span class="co">% data     - a structure</span></a>
+<a class="sourceLine" id="cb183-6" data-line-number="6">save(filename, <span class="st">&#39;-append&#39;</span>, <span class="st">&#39;-struct&#39;</span>, <span class="st">&#39;data&#39;</span>);</a>
+<a class="sourceLine" id="cb183-7" data-line-number="7">end</a></code></pre></div>
+<p>振动信号的采样频率为97656 Hz。</p>
+<div class="sourceCode" id="cb184"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb184-1" data-line-number="1">fs = <span class="fl">97656</span>; <span class="co">% Hz</span></a></code></pre></div>
+</section>
+</section>
+<section align=left>
+<h4 id="第三步数据探索"><strong>第三步：数据探索</strong></h4>
+<section style="font-size:32px;">
+<p>本节将在时域、频域范围内同时探索数据，同时期望获得一些灵感，以选择提取最适合用来做预诊断的特征</p>
+<p>首先可视化时域内的振动信号。在本数据集中，共有50天内测得的长度为6秒的50条振动信号，先将这50条振动信号一条挨一条的形式画出来</p>
+<div class="sourceCode" id="cb185"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb185-1" data-line-number="1">reset(hsbearing)</a>
+<a class="sourceLine" id="cb185-2" data-line-number="2">tstart = <span class="fl">0</span>;</a>
+<a class="sourceLine" id="cb185-3" data-line-number="3">figure</a>
+<a class="sourceLine" id="cb185-4" data-line-number="4">hold on</a>
+<a class="sourceLine" id="cb185-5" data-line-number="5">while hasdata(hsbearing)</a>
+<a class="sourceLine" id="cb185-6" data-line-number="6">    data = read(hsbearing);</a>
+<a class="sourceLine" id="cb185-7" data-line-number="7">    v = data.vibration{<span class="fl">1</span>};</a>
+<a class="sourceLine" id="cb185-8" data-line-number="8">    t = tstart + (<span class="fl">1</span>:length(v))/fs;</a>
+<a class="sourceLine" id="cb185-9" data-line-number="9">    <span class="co">% 6秒时间内共有97656*6=585936个数据点，为减少内存消耗，每个10个点取样一次</span></a>
+<a class="sourceLine" id="cb185-10" data-line-number="10">    plot(t(<span class="fl">1</span>:<span class="fl">10</span>:end), v(<span class="fl">1</span>:<span class="fl">10</span>:end))</a>
+<a class="sourceLine" id="cb185-11" data-line-number="11">    tstart = t(end);</a>
+<a class="sourceLine" id="cb185-12" data-line-number="12">end</a>
+<a class="sourceLine" id="cb185-13" data-line-number="13">hold off</a>
+<a class="sourceLine" id="cb185-14" data-line-number="14">xlabel(<span class="st">&#39;Time (s), 6 second per day, 50 days in total&#39;</span>)</a>
+<a class="sourceLine" id="cb185-15" data-line-number="15">ylabel(<span class="st">&#39;Acceleration (g)&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\\rulPred\vibrationVisualization.png" style="zoom:95%;" /></p>
+</section>
+<section style="font-size:24px;">
+<p>可以看到，时域范围内的震动脉冲具有增长的趋势。诸如峰度、峰峰值、波峰系数等可以定量描述脉冲趋势的特征量，可以作为预测风电机组轴承数据集中故障出现的预诊断特征</p>
+<p>另一方面，谱峰度分析对于数据集的频域分析也是一种有利的工具。为可视化谱峰度随时间的变化，可画出谱峰度值作为频率和测量天数函数的图像</p>
+<div class="sourceCode" id="cb186"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb186-1" data-line-number="1">hsbearing.DataVariables = [&quot;vibration&quot;, &quot;tach&quot;, &quot;SpectralKurtosis&quot;];</a>
+<a class="sourceLine" id="cb186-2" data-line-number="2">colors = parula(<span class="fl">50</span>);</a>
+<a class="sourceLine" id="cb186-3" data-line-number="3">figure</a>
+<a class="sourceLine" id="cb186-4" data-line-number="4">hold on</a>
+<a class="sourceLine" id="cb186-5" data-line-number="5">reset(hsbearing)</a>
+<a class="sourceLine" id="cb186-6" data-line-number="6">day = <span class="fl">1</span>;</a>
+<a class="sourceLine" id="cb186-7" data-line-number="7">while hasdata(hsbearing)</a>
+<a class="sourceLine" id="cb186-8" data-line-number="8">    data = read(hsbearing);</a>
+<a class="sourceLine" id="cb186-9" data-line-number="9">    data2add = table;</a>
+<a class="sourceLine" id="cb186-10" data-line-number="10">    </a>
+<a class="sourceLine" id="cb186-11" data-line-number="11">    <span class="co">% 获得振动数据和测量天数</span></a>
+<a class="sourceLine" id="cb186-12" data-line-number="12">    v = data.vibration{<span class="fl">1</span>};</a>
+<a class="sourceLine" id="cb186-13" data-line-number="13">    </a>
+<a class="sourceLine" id="cb186-14" data-line-number="14">    <span class="co">% 使用窗口长度为128的窗口计算谱峰度</span></a>
+<a class="sourceLine" id="cb186-15" data-line-number="15">    wc = <span class="fl">128</span>;</a>
+<a class="sourceLine" id="cb186-16" data-line-number="16">    [SK, F] = pkurtosis(v, fs, wc);</a>
+<a class="sourceLine" id="cb186-17" data-line-number="17">    data2add.SpectralKurtosis = {table(F, SK)};</a>
+<a class="sourceLine" id="cb186-18" data-line-number="18">    </a>
+<a class="sourceLine" id="cb186-19" data-line-number="19">    <span class="co">% 画出谱峰度</span></a>
+<a class="sourceLine" id="cb186-20" data-line-number="20">    plot3(F, day*ones(size(F)), SK, <span class="st">&#39;Color&#39;</span>, colors(day, :))</a>
+<a class="sourceLine" id="cb186-21" data-line-number="21">    </a>
+<a class="sourceLine" id="cb186-22" data-line-number="22">    <span class="co">% 写入谱峰度值</span></a>
+<a class="sourceLine" id="cb186-23" data-line-number="23">    writeToLastMemberRead(hsbearing, data2add);</a>
+<a class="sourceLine" id="cb186-24" data-line-number="24">    </a>
+<a class="sourceLine" id="cb186-25" data-line-number="25">    <span class="co">% 天数计数+1</span></a>
+<a class="sourceLine" id="cb186-26" data-line-number="26">    day = day + <span class="fl">1</span>;</a>
+<a class="sourceLine" id="cb186-27" data-line-number="27">end</a>
+<a class="sourceLine" id="cb186-28" data-line-number="28">hold off</a>
+<a class="sourceLine" id="cb186-29" data-line-number="29">xlabel(<span class="st">&#39;Frequency (Hz)&#39;</span>)</a>
+<a class="sourceLine" id="cb186-30" data-line-number="30">ylabel(<span class="st">&#39;Time (day)&#39;</span>)</a>
+<a class="sourceLine" id="cb186-31" data-line-number="31">zlabel(<span class="st">&#39;Spectral Kurtosis&#39;</span>)</a>
+<a class="sourceLine" id="cb186-32" data-line-number="32">grid on</a>
+<a class="sourceLine" id="cb186-33" data-line-number="33">view(-<span class="fl">45</span>, <span class="fl">30</span>)</a>
+<a class="sourceLine" id="cb186-34" data-line-number="34">cbar = colorbar;</a>
+<a class="sourceLine" id="cb186-35" data-line-number="35">ylabel(cbar, <span class="st">&#39;Fault Severity (0 - healthy, 1 - faulty)&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\\rulPred\vibratonSpecKurtosis.png" style="zoom: 90%;" /></p>
+<p>故障严重程度通过显色条以0-1的尺度显示出来。可以看出，在10 kHz附近，随着轴承开始出现退化趋势，谱峰度值呈现逐渐增加的趋势。这样，谱峰度的统计特性，如均值、标准差等量，也可以作为潜在的轴承退化指示量使用</p>
+</section>
+</section>
+<section align=left>
+<h4 id="第四步特征提取"><strong>第四步：特征提取</strong></h4>
+<section align=left>
+<p>基于上一节的分析，一组统计特征可以从时域数据和谱峰度中提取得到</p>
+<p>提取前，先将要提取的特征名幅值到<code>fileEnsembleDatastore</code>对象的<code>DataVaribles</code>属性中</p>
+<div class="sourceCode" id="cb187"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb187-1" data-line-number="1">hsbearing.DataVariables = [hsbearing.DataVariables; ...</a>
+<a class="sourceLine" id="cb187-2" data-line-number="2">    &quot;Mean&quot;; &quot;Std&quot;; &quot;Skewness&quot;; &quot;Kurtosis&quot;; &quot;Peak2Peak&quot;; ...</a>
+<a class="sourceLine" id="cb187-3" data-line-number="3">    &quot;RMS&quot;; &quot;CrestFactor&quot;; &quot;ShapeFactor&quot;; &quot;ImpulseFactor&quot;; &quot;MarginFactor&quot;; &quot;Energy&quot;; ...</a>
+<a class="sourceLine" id="cb187-4" data-line-number="4">    &quot;SKMean&quot;; &quot;SKStd&quot;; &quot;SKSkewness&quot;; &quot;SKKurtosis&quot;];</a></code></pre></div>
+<p>之后对每个包含在<code>fileEnsembleDatastore</code>对象中的元素执行特征提取操作</p>
+<div class="sourceCode" id="cb188"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb188-1" data-line-number="1">hsbearing.SelectedVariables = [&quot;vibration&quot;, &quot;SpectralKurtosis&quot;];</a>
+<a class="sourceLine" id="cb188-2" data-line-number="2">reset(hsbearing)</a>
+<a class="sourceLine" id="cb188-3" data-line-number="3">while hasdata(hsbearing)</a>
+<a class="sourceLine" id="cb188-4" data-line-number="4">    data = read(hsbearing);</a>
+<a class="sourceLine" id="cb188-5" data-line-number="5">    v = data.vibration{<span class="fl">1</span>};</a>
+<a class="sourceLine" id="cb188-6" data-line-number="6">    SK = data.SpectralKurtosis{<span class="fl">1</span>}.SK;</a>
+<a class="sourceLine" id="cb188-7" data-line-number="7">    features = table;</a>
+<a class="sourceLine" id="cb188-8" data-line-number="8">    </a>
+<a class="sourceLine" id="cb188-9" data-line-number="9">    <span class="co">% 时域特征</span></a>
+<a class="sourceLine" id="cb188-10" data-line-number="10">    features.Mean = mean(v);</a>
+<a class="sourceLine" id="cb188-11" data-line-number="11">    features.Std = std(v);</a>
+<a class="sourceLine" id="cb188-12" data-line-number="12">    features.Skewness = skewness(v);</a>
+<a class="sourceLine" id="cb188-13" data-line-number="13">    features.Kurtosis = kurtosis(v);</a>
+<a class="sourceLine" id="cb188-14" data-line-number="14">    features.Peak2Peak = peak2peak(v);</a>
+<a class="sourceLine" id="cb188-15" data-line-number="15">    features.RMS = rms(v);</a>
+<a class="sourceLine" id="cb188-16" data-line-number="16">    features.CrestFactor = max(v)/features.RMS;</a>
+<a class="sourceLine" id="cb188-17" data-line-number="17">    features.ShapeFactor = features.RMS/mean(abs(v));</a>
+<a class="sourceLine" id="cb188-18" data-line-number="18">    features.ImpulseFactor = max(v)/mean(abs(v));</a>
+<a class="sourceLine" id="cb188-19" data-line-number="19">    features.MarginFactor = max(v)/mean(abs(v))^<span class="fl">2</span>;</a>
+<a class="sourceLine" id="cb188-20" data-line-number="20">    features.Energy = sum(v.^<span class="fl">2</span>);</a>
+<a class="sourceLine" id="cb188-21" data-line-number="21">    </a>
+<a class="sourceLine" id="cb188-22" data-line-number="22">    <span class="co">% 谱峰度相关特征</span></a>
+<a class="sourceLine" id="cb188-23" data-line-number="23">    features.SKMean = mean(SK);</a>
+<a class="sourceLine" id="cb188-24" data-line-number="24">    features.SKStd = std(SK);</a>
+<a class="sourceLine" id="cb188-25" data-line-number="25">    features.SKSkewness = skewness(SK);</a>
+<a class="sourceLine" id="cb188-26" data-line-number="26">    features.SKKurtosis = kurtosis(SK);</a>
+<a class="sourceLine" id="cb188-27" data-line-number="27">    </a>
+<a class="sourceLine" id="cb188-28" data-line-number="28">    <span class="co">% 将提取的相关特征存储到对应文件中</span></a>
+<a class="sourceLine" id="cb188-29" data-line-number="29">    writeToLastMemberRead(hsbearing, features);</a>
+<a class="sourceLine" id="cb188-30" data-line-number="30">end</a></code></pre></div>
+</section>
+<section align=left>
+<p>选择独立变量<code>Date</code>和所有提取的特征构建特征表</p>
+<div class="sourceCode" id="cb189"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb189-1" data-line-number="1">hsbearing.SelectedVariables = [&quot;Date&quot;, &quot;Mean&quot;, &quot;Std&quot;, &quot;Skewness&quot;, &quot;Kurtosis&quot;, &quot;Peak2Peak&quot;, ...</a>
+<a class="sourceLine" id="cb189-2" data-line-number="2">    &quot;RMS&quot;, &quot;CrestFactor&quot;, &quot;ShapeFactor&quot;, &quot;ImpulseFactor&quot;, &quot;MarginFactor&quot;, &quot;Energy&quot;, ...</a>
+<a class="sourceLine" id="cb189-3" data-line-number="3">    &quot;SKMean&quot;, &quot;SKStd&quot;, &quot;SKSkewness&quot;, &quot;SKKurtosis&quot;];</a></code></pre></div>
+<p>因本案例中的特征表较小，维度为50*15，因此可以直接使用<code>gather</code>操作将数据整合。但对于大数据量时，推荐使用<code>tall</code>形式执行该操作</p>
+<div class="sourceCode" id="cb190"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb190-1" data-line-number="1">featureTable = gather(tall(hsbearing));</a></code></pre></div>
+<p align=center><img src="..\\rulPred\featureExtractionProcess.PNG" style="zoom:120%;" /></p>
+</section>
+<section align=left>
+<p>之后将表格转成时间表形式，以使得特征信息始终与时间信息绑定</p>
+<div class="sourceCode" id="cb191"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb191-1" data-line-number="1">featureTable = table2timetable(featureTable)</a></code></pre></div>
+<p align=center><img src="..\\rulPred\featureTimeTable.PNG" style="zoom:120%;" /></p>
+</section>
+</section>
+<section align=left>
+<h4 id="第五步特征后处理"><strong>第五步：特征后处理</strong></h4>
+<section align=left style="font-size:32px;">
+<p>通常，提取得到的特征带有噪声。具有与特征趋势相反的噪声趋势可能会对RUL的准确估计造成困扰。另外，特征表现的评价指标之一，单调性，对噪声不具有鲁棒性。因此，常用的5个步长的滑动平均滤波器可以被用来处理提取得到的初始特征</p>
+<div class="sourceCode" id="cb192"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb192-1" data-line-number="1">variableNames = featureTable.Properties.VariableNames;</a>
+<a class="sourceLine" id="cb192-2" data-line-number="2">featureTableSmooth = varfun(@(x) movmean(x, [<span class="fl">5</span> <span class="fl">0</span>]), featureTable);</a>
+<a class="sourceLine" id="cb192-3" data-line-number="3">featureTableSmooth.Properties.VariableNames = variableNames;</a></code></pre></div>
+<p>以下例子展示了平滑化前后的对比</p>
+<div class="sourceCode" id="cb193"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb193-1" data-line-number="1">figure</a>
+<a class="sourceLine" id="cb193-2" data-line-number="2">hold on</a>
+<a class="sourceLine" id="cb193-3" data-line-number="3">plot(featureTable.Date, featureTable.SKMean)</a>
+<a class="sourceLine" id="cb193-4" data-line-number="4">plot(featureTableSmooth.Date, featureTableSmooth.SKMean)</a>
+<a class="sourceLine" id="cb193-5" data-line-number="5">hold off</a>
+<a class="sourceLine" id="cb193-6" data-line-number="6">xlabel(<span class="st">&#39;Time&#39;</span>)</a>
+<a class="sourceLine" id="cb193-7" data-line-number="7">ylabel(<span class="st">&#39;Feature Value&#39;</span>)</a>
+<a class="sourceLine" id="cb193-8" data-line-number="8">legend(<span class="st">&#39;Before smoothing&#39;</span>, <span class="st">&#39;After smoothing&#39;</span>)</a>
+<a class="sourceLine" id="cb193-9" data-line-number="9">title(<span class="st">&#39;SKMean&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\\rulPred\featureSmooth.png" style="zoom:90%;" /></p>
+
+<p>滑动平均平滑化处理会对信号引入时间延迟，但通过选取合适RUL预测阈值，时间延迟效应可被中和</p>
+</section>
+</section>
+<section align=left>
+<h4 id="第六步训练数据"><strong>第六步：训练数据</strong></h4>
+<p>实际上，开发预诊断算法时，全寿命周期数据是不可获得的。但是有理由假设，某些数据是在生命周期的早期收集到的。因此，前20天收集得到的数据（对应生命周期的40%）将被当作训练数据。降下来所有的特征重要性排序和融合过程都是基于这部分训练数据操作的</p>
+<div class="sourceCode" id="cb194"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb194-1" data-line-number="1">breaktime = datetime(<span class="fl">2013</span>, <span class="fl">3</span>, <span class="fl">27</span>);   <span class="co">% 设置第20天为断点</span></a>
+<a class="sourceLine" id="cb194-2" data-line-number="2">breakpoint = find(featureTableSmooth.Date &lt; breaktime, <span class="fl">1</span>, <span class="st">&#39;last&#39;</span>);</a>
+<a class="sourceLine" id="cb194-3" data-line-number="3">trainData = featureTableSmooth(<span class="fl">1</span>:breakpoint, :);</a></code></pre></div>
+</section>
+<section align=left>
+<h4 id="第七步特征重要性排序"><strong>第七步：特征重要性排序</strong></h4>
+<section align=left>
+<p>本案例中，单调性被用来量化寿命预测所需特征的优异性</p>
+<p>第<span class="math inline"><em>i</em></span>个特征<span class="math inline"><em>x</em><sub><em>i</em></sub></span>的单调性计算如下： <br /><span class="math display">$$
+Monotonicity(x_i)=\frac1m\sum_{j=1}^{m}\frac{\left|number~of~positive~diff(x_i^j)-number~of~negative~diff(x_i^j)\right|}{n-1}
+$$</span><br /> <span class="math inline"><em>n</em></span>表示样本数，本案例中<span class="math inline"><em>n</em>?=?50</span>。<span class="math inline"><em>m</em></span>表示机器数，本案例中<span class="math inline"><em>m</em>?=?1</span>。<span class="math inline"><em>x</em><sub><em>i</em></sub><sup><em>j</em></sup></span>表示在第<span class="math inline"><em>j</em></span>台机器上测得的第<span class="math inline"><em>i</em></span>个特征。<span class="math inline"><em>d</em><em>i</em><em>f</em><em>f</em>(<em>x</em><sub><em>i</em></sub><sup><em>j</em></sup>)?=?<em>x</em><sub><em>i</em></sub><sup><em>j</em></sup>(<em>t</em>)???<em>x</em><sub><em>i</em></sub><sup><em>j</em></sup>(<em>t</em>???1)</span>，便是信号<span class="math inline"><em>x</em><sub><em>i</em></sub><sup><em>j</em></sup></span>的差</p>
+</section>
+<section align=left>
+<div class="sourceCode" id="cb195"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb195-1" data-line-number="1"><span class="co">% monotonicity可以选择使用平滑化处理，但因特征已经过5个窗长的处理，此处的‘windowSize’设定为0</span></a>
+<a class="sourceLine" id="cb195-2" data-line-number="2">featureImportance = monotonicity(trainData, <span class="st">&#39;WindowSize&#39;</span>, <span class="fl">0</span>);</a>
+<a class="sourceLine" id="cb195-3" data-line-number="3">helperSortedBarPlot(featureImportance, <span class="st">&#39;Monotonicity&#39;</span>);</a></code></pre></div>
+<p align=center><img src="..\\rulPred\featureRanking.png" style="zoom:120%;" /></p>
+</section>
+<section align=left style="font-size:28px;">
+<p>帮助函数<code>helperSortedBarPlot</code>如下</p>
+<div class="sourceCode" id="cb196"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb196-1" data-line-number="1">function sortedIdx = helperSortedBarPlot(tbl, ylbl)</a>
+<a class="sourceLine" id="cb196-2" data-line-number="2"><span class="co">% HELPERSORTEDBARPLOT helper function to create sorted bar plot</span></a>
+<a class="sourceLine" id="cb196-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb196-4" data-line-number="4"><span class="co">%  Copyright 2018 The MathWorks, Inc.</span></a>
+<a class="sourceLine" id="cb196-5" data-line-number="5">[~, sortedIdx] = sort(tbl{<span class="fl">1</span>,:}, <span class="st">&#39;descend&#39;</span>);</a>
+<a class="sourceLine" id="cb196-6" data-line-number="6">tblSorted = tbl(:, sortedIdx);</a>
+<a class="sourceLine" id="cb196-7" data-line-number="7">figure</a>
+<a class="sourceLine" id="cb196-8" data-line-number="8">bar(tblSorted{<span class="fl">1</span>,:})</a>
+<a class="sourceLine" id="cb196-9" data-line-number="9">xticks(<span class="fl">1</span>:size(tblSorted,<span class="fl">2</span>))</a>
+<a class="sourceLine" id="cb196-10" data-line-number="10">xticklabels(tbl.Properties.VariableNames(sortedIdx))</a>
+<a class="sourceLine" id="cb196-11" data-line-number="11">xtickangle(<span class="fl">45</span>)</a>
+<a class="sourceLine" id="cb196-12" data-line-number="12">ylabel(ylbl)</a>
+<a class="sourceLine" id="cb196-13" data-line-number="13">end</a></code></pre></div>
+<p>从图像上来看，信号的峰度是描述单调性最好的特征</p>
+<p>对于特征重要性大于0.3的特征将被选择用于下一步的特征融合操作</p>
+<div class="sourceCode" id="cb197"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb197-1" data-line-number="1">trainDataSelected = trainData(:, featureImportance{:,:}&gt;<span class="fl">0.3</span>);</a>
+<a class="sourceLine" id="cb197-2" data-line-number="2">featureSelected = featureTableSmooth(:, featureImportance{:,:}&gt;<span class="fl">0.3</span>)</a></code></pre></div>
+<p align=center><img src="..\\rulPred\selectedFeatures.PNG" style="zoom:80%;" /></p>
+<p>可以看出，均值、峰度等5个特征被选中</p>
+</section>
+</section>
+<section align=left>
+<h4 id="第八步降维和特征融合"><strong>第八步：降维和特征融合</strong></h4>
+<section>
+<p>本案例中，将使用PCA用于特征降维和融合。使用PCA前，需要先将特征缩放到同一尺度。要注意的是，PCA的系数和用于归一化的均值标准差等指标从训练数据中获得，并应用于全部数据集</p>
+<div class="sourceCode" id="cb198"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb198-1" data-line-number="1">meanTrain = mean(trainDataSelected{:,:});</a>
+<a class="sourceLine" id="cb198-2" data-line-number="2">sdTrain = std(trainDataSelected{:,:});</a>
+<a class="sourceLine" id="cb198-3" data-line-number="3">trainDataNormalized = (trainDataSelected{:,:} - meanTrain)./sdTrain;</a>
+<a class="sourceLine" id="cb198-4" data-line-number="4">coef = pca(trainDataNormalized);</a></code></pre></div>
+<p>均值、标准差及PCA系数被用于预处理整个数据集</p>
+<div class="sourceCode" id="cb199"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb199-1" data-line-number="1">PCA1 = (featureSelected{:,:} - meanTrain) ./ sdTrain * coef(:, <span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb199-2" data-line-number="2">PCA2 = (featureSelected{:,:} - meanTrain) ./ sdTrain * coef(:, <span class="fl">2</span>);</a></code></pre></div>
+</section>
+<section align=left>
+<p>可视化数据在PCA前两个主成分中的分布图</p>
+<div class="sourceCode" id="cb200"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb200-1" data-line-number="1">figure</a>
+<a class="sourceLine" id="cb200-2" data-line-number="2">numData = size(featureTable, <span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb200-3" data-line-number="3">scatter(PCA1, PCA2, [], <span class="fl">1</span>:numData, <span class="st">&#39;filled&#39;</span>)</a>
+<a class="sourceLine" id="cb200-4" data-line-number="4">xlabel(<span class="st">&#39;PCA 1&#39;</span>)</a>
+<a class="sourceLine" id="cb200-5" data-line-number="5">ylabel(<span class="st">&#39;PCA 2&#39;</span>)</a>
+<a class="sourceLine" id="cb200-6" data-line-number="6">cbar = colorbar;</a>
+<a class="sourceLine" id="cb200-7" data-line-number="7">ylabel(cbar, [<span class="st">&#39;Time (&#39;</span> timeUnit <span class="st">&#39;)&#39;</span>])</a></code></pre></div>
+<p align=center><img src="..\rulPred\PCADistribution.png" style="zoom:100%;" /></p>
+<p>从图中可以看出，随着机械趋于失效， 主成分1逐渐增加。因此主成分1是很好的健康指示标准</p>
+<div class="sourceCode" id="cb201"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb201-1" data-line-number="1">healthIndicator = PCA1;</a></code></pre></div>
+</section>
+<section align=left>
+<p>可视化健康指示量</p>
+<div class="sourceCode" id="cb202"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb202-1" data-line-number="1">figure</a>
+<a class="sourceLine" id="cb202-2" data-line-number="2">plot(featureSelected.Date, healthIndicator, <span class="st">&#39;-o&#39;</span>)</a>
+<a class="sourceLine" id="cb202-3" data-line-number="3">xlabel(<span class="st">&#39;Time&#39;</span>)</a>
+<a class="sourceLine" id="cb202-4" data-line-number="4">title(<span class="st">&#39;Health Indicator&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\rulPred\HIPlot.png" style="zoom:120%;" /></p>
+</section>
+</section>
+<section align=left>
+
+<h4 id="第九步基于指数退化模型的rul估计"><strong>第九步：基于指数退化模型的RUL估计</strong></h4>
+<section align=left>
+<p>指数退化模型方程定义为： <br /><span class="math display">$$
+h(t)=\phi+\theta e^{(\beta t+\epsilon-\frac{\sigma^2}2)}
+$$</span><br /> <span class="math inline"><em>h</em>(<em>t</em>)</span>表示健康指示量与时间相关的函数。<span class="math inline"><em>?</em></span>为截距项，认定为常数。<span class="math inline"><em>β</em></span>和<span class="math inline"><em>θ</em></span>为决定模型陡峭程度的随机参数，其中<span class="math inline"><em>θ</em></span>遵循对数正态分布，<span class="math inline"><em>β</em></span>遵循高斯分布。对于每一个时间步长<span class="math inline"><em>t</em></span>，<span class="math inline"><em>θ</em></span>和<span class="math inline"><em>β</em></span>的分布会根据最近一次的观察值<span class="math inline"><em>h</em>(<em>t</em>)</span>进行后验更新。<span class="math inline"><em>?</em></span>为遵循正太分布<span class="math inline"><em>N</em>(0,?<em>σ</em><sup>2</sup>)</span>的高斯白噪声。指数项中的<span class="math inline">$-\frac{\sigma^2}2$</span>是为了使得<span class="math inline"><em>h</em>(<em>t</em>)</span>的期望满足<span class="math inline"><em>E</em>(<em>h</em>(<em>t</em>)|<em>θ</em>,?<em>β</em>)?=?<em>?</em>?+?<em>θ</em><em>e</em><sup>(<em>β</em><em>t</em>)</sup></span>的补偿项</p>
+<p>在这里，上一节中提取得到的健康因子将被用来拟合指数退化模型，模型的评价将在下一节讨论</p>
+</section>
+<section align=left>
+<p>首先将健康因子平移，使得它初始值为0</p>
+<pre><code>healthIndicator = healthIndicator - healthIndicator(1);</code></pre>
+<p>阈值的选取通常会基于机械的历史数据或一些领域内的专家知识。因本案例中无可用历史数据，健康因子的最后一个值将被当作阈值。这里推荐基于平滑化后的历史数据选择阈值，这样平滑化的时间延迟效应将被缓和</p>
+<div class="sourceCode" id="cb204"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb204-1" data-line-number="1">threshold = healthIndicator(end);</a></code></pre></div>
+<p>若历史数据可用，可使用<code>exponentialDegradationModel</code>提供的<code>fit</code>方法估计得到参数先验和截距。然而，历史数据对本案例不可用。模型的斜率参数先验可选择任意一个较大的方差（如<span class="math inline"><em>E</em>(<em>θ</em>)?=?1</span>，<span class="math inline"><em>V</em><em>a</em><em>r</em>(<em>θ</em>)?=?10<sup>6</sup></span>，<span class="math inline"><em>E</em>(<em>β</em>)?=?1</span>，<span class="math inline"><em>V</em><em>a</em><em>r</em>(<em>β</em>)?=?10<sup>6</sup></span>），这样模型将主要依赖于观测到的数据。基于<span class="math inline"><em>E</em>[<em>h</em>(0)]?=?<em>?</em>?+?<em>E</em>(<em>θ</em>)</span>，可将截距参数<span class="math inline"><em>?</em></span>的初始值设定为-1，这样模型值将也从0开始</p>
+</section>
+<section align=left>
+<p>健康因子的变化和噪音的变化可用以下方程刻画： <br /><span class="math display"><em>Δ</em><em>h</em>(<em>t</em>)?≈?(<em>h</em>(<em>t</em>)???<em>?</em>)<em>Δ</em><em>?</em>(<em>t</em>)</span><br /> 这里，假设当健康因子接近阈值时，噪声的标准差会造成健康因子发生10%的变化。因此，噪声的标准差可以被表示为<span class="math inline">$\frac{10\%\times threshold}{threshold-\phi}$</span></p>
+<p>指数退化模型同时提供了评估坡度显著度的功能。一旦有健康因子显著坡度被检测到，模型将放弃之前的观测数据，直接从当前的数据出发使用原始的先验参数重新开始估计模型参数。检测算法的敏感度通过配置<code>SlopeDetectionLevel</code>调节。如果p值小于<code>SlopeDetectionLevel</code>，便认为坡度被检测到了。此处的<code>SlopeDetectionLevel</code>被设定为0.5</p>
+<p>现在通过以下代码创建拥有以上讨论模型参数的指数退化模型</p>
+<div class="sourceCode" id="cb205"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb205-1" data-line-number="1">mdl = exponentialDegradationModel(...</a>
+<a class="sourceLine" id="cb205-2" data-line-number="2">    <span class="st">&#39;Theta&#39;</span>, <span class="fl">1</span>, ...</a>
+<a class="sourceLine" id="cb205-3" data-line-number="3">    <span class="st">&#39;ThetaVariance&#39;</span>, <span class="fl">1e6</span>, ...</a>
+<a class="sourceLine" id="cb205-4" data-line-number="4">    <span class="st">&#39;Beta&#39;</span>, <span class="fl">1</span>, ...</a>
+<a class="sourceLine" id="cb205-5" data-line-number="5">    <span class="st">&#39;BetaVariance&#39;</span>, <span class="fl">1e6</span>, ...</a>
+<a class="sourceLine" id="cb205-6" data-line-number="6">    <span class="st">&#39;Phi&#39;</span>, -<span class="fl">1</span>, ...</a>
+<a class="sourceLine" id="cb205-7" data-line-number="7">    <span class="st">&#39;NoiseVariance&#39;</span>, (<span class="fl">0.1</span>*threshold/(threshold + <span class="fl">1</span>))^<span class="fl">2</span>, ...</a>
+<a class="sourceLine" id="cb205-8" data-line-number="8">    <span class="st">&#39;SlopeDetectionLevel&#39;</span>, <span class="fl">0.05</span>);</a></code></pre></div>
+</section>
+<section align=left>
+<p>之后使用<code>predictRUL</code>和<code>update</code>方法预测RUL并实时更新参数分布</p>
+<div class="sourceCode" id="cb206"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb206-1" data-line-number="1"><span class="co">% 在每次迭代中保存结果</span></a>
+<a class="sourceLine" id="cb206-2" data-line-number="2">totalDay = length(healthIndicator) - <span class="fl">1</span>;</a>
+<a class="sourceLine" id="cb206-3" data-line-number="3">estRULs = zeros(totalDay, <span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb206-4" data-line-number="4">trueRULs = zeros(totalDay, <span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb206-5" data-line-number="5">CIRULs = zeros(totalDay, <span class="fl">2</span>);</a>
+<a class="sourceLine" id="cb206-6" data-line-number="6">pdfRULs = cell(totalDay, <span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb206-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb206-8" data-line-number="8"><span class="co">% 为绘图更新创建图像和轴</span></a>
+<a class="sourceLine" id="cb206-9" data-line-number="9">figure</a>
+<a class="sourceLine" id="cb206-10" data-line-number="10">ax1 = subplot(<span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb206-11" data-line-number="11">ax2 = subplot(<span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">2</span>);</a>
+<a class="sourceLine" id="cb206-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb206-13" data-line-number="13">for currentDay = <span class="fl">1</span>:totalDay</a>
+<a class="sourceLine" id="cb206-14" data-line-number="14">    </a>
+<a class="sourceLine" id="cb206-15" data-line-number="15">    <span class="co">% 更新模型参数后验分布</span></a>
+<a class="sourceLine" id="cb206-16" data-line-number="16">    update(mdl, [currentDay healthIndicator(currentDay)])</a>
+<a class="sourceLine" id="cb206-17" data-line-number="17">    </a>
+<a class="sourceLine" id="cb206-18" data-line-number="18">    <span class="co">% 预测RUL</span></a>
+<a class="sourceLine" id="cb206-19" data-line-number="19">    [estRUL, CIRUL, pdfRUL] = predictRUL(mdl, ...</a>
+<a class="sourceLine" id="cb206-20" data-line-number="20">                                         [currentDay healthIndicator(currentDay)], ...</a>
+<a class="sourceLine" id="cb206-21" data-line-number="21">                                         threshold);</a>
+<a class="sourceLine" id="cb206-22" data-line-number="22">    trueRUL = totalDay - currentDay + <span class="fl">1</span>;</a>
+<a class="sourceLine" id="cb206-23" data-line-number="23">    </a>
+<a class="sourceLine" id="cb206-24" data-line-number="24">    <span class="co">% 更新RUL分布绘图</span></a>
+<a class="sourceLine" id="cb206-25" data-line-number="25">    helperPlotTrend(ax1, currentDay, healthIndicator, mdl, threshold, timeUnit);</a>
+<a class="sourceLine" id="cb206-26" data-line-number="26">    helperPlotRUL(ax2, trueRUL, estRUL, CIRUL, pdfRUL, timeUnit)</a>
+<a class="sourceLine" id="cb206-27" data-line-number="27">    </a>
+<a class="sourceLine" id="cb206-28" data-line-number="28">    <span class="co">% 保存预测结果</span></a>
+<a class="sourceLine" id="cb206-29" data-line-number="29">    estRULs(currentDay) = estRUL;</a>
+<a class="sourceLine" id="cb206-30" data-line-number="30">    trueRULs(currentDay) = trueRUL;</a>
+<a class="sourceLine" id="cb206-31" data-line-number="31">    CIRULs(currentDay, :) = CIRUL;</a>
+<a class="sourceLine" id="cb206-32" data-line-number="32">    pdfRULs{currentDay} = pdfRUL;</a>
+<a class="sourceLine" id="cb206-33" data-line-number="33">    </a>
+<a class="sourceLine" id="cb206-34" data-line-number="34">    <span class="co">% 停留0.1s使得动态绘图可见</span></a>
+<a class="sourceLine" id="cb206-35" data-line-number="35">    pause(<span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb206-36" data-line-number="36">end</a></code></pre></div>
+<p align=center><img src="..\rulPred\RULPred.png" style="zoom:85%;" /></p>
+</section>
+<section align=left>
+<p>模型更新的动态图像如下</p>
+<p align=center><img src="..\rulPred\WindTurbineHighSpeedBearingPrognosisExample_08.gif" style="zoom:180%;" /></p>
+</section>
+<section align=left>
+<p>其中绘图所需的<code>helperPlotTrend</code>和<code>helperPlotRUL</code>函数定义如下：</p>
+<div class="sourceCode" id="cb207"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb207-1" data-line-number="1">function helperPlotTrend(ax, currentDay, healthIndicator, mdl, threshold, timeUnit)</a>
+<a class="sourceLine" id="cb207-2" data-line-number="2"><span class="co">%HELPERPLOTTREND helper function to refresh the trending plot</span></a>
+<a class="sourceLine" id="cb207-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb207-4" data-line-number="4"><span class="co">%  Copyright 2018 The MathWorks, Inc.</span></a>
+<a class="sourceLine" id="cb207-5" data-line-number="5">t = <span class="fl">1</span>:size(healthIndicator, <span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb207-6" data-line-number="6">HIpred = mdl.Phi + mdl.Theta*exp(mdl.Beta*(t - mdl.InitialLifeTimeValue));</a>
+<a class="sourceLine" id="cb207-7" data-line-number="7">HIpredCI1 = mdl.Phi + ...</a>
+<a class="sourceLine" id="cb207-8" data-line-number="8">    (mdl.Theta - sqrt(mdl.ThetaVariance)) * ...</a>
+<a class="sourceLine" id="cb207-9" data-line-number="9">    exp((mdl.Beta - sqrt(mdl.BetaVariance))*(t - mdl.InitialLifeTimeValue));</a>
+<a class="sourceLine" id="cb207-10" data-line-number="10">HIpredCI2 = mdl.Phi + ...</a>
+<a class="sourceLine" id="cb207-11" data-line-number="11">    (mdl.Theta + sqrt(mdl.ThetaVariance)) * ...</a>
+<a class="sourceLine" id="cb207-12" data-line-number="12">    exp((mdl.Beta + sqrt(mdl.BetaVariance))*(t - mdl.InitialLifeTimeValue));</a>
+<a class="sourceLine" id="cb207-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb207-14" data-line-number="14">cla(ax)</a>
+<a class="sourceLine" id="cb207-15" data-line-number="15">hold(ax, <span class="st">&#39;on&#39;</span>)</a>
+<a class="sourceLine" id="cb207-16" data-line-number="16">plot(ax, t, HIpred)</a>
+<a class="sourceLine" id="cb207-17" data-line-number="17">plot(ax, [t NaN t], [HIpredCI1 NaN, HIpredCI2], <span class="st">&#39;--&#39;</span>)</a>
+<a class="sourceLine" id="cb207-18" data-line-number="18">plot(ax, t(<span class="fl">1</span>:currentDay), healthIndicator(<span class="fl">1</span>:currentDay, :))</a>
+<a class="sourceLine" id="cb207-19" data-line-number="19">plot(ax, t, threshold*ones(<span class="fl">1</span>, length(t)), <span class="st">&#39;r&#39;</span>)</a>
+<a class="sourceLine" id="cb207-20" data-line-number="20">hold(ax, <span class="st">&#39;off&#39;</span>)</a>
+<a class="sourceLine" id="cb207-21" data-line-number="21">if ~isempty(mdl.SlopeDetectionInstant)</a>
+<a class="sourceLine" id="cb207-22" data-line-number="22">    title(ax, sprintf(<span class="st">&#39;Day %d: Degradation detected!\n&#39;</span>, currentDay))</a>
+<a class="sourceLine" id="cb207-23" data-line-number="23">else</a>
+<a class="sourceLine" id="cb207-24" data-line-number="24">    title(ax, sprintf(<span class="st">&#39;Day %d: Degradation NOT detected.\n&#39;</span>, currentDay))</a>
+<a class="sourceLine" id="cb207-25" data-line-number="25">end</a>
+<a class="sourceLine" id="cb207-26" data-line-number="26">ylabel(ax, <span class="st">&#39;Health Indicator&#39;</span>)</a>
+<a class="sourceLine" id="cb207-27" data-line-number="27">xlabel(ax, [<span class="st">&#39;Time (&#39;</span> timeUnit <span class="st">&#39;)&#39;</span>])</a>
+<a class="sourceLine" id="cb207-28" data-line-number="28">legend(ax, <span class="st">&#39;Degradation Model&#39;</span>, <span class="st">&#39;Confidence Interval&#39;</span>, ...</a>
+<a class="sourceLine" id="cb207-29" data-line-number="29">    <span class="st">&#39;Health Indicator&#39;</span>, <span class="st">&#39;Threshold&#39;</span>, <span class="st">&#39;Location&#39;</span>, <span class="st">&#39;Northwest&#39;</span>)</a>
+<a class="sourceLine" id="cb207-30" data-line-number="30">end</a></code></pre></div>
+<div class="sourceCode" id="cb208"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb208-1" data-line-number="1">function helperPlotRUL(ax, trueRUL, estRUL, CIRUL, pdfRUL, timeUnit)</a>
+<a class="sourceLine" id="cb208-2" data-line-number="2"><span class="co">%HELPERPLOTRULDISTRIBUTION helper function to refresh the distribution plot</span></a>
+<a class="sourceLine" id="cb208-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb208-4" data-line-number="4"><span class="co">%  Copyright 2018 The MathWorks, Inc.</span></a>
+<a class="sourceLine" id="cb208-5" data-line-number="5">cla(ax)</a>
+<a class="sourceLine" id="cb208-6" data-line-number="6">hold(ax, <span class="st">&#39;on&#39;</span>)</a>
+<a class="sourceLine" id="cb208-7" data-line-number="7">plot(ax, pdfRUL{:,<span class="fl">1</span>}, pdfRUL{:,<span class="fl">2</span>})</a>
+<a class="sourceLine" id="cb208-8" data-line-number="8">plot(ax, [estRUL estRUL], [<span class="fl">0</span> pdfRUL{find(pdfRUL{:,<span class="fl">1</span>} &gt;= estRUL, <span class="fl">1</span>), <span class="fl">2</span>}])</a>
+<a class="sourceLine" id="cb208-9" data-line-number="9">plot(ax, [trueRUL trueRUL], [<span class="fl">0</span> pdfRUL{find(pdfRUL{:,<span class="fl">1</span>} &gt;= trueRUL, <span class="fl">1</span>), <span class="fl">2</span>}], <span class="st">&#39;--&#39;</span>)</a>
+<a class="sourceLine" id="cb208-10" data-line-number="10">idx = pdfRUL{:,<span class="fl">1</span>} &gt;= CIRUL(<span class="fl">1</span>) &amp; pdfRUL{:,<span class="fl">1</span>}&lt;=CIRUL(<span class="fl">2</span>);</a>
+<a class="sourceLine" id="cb208-11" data-line-number="11">area(ax, pdfRUL{idx, <span class="fl">1</span>}, pdfRUL{idx, <span class="fl">2</span>}, ...</a>
+<a class="sourceLine" id="cb208-12" data-line-number="12">    <span class="st">&#39;FaceAlpha&#39;</span>, <span class="fl">0.2</span>, <span class="st">&#39;FaceColor&#39;</span>, <span class="st">&#39;g&#39;</span>, <span class="st">&#39;EdgeColor&#39;</span>, <span class="st">&#39;none&#39;</span>);</a>
+<a class="sourceLine" id="cb208-13" data-line-number="13">hold(ax, <span class="st">&#39;off&#39;</span>)</a>
+<a class="sourceLine" id="cb208-14" data-line-number="14">ylabel(ax, <span class="st">&#39;PDF&#39;</span>)</a>
+<a class="sourceLine" id="cb208-15" data-line-number="15">xlabel(ax, [<span class="st">&#39;Time (&#39;</span> timeUnit <span class="st">&#39;)&#39;</span>])</a>
+<a class="sourceLine" id="cb208-16" data-line-number="16">legend(ax, <span class="st">&#39;pdf of RUL&#39;</span>, <span class="st">&#39;Estimated RUL&#39;</span>, <span class="st">&#39;True RUL&#39;</span>, <span class="st">&#39;Confidence Interval&#39;</span>)</a></code></pre></div>
+</section>
+</section>
+<section align=left>
+<h4 id="第十步结果分析"><strong>第十步：结果分析</strong></h4>
+<section align=left>
+<p><span class="math inline"><em>α</em>???<em>λ</em></span>绘图通常用来进行预测结果分析, <span class="math inline"><em>α</em></span>边界设定为20%。估计得到的RUL介于<span class="math inline"><em>α</em></span>边界和真实RUL的概率被当作模型的性能指标计算 <br /><span class="math display"><em>P</em><em>r</em>(<em>r</em><sup>*</sup>(<em>t</em>)???<em>α</em><em>r</em><sup>*</sup>(<em>t</em>)?&lt;?<em>r</em>(<em>t</em>)?&lt;?<em>r</em><sup>*</sup>(<em>t</em>)?+?<em>α</em><em>r</em><sup>*</sup>(<em>t</em>))</span><br /> 其中<span class="math inline"><em>r</em>(<em>t</em>)</span>为<span class="math inline"><em>t</em></span>时刻估计的RUL，<span class="math inline"><em>r</em><sup>*</sup>(<em>t</em>)</span>为<span class="math inline"><em>t</em></span>时刻的RUL真值，<span class="math inline"><em>Θ</em>(<em>t</em>)</span>为<span class="math inline"><em>t</em></span>时刻估计得到的模型参数值</p>
+<div class="sourceCode" id="cb209"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb209-1" data-line-number="1">alpha = <span class="fl">0.2</span>;</a>
+<a class="sourceLine" id="cb209-2" data-line-number="2">detectTime = mdl.SlopeDetectionInstant;</a>
+<a class="sourceLine" id="cb209-3" data-line-number="3">prob = helperAlphaLambdaPlot(alpha, trueRULs, estRULs, CIRULs, ...</a>
+<a class="sourceLine" id="cb209-4" data-line-number="4">    pdfRULs, detectTime, breakpoint, timeUnit);</a>
+<a class="sourceLine" id="cb209-5" data-line-number="5">title(<span class="st">&#39;\alpha-\lambda Plot&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\rulPred\alphaLambdaPlot.png" style="zoom:67%;" /></p>
+</section>
+<section align=left>
+<p>辅助函数<code>helperAlphaLambdaPlot</code>函数定义如下：</p>
+<div class="sourceCode" id="cb210"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb210-1" data-line-number="1">function alphaBoundProbablity = helperAlphaLambdaPlot(alpha, trueRULHist, estRULHist, ...</a>
+<a class="sourceLine" id="cb210-2" data-line-number="2">    CIRULHist, pdfRULHist, degradationTime, breakpoint, timeUnit)</a>
+<a class="sourceLine" id="cb210-3" data-line-number="3"><span class="co">%HELPERALPHALAMBDAPLOT create alpha-lambda plot and the probability metric</span></a>
+<a class="sourceLine" id="cb210-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb210-5" data-line-number="5"><span class="co">%  Copyright 2018 The MathWorks, Inc.</span></a>
+<a class="sourceLine" id="cb210-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb210-7" data-line-number="7">N = length(trueRULHist);</a>
+<a class="sourceLine" id="cb210-8" data-line-number="8">t = <span class="fl">1</span>:N;</a>
+<a class="sourceLine" id="cb210-9" data-line-number="9">t2 = t((degradationTime+<span class="fl">1</span>):end);</a>
+<a class="sourceLine" id="cb210-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb210-11" data-line-number="11"><span class="co">% 计算alpha边界</span></a>
+<a class="sourceLine" id="cb210-12" data-line-number="12">alphaPlus = trueRULHist + alpha*trueRULHist;</a>
+<a class="sourceLine" id="cb210-13" data-line-number="13">alphaMinus = trueRULHist - alpha*trueRULHist;</a>
+<a class="sourceLine" id="cb210-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb210-15" data-line-number="15"><span class="co">% ---------------- Alpha-Lambda Plot --------------------</span></a>
+<a class="sourceLine" id="cb210-16" data-line-number="16">figure</a>
+<a class="sourceLine" id="cb210-17" data-line-number="17">hold on</a>
+<a class="sourceLine" id="cb210-18" data-line-number="18">grid on</a>
+<a class="sourceLine" id="cb210-19" data-line-number="19"></a>
+<a class="sourceLine" id="cb210-20" data-line-number="20"><span class="co">% 画出真实RUL和它的alpha边界</span></a>
+<a class="sourceLine" id="cb210-21" data-line-number="21">plot(t, trueRULHist)</a>
+<a class="sourceLine" id="cb210-22" data-line-number="22">fill([t fliplr(t)], [alphaPlus(t)&#39; fliplr(alphaMinus(t)&#39;)], ...</a>
+<a class="sourceLine" id="cb210-23" data-line-number="23">    <span class="st">&#39;b&#39;</span>, <span class="st">&#39;FaceAlpha&#39;</span>, <span class="fl">0.2</span>, <span class="st">&#39;EdgeColor&#39;</span>, <span class="st">&#39;none&#39;</span>)</a>
+<a class="sourceLine" id="cb210-24" data-line-number="24"></a>
+<a class="sourceLine" id="cb210-25" data-line-number="25"><span class="co">% 画出RUL估计值和它的置信区间</span></a>
+<a class="sourceLine" id="cb210-26" data-line-number="26">plot(t2, estRULHist(t2), <span class="st">&#39;--&#39;</span>)</a>
+<a class="sourceLine" id="cb210-27" data-line-number="27">fill([t2 fliplr(t2)], ...</a>
+<a class="sourceLine" id="cb210-28" data-line-number="28">    [CIRULHist(t2, <span class="fl">1</span>)&#39; fliplr(CIRULHist(t2, <span class="fl">2</span>)&#39;)], ...</a>
+<a class="sourceLine" id="cb210-29" data-line-number="29">    <span class="st">&#39;r&#39;</span>, <span class="st">&#39;FaceAlpha&#39;</span>, <span class="fl">0.2</span>, <span class="st">&#39;EdgeColor&#39;</span>, <span class="st">&#39;none&#39;</span>)</a>
+<a class="sourceLine" id="cb210-30" data-line-number="30"></a>
+<a class="sourceLine" id="cb210-31" data-line-number="31"><span class="co">% 画出训练-测试数据断点</span></a>
+<a class="sourceLine" id="cb210-32" data-line-number="32">ylow = <span class="fl">0</span>;</a>
+<a class="sourceLine" id="cb210-33" data-line-number="33">yup = <span class="fl">80</span>;</a>
+<a class="sourceLine" id="cb210-34" data-line-number="34">plot([breakpoint breakpoint], [ylow yup], <span class="st">&#39;k-.&#39;</span>)</a>
+<a class="sourceLine" id="cb210-35" data-line-number="35"></a>
+<a class="sourceLine" id="cb210-36" data-line-number="36"><span class="co">% 添加标签和图例</span></a>
+<a class="sourceLine" id="cb210-37" data-line-number="37">ylim([ylow yup])</a>
+<a class="sourceLine" id="cb210-38" data-line-number="38">hold off</a>
+<a class="sourceLine" id="cb210-39" data-line-number="39">xlabel([<span class="st">&#39;Time (&#39;</span> timeUnit <span class="st">&#39;)&#39;</span>])</a>
+<a class="sourceLine" id="cb210-40" data-line-number="40">ylabel([<span class="st">&#39;RUL (&#39;</span> timeUnit <span class="st">&#39;)&#39;</span>])</a>
+<a class="sourceLine" id="cb210-41" data-line-number="41">legend(<span class="st">&#39;True RUL&#39;</span>, [<span class="st">&#39;\alpha = +\\-&#39;</span> num2str(alpha*<span class="fl">100</span>) <span class="st">&#39;%&#39;</span>], ...</a>
+<a class="sourceLine" id="cb210-42" data-line-number="42">    <span class="st">&#39;Predicted RUL After Degradation Detected&#39;</span>, ...</a>
+<a class="sourceLine" id="cb210-43" data-line-number="43">    <span class="st">&#39;Confidence Interval After Degradation Detected&#39;</span>, <span class="st">&#39;Train-Test Breakpoint&#39;</span>)</a>
+<a class="sourceLine" id="cb210-44" data-line-number="44"></a>
+<a class="sourceLine" id="cb210-45" data-line-number="45"><span class="co">% ---------------- Probability Metric --------------------</span></a>
+<a class="sourceLine" id="cb210-46" data-line-number="46"><span class="co">% 计算RUL估计值在alpha边界内的概率</span></a>
+<a class="sourceLine" id="cb210-47" data-line-number="47">alphaBoundProbablity = zeros(N, <span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb210-48" data-line-number="48">for i = <span class="fl">1</span>:N</a>
+<a class="sourceLine" id="cb210-49" data-line-number="49">    pdfRUL = pdfRULHist{i};</a>
+<a class="sourceLine" id="cb210-50" data-line-number="50">    idx = (pdfRUL{:, <span class="fl">1</span>} &gt; alphaMinus(i)) &amp; (pdfRUL{:, <span class="fl">1</span>} &lt; alphaPlus(i));</a>
+<a class="sourceLine" id="cb210-51" data-line-number="51">    prob = sum(pdfRUL{idx, <span class="fl">2</span>});</a>
+<a class="sourceLine" id="cb210-52" data-line-number="52">    alphaBoundProbablity(i) = prob;</a>
+<a class="sourceLine" id="cb210-53" data-line-number="53">end</a>
+<a class="sourceLine" id="cb210-54" data-line-number="54">end</a></code></pre></div>
+<p>由于预设的先验参数并不能反映真实的先验参数，模型通常需要多个步骤后才能调整到合适的参数分布。也就是说，预测结果会随着数据越来越多变得更加准确</p>
+</section>
+<section align=left>
+<p>可视化RUL预测值在<span class="math inline"><em>α</em></span>边界内的概率如下：</p>
+<div class="sourceCode" id="cb211"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb211-1" data-line-number="1">figure</a>
+<a class="sourceLine" id="cb211-2" data-line-number="2">t = <span class="fl">1</span>:totalDay;</a>
+<a class="sourceLine" id="cb211-3" data-line-number="3">hold on</a>
+<a class="sourceLine" id="cb211-4" data-line-number="4">plot(t, prob)</a>
+<a class="sourceLine" id="cb211-5" data-line-number="5">plot([breakpoint breakpoint], [<span class="fl">0</span> <span class="fl">1</span>], <span class="st">&#39;k-.&#39;</span>)</a>
+<a class="sourceLine" id="cb211-6" data-line-number="6">hold off</a>
+<a class="sourceLine" id="cb211-7" data-line-number="7">xlabel([<span class="st">&#39;Time (&#39;</span> timeUnit <span class="st">&#39;)&#39;</span>])</a>
+<a class="sourceLine" id="cb211-8" data-line-number="8">ylabel(<span class="st">&#39;Probability&#39;</span>)</a>
+<a class="sourceLine" id="cb211-9" data-line-number="9">legend(<span class="st">&#39;Probability of predicted RUL within \alpha bound&#39;</span>, <span class="st">&#39;Train-Test Breakpoint&#39;</span>)</a>
+<a class="sourceLine" id="cb211-10" data-line-number="10">title([<span class="st">&#39;Probability within \alpha bound, \alpha = &#39;</span> num2str(alpha*<span class="fl">100</span>) <span class="st">&#39;%&#39;</span>])</a></code></pre></div>
+<p align=center><img src="..\rulPred\probabilityPredRULWithinAlphaBound.png" style="zoom:120%;" /></p>
+</section>
+</section>
+<section style="font-size:44px;">
+<p><strong>参考：</strong><a href="https://ww2.mathworks.cn/help/predmaint/ug/wind-turbine-high-speed-bearing-prognosis.html" target="_blank">https://ww2.mathworks.cn/help/predmaint/ug/wind-turbine-high-speed-bearing-prognosis.html</a></p>
+</section>
+
+	    </div>
+  </div>
+
+  <script src="../reveal.js/lib/js/head.min.js"></script>
+  <script src="../reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Push each slide change to the browser history
+        history: true,
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: '../reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: '../reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: '../reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>

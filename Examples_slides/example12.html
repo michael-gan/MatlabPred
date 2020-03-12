@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>案例12</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../reveal.js/css/reveal.css">
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../reveal.js/css/theme/beige.css" id="theme">
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? '../reveal.js/css/print/pdf.css' : '../reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+    </script>
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+  <!--[if lt IE 9]>
+  <script src="../reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+	<section>
+<h2 id="案例12使用协变量生存模型预测寿命">案例12：使用协变量生存模型预测寿命</h2>
+</section>
+<section>
+<p>本案例简要的介绍了如何使用生存模型进行寿命预测</p>
+</section>
+<section align=left>
+<h4 id="第一步导入数据-1"><strong>第一步：导入数据</strong></h4>
+<div class="sourceCode" id="cb258"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb258-1" data-line-number="1">load(<span class="st">&#39;covariateData.mat&#39;</span>)</a></code></pre></div>
+<p>导入的数据为<code>timeTable</code>型的时间表数据，数据中包含了电池的放电时间和相关的协变量信息，这些协变量为：</p>
+<ul>
+<li>温度</li>
+<li>载荷</li>
+<li>制造商</li>
+</ul>
+<p>制造商信息为编码后的类别变量</p>
+</section>
+<section align=left>
+<h4 id="第二步训练模型"><strong>第二步：训练模型</strong></h4>
+<p>下面，创建一个协变量生存模型，然后使用训练数据训练</p>
+<div class="sourceCode" id="cb259"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb259-1" data-line-number="1">mdl = covariateSurvivalModel(<span class="st">&#39;LifeTimeVariable&#39;</span>,&quot;DischargeTime&quot;,<span class="st">&#39;LifeTimeUnit&#39;</span>,&quot;hours&quot;,...</a>
+<a class="sourceLine" id="cb259-2" data-line-number="2">   <span class="st">&#39;DataVariables&#39;</span>,[&quot;Temperature&quot;,&quot;Load&quot;,&quot;Manufacturer&quot;],<span class="st">&#39;EncodedVariables&#39;</span>,&quot;Manufacturer&quot;);</a>
+<a class="sourceLine" id="cb259-3" data-line-number="3">fit(mdl,covariateData)</a></code></pre></div>
+<p align=center><img src="..\rulPred\捕获.PNG" style="zoom:120%;" /></p>
+</section>
+<section align=left>
+<h5 id="第三步分析结果">第三步：分析结果</h5>
+<section>
+<p>假如此时有一个来自制造商B运行了30小时的电池包。可以创建测试数据，包含已使用时间<code>DischargeTime</code>，以及测得的外部温度<code>TestAmbientTemperature</code>，电流消耗<code>TestBatteryLoad</code></p>
+<div class="sourceCode" id="cb260"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb260-1" data-line-number="1">TestBatteryLoad = <span class="fl">25</span>;</a>
+<a class="sourceLine" id="cb260-2" data-line-number="2">TestAmbientTemperature = <span class="fl">60</span>;</a>
+<a class="sourceLine" id="cb260-3" data-line-number="3">DischargeTime = hours(<span class="fl">30</span>);</a>
+<a class="sourceLine" id="cb260-4" data-line-number="4">TestData = timetable(TestBatteryLoad,TestAmbientTemperature,&quot;B&quot;,<span class="st">&#39;RowTimes&#39;</span>,hours(<span class="fl">30</span>));</a>
+<a class="sourceLine" id="cb260-5" data-line-number="5">TestData.Properties.VariablesName = {<span class="st">&#39;Temperature&#39;</span>,<span class="st">&#39;Load&#39;</span>,<span class="st">&#39;Manufacturer&#39;</span>};</a>
+<a class="sourceLine" id="cb260-6" data-line-number="6">TestData.Properties.DimensionNames{<span class="fl">1</span>} = <span class="st">&#39;DischargeTime&#39;</span>;</a></code></pre></div>
+<p>预测电池的RUL</p>
+<pre><code>estRUL = predictRUL(mdl,TestData)</code></pre>
+<p align=center><img src="..\rulPred\BatteryRULTestData.PNG" style="zoom: 120%;" /></p>
+</section>
+<section align=left>
+<p>画出电池协变量数据的生存函数</p>
+<pre><code>plot(mdl,TestData)</code></pre>
+<p align=center><img src="..\rulPred\SurvialFunction.png" style="zoom:120%;" /></p>
+</section>
+</section>
+<section align=left style="font-size:44px;">
+<p><strong>参考：</strong><a href="https://www.mathworks.com/help/predmaint/ref/covariatesurvivalmodel.html#mw_ed4337b1-5348-43a5-9488-3c5026bf94a0" target="_blank">https://www.mathworks.com/help/predmaint/ref/covariatesurvivalmodel.html#mw_ed4337b1-5348-43a5-9488-3c5026bf94a0</a></p>
+</section>
+	    </div>
+  </div>
+
+  <script src="../reveal.js/lib/js/head.min.js"></script>
+  <script src="../reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Push each slide change to the browser history
+        history: true,
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: '../reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: '../reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: '../reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>

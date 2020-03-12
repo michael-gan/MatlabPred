@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>案例13</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../reveal.js/css/reveal.css">
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../reveal.js/css/theme/beige.css" id="theme">
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? '../reveal.js/css/print/pdf.css' : '../reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+    </script>
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+  <!--[if lt IE 9]>
+  <script src="../reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+	<section>
+<h2 id="案例13基于深度学习的化学过程故障检测">案例13：基于深度学习的化学过程故障检测</h2>
+</section>
+<section align=left>
+<p>本案例将介绍，如何使用仿真数据建立可检测化学过程故障的神经网络模型。该神经网络在检测化学过程故障方面具有较高准确度。典型的工作流如下：</p>
+<ol type="1">
+<li>预处理数据</li>
+<li>设计网络结构</li>
+<li>训练网络</li>
+<li>进行验证</li>
+<li>测试网络</li>
+</ol>
+<p>本案例的运行需要用到深度学习工具箱，因本案例数据量及运算量极大，故直接使用Matlab案例展示时给出的结果，不做本地运行展示</p>
+</section>
+<section align=left>
+<h4 id="第一步下载数据集"><strong>第一步：下载数据集</strong></h4>
+<section>
+<p>本案例中使用的数据由MathWorks公司转化为了Matlab数据文件，数据来自田纳西伊士曼过程（TEP）的仿真数据。数据包含四个部分——无故障训练数据、无故障测试数据、故障训练数据、故障测试数据，可分别下载（若本地已包含该数据集，可直接导入，无需再次下载。Matlab内部下载失败时，可尝试直接使用url地址下载，之后再将数据拷贝到Matlab工作路径下）</p>
+<div class="sourceCode" id="cb263"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb263-1" data-line-number="1">url = <span class="st">&#39;https://www.mathworks.com/supportfiles/predmaint/chemical-process-fault-detection-data/faultytesting.mat&#39;</span>;</a>
+<a class="sourceLine" id="cb263-2" data-line-number="2">websave(<span class="st">&#39;faultytesting.mat&#39;</span>,url);</a>
+<a class="sourceLine" id="cb263-3" data-line-number="3">url = <span class="st">&#39;https://www.mathworks.com/supportfiles/predmaint/chemical-process-fault-detection-data/faultytraining.mat&#39;</span>;</a>
+<a class="sourceLine" id="cb263-4" data-line-number="4">websave(<span class="st">&#39;faultytraining.mat&#39;</span>,url);</a>
+<a class="sourceLine" id="cb263-5" data-line-number="5">url = <span class="st">&#39;https://www.mathworks.com/supportfiles/predmaint/chemical-process-fault-detection-data/faultfreetesting.mat&#39;</span>;</a>
+<a class="sourceLine" id="cb263-6" data-line-number="6">websave(<span class="st">&#39;faultfreetesting.mat&#39;</span>,url);</a>
+<a class="sourceLine" id="cb263-7" data-line-number="7">url = <span class="st">&#39;https://www.mathworks.com/supportfiles/predmaint/chemical-process-fault-detection-data/faultfreetraining.mat&#39;</span>;</a>
+<a class="sourceLine" id="cb263-8" data-line-number="8">websave(<span class="st">&#39;faultfreetraining.mat&#39;</span>,url);</a></code></pre></div>
+<p>之后将下载的数据文件导入到Matlab工作区中</p>
+<div class="sourceCode" id="cb264"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb264-1" data-line-number="1">load(<span class="st">&#39;faultfreetesting.mat&#39;</span>);</a>
+<a class="sourceLine" id="cb264-2" data-line-number="2">load(<span class="st">&#39;faultfreetraining.mat&#39;</span>);</a>
+<a class="sourceLine" id="cb264-3" data-line-number="3">load(<span class="st">&#39;faultytesting.mat&#39;</span>);</a>
+<a class="sourceLine" id="cb264-4" data-line-number="4">load(<span class="st">&#39;faultytraining.mat&#39;</span>);</a></code></pre></div>
+</section>
+<section align=left>
+<p>每个部分包含若干条仿真数据，每条数据仿真时遵循以下两个参数的组合：</p>
+<ul>
+<li>故障编号（Fault Number）：对于故障数据集，1到20的整数代表不同的仿真故障类型。对于无故障数据，该值为0</li>
+<li>仿真轮数（Simulation run）：对于所有的数据集，1到500的整数代表仿真的唯一随机生成状态</li>
+</ul>
+<p>每条仿真数据的长度依赖于数据集。所有仿真每三分钟采样一次</p>
+<ul>
+<li>训练数据包含25小时仿真得到的500个时间长度的样本点</li>
+<li>测试数据包含48小时仿真得到的960个时间长度的样本点</li>
+</ul>
+<p>每条数据包含以下列变量：</p>
+<ul>
+<li>第1列（faultNumber）指示故障类型，0到20，0代表无故障，1-20代表TEP中的不同故障类型</li>
+<li>第2列（simulationRun）指示TEP仿真轮数，在训练和测试数据集中，轮数对所有的故障编号从1到500变化，每一个仿真轮数编号代表不同的仿真随机生成状态</li>
+<li>第3列（sample）表示仿真TEP过程中记录的时间长度数，可理解为某次仿真的数据时序索引。对训练数据由1到500变化，对测试数据由1到960变化。TEP变量（第4列到55列）每三分钟采样一次，对训练数据采样时长为25小时，对测试数据采样时长为48小时</li>
+<li>第4-44列（xmeas_1到xmeas_44）包含TEP的测量变量</li>
+<li>第45-55列（xmv_1到xmv_11） 包含TEP的操纵变量</li>
+</ul>
+</section>
+<section align=left>
+<p>以下查看两个文件的数据片段</p>
+<div class="sourceCode" id="cb265"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb265-1" data-line-number="1">head(faultfreetraining,<span class="fl">4</span>)    <span class="co">% 无故障训练数据</span></a></code></pre></div>
+<p align=center><img src="..\faultDetectionAndPrognose\faultfreeTraining.PNG" style="zoom:100%;" /></p>
+<div class="sourceCode" id="cb266"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb266-1" data-line-number="1">head(faultytraining,<span class="fl">4</span>)       <span class="co">% 有故障训练数据</span></a></code></pre></div>
+<p align=center><img src="..\faultDetectionAndPrognose\faultyTraining.PNG" style="zoom:100%;" /></p>
+</section>
+</section>
+<section align=left>
+<h4 id="第二步清洗数据"><strong>第二步：清洗数据</strong></h4>
+<p>在训练和测试数据中移除故障编号为3、9、15的数据，这些故障编号未知，因此仿真的结果也有错误（本步骤需要的内存较大）</p>
+<div class="sourceCode" id="cb267"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb267-1" data-line-number="1">faultytesting(faultytesting.faultNumber == <span class="fl">3</span>,:) = [];</a>
+<a class="sourceLine" id="cb267-2" data-line-number="2">faultytesting(faultytesting.faultNumber == <span class="fl">9</span>,:) = [];</a>
+<a class="sourceLine" id="cb267-3" data-line-number="3">faultytesting(faultytesting.faultNumber == <span class="fl">15</span>,:) = [];</a>
+<a class="sourceLine" id="cb267-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb267-5" data-line-number="5">faultytraining(faultytraining.faultNumber == <span class="fl">3</span>,:) = [];</a>
+<a class="sourceLine" id="cb267-6" data-line-number="6">faultytraining(faultytraining.faultNumber == <span class="fl">9</span>,:) = [];</a>
+<a class="sourceLine" id="cb267-7" data-line-number="7">faultytraining(faultytraining.faultNumber == <span class="fl">15</span>,:) = [];</a></code></pre></div>
+</section>
+<section align=left>
+<h4 id="第三步划分数据"><strong>第三步：划分数据</strong></h4>
+<section>
+<p>将训练数据划分为训练集和验证集，其中验证集占原有训练集数据的20%。使用验证集的目的在于，可有效验证模型在训练集上调整相应超参数得到的结果是否适用于验证集，保证模型的泛化能力。数据划分可有效避免神经网络模型过拟合或欠拟合</p>
+<p>先获得有故障和无故障训练数据集的行数</p>
+<div class="sourceCode" id="cb268"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb268-1" data-line-number="1">H1 = height(faultfreetraining); </a>
+<a class="sourceLine" id="cb268-2" data-line-number="2">H2 = height(faultytraining);   </a></code></pre></div>
+<p>仿真轮数表示，注入特定故障类型的TEP重复仿真的次数。可从训练数据和测试数据中获得它们对应的最大仿真次数</p>
+<div class="sourceCode" id="cb269"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb269-1" data-line-number="1">msTrain = max(faultfreetraining.simulationRun); </a>
+<a class="sourceLine" id="cb269-2" data-line-number="2">msTest = max(faultytesting.simulationRun);      </a></code></pre></div>
+<p>计算验证数据的最大仿真轮数</p>
+<div class="sourceCode" id="cb270"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb270-1" data-line-number="1">rTrain = <span class="fl">0.80</span>; </a>
+<a class="sourceLine" id="cb270-2" data-line-number="2">msVal = ceil(msTrain*(<span class="fl">1</span> - rTrain));    </a>
+<a class="sourceLine" id="cb270-3" data-line-number="3">msTrain = msTrain*rTrain;  </a></code></pre></div>
+</section>
+<section align=left>
+<p>获得最大时间步或样本数（即，TEP仿真中数据记录的最大次数）</p>
+<div class="sourceCode" id="cb271"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb271-1" data-line-number="1">sampleTrain = max(faultfreetraining.sample);</a>
+<a class="sourceLine" id="cb271-2" data-line-number="2">sampleTest = max(faultfreetesting.sample);</a></code></pre></div>
+<p>获得无故障训练数据和故障训练数据中的分割点位置，以便随后创建验证数据</p>
+<div class="sourceCode" id="cb272"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb272-1" data-line-number="1">rowLim1 = ceil(rTrain*H1);</a>
+<a class="sourceLine" id="cb272-2" data-line-number="2">rowLim2 = ceil(rTrain*H2);</a>
+<a class="sourceLine" id="cb272-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb272-4" data-line-number="4">trainingData = [faultfreetraining{<span class="fl">1</span>:rowLim1,:}; faultytraining{<span class="fl">1</span>:rowLim2,:}];</a>
+<a class="sourceLine" id="cb272-5" data-line-number="5">validationData = [faultfreetraining{rowLim1 + <span class="fl">1</span>:end,:}; faultytraining{rowLim2 + <span class="fl">1</span>:end,:}];</a>
+<a class="sourceLine" id="cb272-6" data-line-number="6">testingData = [faultfreetesting{:,:}; faultytesting{:,:}];</a></code></pre></div>
+</section>
+</section>
+<section align=left>
+<h4 id="第四步神经网络设计及预处理"><strong>第四步：神经网络设计及预处理</strong></h4>
+<section>
+<p>最终的数据集（训练数据、验证数据、测试数据）包含500个统一时间步的52个信号。因此，信号或序列，需要被分类到其对应的正确的故障编号中，这使得该问题变成了一个序列分类问题</p>
+<ul>
+<li>长短时记忆网络（LSTM）适用于序列数据的分类</li>
+<li>LSTM网络对于时序数据的处理较为合适，因为它在处理新时序数据时会记住过去时序信号的独特性</li>
+<li>LSTM网络可将时序数据作为输入放入网络中，并基于时序数据的时间步做出预测。可访问以下链接<a href="https://ww2.mathworks.cn/help/deeplearning/ug/long-short-term-memory-networks.html" target="_blank">https://ww2.mathworks.cn/help/deeplearning/ug/long-short-term-memory-networks.html</a>，了解更多Matlab上关于LSTM的介绍</li>
+<li>为使用<code>trainNetwork</code>函数训练可用于分类序列数据的神经网络，必须先预处理数据。数据必须为<code>cell</code>型数组，<code>cell</code>数据中的每一个元素都是代表单次仿真中代表52个信号测量值的矩阵。每个矩阵代表了TEP仿真的特定类型（有故障或无故障）。每一组信号数据点对应着故障编号0-20中某一状态</li>
+</ul>
+<p>如之前在数据集部件介绍的一样，数据包含52个变量，变量的值在仿真的某一时间段内被采集。时间长度数（sample）变量代表单次仿真中，数据被记录的时间点序号。训练数据中最大的时间序号为500，测试数据中最大时间序号为960。即，对于每次仿真，有一组长度为500或960包含52个信号的测量数据。每组这样的信号量属于某次TEP仿真，同时其对应的仿真故障类型为0到20</p>
+</section>
+<section align=left>
+<p>训练和测试数据集中，针对每种故障类型的仿真均包含了500次。20%作为验证数据的话，即对每种故障类型的训练数据共有400次仿真，对于验证数据共有100次仿真。可使用辅助函数<code>helperPreprocess</code>创建信号组，每组都是属于<code>cell</code>数组中单一元素的<code>double</code>型矩阵，代表着单次TEP仿真。因此，最终训练、验证、测试数据的大小如下：</p>
+<ul>
+<li>训练数据大小<code>Xtrain</code>：（总仿真次数）X（总故障类型数）= 400 X 18 = 7200</li>
+<li>验证数据大小<code>XVal</code>：（总仿真次数）X（总故障类型数）= 100 X 18 = 1800</li>
+<li>验证数据大小<code>Xtest</code>：（总仿真次数）X（总故障类型数）= 500 X 18 = 9000</li>
+</ul>
+<p>数据集中，前500次仿真都是0故障类型（无故障），随后故障模拟的顺序已知。这一信息可支持创建训练、验证、测试数据集的真实响应</p>
+<div class="sourceCode" id="cb273"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb273-1" data-line-number="1">function processed = helperPreprocess(mydata,limit)</a>
+<a class="sourceLine" id="cb273-2" data-line-number="2">    H = size(mydata);</a>
+<a class="sourceLine" id="cb273-3" data-line-number="3">    processed = {};</a>
+<a class="sourceLine" id="cb273-4" data-line-number="4">    for ind = <span class="fl">1</span>:limit:H</a>
+<a class="sourceLine" id="cb273-5" data-line-number="5">        x = mydata(ind:(ind+(limit-<span class="fl">1</span>)),<span class="fl">4</span>:end);</a>
+<a class="sourceLine" id="cb273-6" data-line-number="6">        processed = [processed; x&#39;];</a>
+<a class="sourceLine" id="cb273-7" data-line-number="7">    end</a>
+<a class="sourceLine" id="cb273-8" data-line-number="8">end</a></code></pre></div>
+<div class="sourceCode" id="cb274"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb274-1" data-line-number="1">Xtrain = helperPreprocess(trainingData,sampleTrain);</a>
+<a class="sourceLine" id="cb274-2" data-line-number="2">Ytrain = categorical([zeros(msTrain,<span class="fl">1</span>);repmat([<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">4</span>:<span class="fl">8</span>,<span class="fl">10</span>:<span class="fl">14</span>,<span class="fl">16</span>:<span class="fl">20</span>],<span class="fl">1</span>,msTrain)&#39;]);</a>
+<a class="sourceLine" id="cb274-3" data-line-number="3"> </a>
+<a class="sourceLine" id="cb274-4" data-line-number="4">XVal = helperPreprocess(validationData,sampleTrain);</a>
+<a class="sourceLine" id="cb274-5" data-line-number="5">YVal = categorical([zeros(msVal,<span class="fl">1</span>);repmat([<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">4</span>:<span class="fl">8</span>,<span class="fl">10</span>:<span class="fl">14</span>,<span class="fl">16</span>:<span class="fl">20</span>],<span class="fl">1</span>,msVal)&#39;]);</a>
+<a class="sourceLine" id="cb274-6" data-line-number="6"> </a>
+<a class="sourceLine" id="cb274-7" data-line-number="7">Xtest = helperPreprocess(testingData,sampleTest);</a>
+<a class="sourceLine" id="cb274-8" data-line-number="8">Ytest = categorical([zeros(msTest,<span class="fl">1</span>);repmat([<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">4</span>:<span class="fl">8</span>,<span class="fl">10</span>:<span class="fl">14</span>,<span class="fl">16</span>:<span class="fl">20</span>],<span class="fl">1</span>,msTest)&#39;]);</a></code></pre></div>
+</section>
+</section>
+<section align=left>
+<h4 id="第五步归一化数据集"><strong>第五步：归一化数据集</strong></h4>
+<p>归一化是一项将数据集中数据尺度缩放至同一尺度下的技术，这使得数值之间的尺度差异不会被放大或扭曲。这项技术可使得大尺度的变量不会在训练的过程中占主导地位而影响其他变量的作用。同时，它也将大范围的数值转化到小范围上，但又不丢失对模型训练较重要的信息</p>
+<p>从训练数据中的所有仿真数据中计算得到52个信号的均值和标准差</p>
+<div class="sourceCode" id="cb275"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb275-1" data-line-number="1">tMean = mean(trainingData(:,<span class="fl">4</span>:end))&#39;;</a>
+<a class="sourceLine" id="cb275-2" data-line-number="2">tSigma = std(trainingData(:,<span class="fl">4</span>:end))&#39;;</a></code></pre></div>
+<p>使用辅助函数<code>helperNormalize</code>和上一过程中计算得到的均值、标准差值对训练、验证、测试数据归一化</p>
+<div class="sourceCode" id="cb276"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb276-1" data-line-number="1">function data = helperNormalize(data,m,s)</a>
+<a class="sourceLine" id="cb276-2" data-line-number="2">    for ind = <span class="fl">1</span>:size(data)</a>
+<a class="sourceLine" id="cb276-3" data-line-number="3">        data{ind} = (data{ind} - m)./s;</a>
+<a class="sourceLine" id="cb276-4" data-line-number="4">    end</a>
+<a class="sourceLine" id="cb276-5" data-line-number="5">end</a></code></pre></div>
+<div class="sourceCode" id="cb277"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb277-1" data-line-number="1">Xtrain = helperNormalize(Xtrain, tMean, tSigma);</a>
+<a class="sourceLine" id="cb277-2" data-line-number="2">XVal = helperNormalize(XVal, tMean, tSigma);</a>
+<a class="sourceLine" id="cb277-3" data-line-number="3">Xtest = helperNormalize(Xtest, tMean, tSigma);</a></code></pre></div>
+</section>
+<section align=left>
+<h4 id="第六步可视化数据"><strong>第六步：可视化数据</strong></h4>
+<section>
+<p><code>Xtrain</code>训练数据集中包含400次无故障仿真和6800次有故障仿真。可视化无故障和有故障数据。首先，创建无故障数据的图像。对本案例中的目的，仅使用<code>Xtrain</code>中的10个信号绘图并标记可以创建一幅易读的图像</p>
+<div class="sourceCode" id="cb278"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb278-1" data-line-number="1">figure;</a>
+<a class="sourceLine" id="cb278-2" data-line-number="2">splot = <span class="fl">10</span>;    </a>
+<a class="sourceLine" id="cb278-3" data-line-number="3">plot(Xtrain{<span class="fl">1</span>}(<span class="fl">1</span>:<span class="fl">10</span>,:)&#39;);   </a>
+<a class="sourceLine" id="cb278-4" data-line-number="4">xlabel(&quot;Time Step&quot;);</a>
+<a class="sourceLine" id="cb278-5" data-line-number="5">title(&quot;Training Observation for Non-Faulty Data&quot;);</a>
+<a class="sourceLine" id="cb278-6" data-line-number="6">legend(&quot;Signal &quot; + string(<span class="fl">1</span>:splot),<span class="st">&#39;Location&#39;</span>,<span class="st">&#39;northeastoutside&#39;</span>);</a></code></pre></div>
+<p align=center><img src="..\faultDetectionAndPrognose\ChemicalProcessFaultDetectionUsingDeepLearningExample_01.png" style="zoom:140%;" /></p>
+</section>
+<section align=left>
+<p>现在，通过任意400以后的<code>cell</code>数组元素（有故障信号数据），绘图对比无故障图像和有故障图像</p>
+<div class="sourceCode" id="cb279"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb279-1" data-line-number="1">figure;</a>
+<a class="sourceLine" id="cb279-2" data-line-number="2">plot(Xtrain{<span class="fl">1000</span>}(<span class="fl">1</span>:<span class="fl">10</span>,:)&#39;);   </a>
+<a class="sourceLine" id="cb279-3" data-line-number="3">xlabel(&quot;Time Step&quot;);</a>
+<a class="sourceLine" id="cb279-4" data-line-number="4">title(&quot;Training Observation for Faulty Data&quot;);</a>
+<a class="sourceLine" id="cb279-5" data-line-number="5">legend(&quot;Signal &quot; + string(<span class="fl">1</span>:splot),<span class="st">&#39;Location&#39;</span>,<span class="st">&#39;northeastoutside&#39;</span>);</a></code></pre></div>
+<p align=center><img src="..\faultDetectionAndPrognose\ChemicalProcessFaultDetectionUsingDeepLearningExample_02.png" style="zoom:140%;" /></p>
+</section>
+</section>
+<section align=left>
+<h4 id="第七步神经网络结构和训练配置"><strong>第七步：神经网络结构和训练配置</strong></h4>
+<section>
+<p>LSTM层是序列分类的好选择，因为LSTM层往往只记住输入序列的重要信息</p>
+<ul>
+<li>设置输入层数<code>sequencInputLayer</code>为与输入信号数（52）相同的大小</li>
+<li><p>设置LSTM三个隐藏层的神经元数为52、40、25。该配置灵感来自于本实验<a href="#/fn23" class="footnote-ref" id="fnref23"><sup>23</sup></a></p></li>
+<li>在LSTM层之间加入3个Dropout层，以防止过拟合。Dropout层通过给定的概率随机将下一层的输入元素设置为0，这样神经网络便不会对该层中的一小组神经元表现敏感</li>
+<li><p>最后，对于分类，设置与输出类型数（18）相同的全连接层。全连接层后，在包含一层Softmax层，该层将为多分类中的每个类计算一个概率值，最后根据该概率值输出最终的分类结果</p></li>
+</ul>
+<div class="sourceCode" id="cb280"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb280-1" data-line-number="1">numSignals = <span class="fl">52</span>;</a>
+<a class="sourceLine" id="cb280-2" data-line-number="2">numHiddenUnits2 = <span class="fl">52</span>;</a>
+<a class="sourceLine" id="cb280-3" data-line-number="3">numHiddenUnits3 = <span class="fl">40</span>;</a>
+<a class="sourceLine" id="cb280-4" data-line-number="4">numHiddenUnits4 = <span class="fl">25</span>;</a>
+<a class="sourceLine" id="cb280-5" data-line-number="5">numClasses = <span class="fl">18</span>;</a>
+<a class="sourceLine" id="cb280-6" data-line-number="6">     </a>
+<a class="sourceLine" id="cb280-7" data-line-number="7">layers = [ ...</a>
+<a class="sourceLine" id="cb280-8" data-line-number="8">    sequenceInputLayer(numSignals)</a>
+<a class="sourceLine" id="cb280-9" data-line-number="9">    lstmLayer(numHiddenUnits2,<span class="st">&#39;OutputMode&#39;</span>,<span class="st">&#39;sequence&#39;</span>)</a>
+<a class="sourceLine" id="cb280-10" data-line-number="10">    dropoutLayer(<span class="fl">0.2</span>)</a>
+<a class="sourceLine" id="cb280-11" data-line-number="11">    lstmLayer(numHiddenUnits3,<span class="st">&#39;OutputMode&#39;</span>,<span class="st">&#39;sequence&#39;</span>)</a>
+<a class="sourceLine" id="cb280-12" data-line-number="12">    dropoutLayer(<span class="fl">0.2</span>)</a>
+<a class="sourceLine" id="cb280-13" data-line-number="13">    lstmLayer(numHiddenUnits4,<span class="st">&#39;OutputMode&#39;</span>,<span class="st">&#39;last&#39;</span>)</a>
+<a class="sourceLine" id="cb280-14" data-line-number="14">    dropoutLayer(<span class="fl">0.2</span>)</a>
+<a class="sourceLine" id="cb280-15" data-line-number="15">    fullyConnectedLayer(numClasses)</a>
+<a class="sourceLine" id="cb280-16" data-line-number="16">    softmaxLayer</a>
+<a class="sourceLine" id="cb280-17" data-line-number="17">    classificationLayer];</a></code></pre></div>
+</section>
+<section align=left>
+<p>设置<code>trainNetwork</code>使用的训练配置</p>
+<p>将默认的名称-值对<code>ExecutionEnvironment</code>设置为<code>auto</code>。在这种设定下，软件自动选择执行环境。如果GPU可用（要求并行计算工具箱，同时算力在3.0以上支持CUDA的GPU），软件将使用GPU训练。否则，软件使用CPU。因本案例中使用的数据量较大，GPU可大大加快训练进度</p>
+<p>设定名称-值对<code>Shuffle</code>为<code>every-epoch</code>以避免每个epoch时都丢弃相同的数据</p>
+<p>对于深度学习配置的更多信息可访问<a href="https://ww2.mathworks.cn/help/deeplearning/ref/trainingoptions.html" target="_blank"><code>trainingOptions</code></a></p>
+<div class="sourceCode" id="cb281"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb281-1" data-line-number="1">maxEpochs = <span class="fl">30</span>;</a>
+<a class="sourceLine" id="cb281-2" data-line-number="2">miniBatchSize = <span class="fl">50</span>;  </a>
+<a class="sourceLine" id="cb281-3" data-line-number="3"> </a>
+<a class="sourceLine" id="cb281-4" data-line-number="4">options = trainingOptions(<span class="st">&#39;adam&#39;</span>, ...</a>
+<a class="sourceLine" id="cb281-5" data-line-number="5">    <span class="st">&#39;ExecutionEnvironment&#39;</span>,<span class="st">&#39;auto&#39;</span>, ...</a>
+<a class="sourceLine" id="cb281-6" data-line-number="6">    <span class="st">&#39;GradientThreshold&#39;</span>,<span class="fl">1</span>, ...</a>
+<a class="sourceLine" id="cb281-7" data-line-number="7">    <span class="st">&#39;MaxEpochs&#39;</span>,maxEpochs, ...</a>
+<a class="sourceLine" id="cb281-8" data-line-number="8">    <span class="st">&#39;MiniBatchSize&#39;</span>, miniBatchSize,...</a>
+<a class="sourceLine" id="cb281-9" data-line-number="9">    <span class="st">&#39;Shuffle&#39;</span>,<span class="st">&#39;every-epoch&#39;</span>, ...</a>
+<a class="sourceLine" id="cb281-10" data-line-number="10">    <span class="st">&#39;Verbose&#39;</span>,<span class="fl">0</span>, ...</a>
+<a class="sourceLine" id="cb281-11" data-line-number="11">    <span class="st">&#39;Plots&#39;</span>,<span class="st">&#39;training-progress&#39;</span>,...</a>
+<a class="sourceLine" id="cb281-12" data-line-number="12">    <span class="st">&#39;ValidationData&#39;</span>,{XVal,YVal});</a></code></pre></div>
+</section>
+</section>
+<section align=left>
+<h4 id="第八步训练网络"><strong>第八步：训练网络</strong></h4>
+<div  style="font-size:32px;">
+<p>使用<code>trainNetwork</code>训练LSTM网络</p>
+<div class="sourceCode" id="cb282"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb282-1" data-line-number="1">net = trainNetwork(Xtrain,Ytrain,layers,options);</a></code></pre></div>
+<p>训练过程图像显示了神经网络精度的变化。图像右边展示有训练时间和配置信息</p>
+<p align=center><img src="..\faultDetectionAndPrognose\ChemicalProcessFaultDetectionUsingDeepLearningExample_03.png" style="zoom: 67%;" /></p>
+</div>
+</section>
+<section align=left>
+<h4 id="第九步测试网络"><strong>第九步：测试网络</strong></h4>
+<section>
+<p>在测试数据上运行训练好的网络模型，并预测信号的故障类型</p>
+<div class="sourceCode" id="cb283"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb283-1" data-line-number="1">Ypred = classify(net,Xtest,...</a>
+<a class="sourceLine" id="cb283-2" data-line-number="2">    <span class="st">&#39;MiniBatchSize&#39;</span>, miniBatchSize,...</a>
+<a class="sourceLine" id="cb283-3" data-line-number="3">    <span class="st">&#39;ExecutionEnvironment&#39;</span>,<span class="st">&#39;auto&#39;</span>);</a></code></pre></div>
+<p>计算准确率。准确率是测试数据中与分类相匹配的真实标签数量除以测试数据的总数</p>
+<div class="sourceCode" id="cb284"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb284-1" data-line-number="1">acc = sum(Ypred == Ytest)./numel(Ypred)</a></code></pre></div>
+<p>高准确率说明神经网络可以带有微小情况下，准确识别未知信号的故障类别。因此可以简单的说，准确率越高，神经网络模型越好</p>
+</section>
+<section align=left>
+<p>之后可使用测试信号的真实类别标签画出混淆矩阵，查看神经网络对每种故障类别的识别表现</p>
+<div class="sourceCode" id="cb285"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb285-1" data-line-number="1">confusionchart(Ytest,Ypred);</a></code></pre></div>
+<p align=center><img src="..\faultDetectionAndPrognose\ChemicalProcessFaultDetectionUsingDeepLearningExample_04.png" style="zoom: 140%;" /></p>
+<p>使用混淆矩阵，你可以看到分类神经网络的有效性。混淆矩阵在对角线上有数值，而其他位置都是0。本案例中训练得到的网络是有效的，可准确分类超过99%的信号</p>
+</section>
+</section>
+<section style="font-size:44px;">
+<p><strong>参考：</strong><a href="https://ww2.mathworks.cn/help/predmaint/ug/chemical-process-fault-detection-deep-learning.html" target="_blank">https://ww2.mathworks.cn/help/predmaint/ug/chemical-process-fault-detection-deep-learning.html</a></p>
+</section>
+	    </div>
+  </div>
+
+  <script src="../reveal.js/lib/js/head.min.js"></script>
+  <script src="../reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Push each slide change to the browser history
+        history: true,
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: '../reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: '../reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: '../reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>

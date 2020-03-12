@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>案例2</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../reveal.js/css/reveal.css">
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../reveal.js/css/theme/beige.css" id="theme">
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? '../reveal.js/css/print/pdf.css' : '../reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+    </script>
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+  <!--[if lt IE 9]>
+  <script src="../reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+	<section>
+	<h2 id="案例2使用振动信号进行状态监测和预诊断">案例2：使用振动信号进行状态监测和预诊断</h2>
+	</section>
+
+<section align="left">
+<h4 id="第一步问题描述"><strong>第一步：问题描述</strong></h4>
+<p>该案例展示如何从球轴承的振动信号出发，进行健康状态监测并进行故障预诊断。数据来自球轴承信号模拟器，其中的故障为轴承外圈的单点缺陷。缺陷等级通过缺陷深度分为3微米到3毫秒级</p>
+</section>
+<section align="left">
+<h4 id="第二步数据描述及可视化"><strong>第二步：数据描述及可视化</strong></h4>
+<section>
+<p>采用频率为20 kHz，每个部分包含1秒时长的数据。<code>pdmBearingConditionMonitoringData.mat</code>数据中<code>defectDepthVec</code>记录存储缺陷深度随时间变化的过程，其中<code>expTime</code>表示以分钟为单位的时间轴</p>
+<p><strong>导入数据</strong></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="co">% 导入数据</span></a>
+<a class="sourceLine" id="cb8-2" data-line-number="2">load pdmBearingConditionMonitoringData.mat</a>
+<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="co">% 定义数据点个数</span></a>
+<a class="sourceLine" id="cb8-4" data-line-number="4">numSamples = length(data);</a>
+<a class="sourceLine" id="cb8-5" data-line-number="5"><span class="co">% 定义采用频率</span></a>
+<a class="sourceLine" id="cb8-6" data-line-number="6">fs = <span class="fl">20E3</span>;          <span class="co">% unit: Hz</span></a></code></pre></div>
+</section>
+
+<section>
+<p><strong>数据可视化</strong></p>
+<p>缺陷深度随时间变化</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb9-1" data-line-number="1">plot(expTime,defectDepthVec);</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2">xlabel(<span class="st">&#39;Time (min)&#39;</span>);</a>
+<a class="sourceLine" id="cb9-3" data-line-number="3">ylabel(<span class="st">&#39;Defect depth (m)&#39;</span>);</a></code></pre></div>
+<p align="center"><img src="..\HIDesign/defectDepth.png" style="zoom: 110%;" /></p>
+</section>
+
+<section>
+<p>健康和故障数据可视化</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb10-1" data-line-number="1">time = linspace(<span class="fl">0</span>,<span class="fl">1</span>,fs)&#39;;</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="co">% 健康轴承数据，data中第一条</span></a>
+<a class="sourceLine" id="cb10-4" data-line-number="4">subplot(<span class="fl">2</span>,<span class="fl">1</span>,<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb10-5" data-line-number="5">plot(time,data{<span class="fl">1</span>});</a>
+<a class="sourceLine" id="cb10-6" data-line-number="6">xlabel(<span class="st">&#39;Time(s)&#39;</span>);</a>
+<a class="sourceLine" id="cb10-7" data-line-number="7">ylabel(<span class="st">&#39;Acceleration(m/s^2)&#39;</span>);</a>
+<a class="sourceLine" id="cb10-8" data-line-number="8">legend(<span class="st">&#39;Healthy bearing signal&#39;</span>);</a>
+<a class="sourceLine" id="cb10-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb10-10" data-line-number="10"><span class="co">% 故障轴承数据，data中最后一条</span></a>
+<a class="sourceLine" id="cb10-11" data-line-number="11">subplot(<span class="fl">2</span>,<span class="fl">1</span>,<span class="fl">2</span>);</a>
+<a class="sourceLine" id="cb10-12" data-line-number="12">plot(time,data{end});</a>
+<a class="sourceLine" id="cb10-13" data-line-number="13">xlabel(<span class="st">&#39;Time(s)&#39;</span>);</a>
+<a class="sourceLine" id="cb10-14" data-line-number="14">ylabel(<span class="st">&#39;Acceleration(m/s^2)&#39;</span>);</a>
+<a class="sourceLine" id="cb10-15" data-line-number="15">legend(<span class="st">&#39;Faulty bearing signal&#39;</span>);</a></code></pre></div>
+<p align="center"><img data-src="..\HIDesign\bearingData.png" style="zoom: 55%;"/></p>
+</section>
+</section>
+<section align="left">
+<h4 id="第三步特征提取"><strong>第三步：特征提取</strong></h4>
+<section>
+<p>提取常用的时域特征（均方根、峰值、谷值等）或频域特征（频率峰值、频率均值等）</p>
+<p>以下方法用来提取频谱，其中500表示滑动窗口的长度，450表示相邻窗口重叠数据的长度，即滑动窗口的重叠度为90%，同时设置用来快速傅里叶变换的数据个数为512，<code>fs</code>表示采样频率</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb11-1" data-line-number="1">[~,fvec,tvec,P0] = spectrogram(data{<span class="fl">1</span>},<span class="fl">500</span>,<span class="fl">450</span>,<span class="fl">512</span>,fs);</a></code></pre></div>
+<p>以上命令表示提取第一条数据的频谱信息，得到的<code>P0</code>表示频谱，<code>fvec</code>表示频率向量，<code>tvec</code>表示时间向量</p>
+</section>
+
+<section>
+<p><strong>可视化频谱信息</strong></p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb12-1" data-line-number="1">clf;</a>
+<a class="sourceLine" id="cb12-2" data-line-number="2">imagesc(tvec,fvec,P0)</a>
+<a class="sourceLine" id="cb12-3" data-line-number="3">xlabel(<span class="st">&#39;Time(s)&#39;</span>);</a>
+<a class="sourceLine" id="cb12-4" data-line-number="4">ylabel(<span class="st">&#39;Frequency(Hz)&#39;</span>);</a>
+<a class="sourceLine" id="cb12-5" data-line-number="5">title(<span class="st">&#39;Healthy Bearing Signal Spectrogram&#39;</span>);</a>
+<a class="sourceLine" id="cb12-6" data-line-number="6">axis xy</a></code></pre></div>
+<p align="center"><img src="..\HIDesign\healthSpec.png" style="zoom: 100%;" /></p>
+<p>因使用的是第一条数据的频谱信息，因此该频谱为球轴承健康时的振动信号频谱图</p>
+</section>
+
+<section>
+<p>之后，对出现缺陷的球轴承数据使用同样操作得到球轴承故障时的振动信号频谱图</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb13-1" data-line-number="1">[~,fvec,tvec,Pfinal] = spectrogram(data{end},<span class="fl">500</span>,<span class="fl">450</span>,<span class="fl">512</span>,fs);</a>
+<a class="sourceLine" id="cb13-2" data-line-number="2">imagesc(tvec,fvec,Pfinal)</a>
+<a class="sourceLine" id="cb13-3" data-line-number="3">xlabel(<span class="st">&#39;Time(s)&#39;</span>);</a>
+<a class="sourceLine" id="cb13-4" data-line-number="4">ylabel(<span class="st">&#39;Frequency(Hz)&#39;</span>);</a>
+<a class="sourceLine" id="cb13-5" data-line-number="5">title(<span class="st">&#39;Faulty Bearing Signal Spectrogram&#39;</span>);</a>
+<a class="sourceLine" id="cb13-6" data-line-number="6">axis xy</a></code></pre></div>
+<p align="center"><img src="..\HIDesign\defectSpec.png" style="zoom: 100%;" /></p>
+<p>可以看出，故障数据的频谱图显示，振动信号频率聚集于更高的频率段</p>
+</section>
+
+<section>
+<p><strong>从频谱图中提取可用来区分健康于故障状态的健康指示量</strong></p>
+<p>本例中提取频谱中的平均峰值频率作为健康指示量，假设频谱记为<span class="math inline"><em>P</em>(<em>t</em>, <em>ω</em>)</span> ，则每个时刻的峰值频率为 <br /><span class="math display">$$
+PeakFreq=argmax_\omega(P(t,\omega))
+$$</span><br /> 峰值频率的均值定义为 <br /><span class="math display">$$
+meanPeakFreq=\frac1T\int^T_0PeakFreq(t)dt
+$$</span><br /> 代码如下：</p>
+<p>计算首条健康轴承数据</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb14-1" data-line-number="1">[~,I0] = max(P0);               <span class="co">% 找出峰值频率出现的位置</span></a>
+<a class="sourceLine" id="cb14-2" data-line-number="2">meanPeakFreq0 = mean(fvec(I0))  <span class="co">% 计算峰值频率的均值</span></a></code></pre></div>
+<p>得到<code>I0</code>表示峰值频率在频率带上出现的位置，可以据此找到当前的峰值频率，并对一条频谱上的所有峰值频率做均值，得到<code>meanPeakFreq0</code>表示首条健康轴承数据的健康指示量，计算得到该值为666.4602 Hz</p>
+</section>
+
+<section>
+<p>同样的操作计算末条故障轴承数据</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb15-1" data-line-number="1">[~,Ifinal] = max(Pfinal);               <span class="co">% 找出峰值频率出现的位置</span></a>
+<a class="sourceLine" id="cb15-2" data-line-number="2">meanPeakFreqFinal = mean(fvec(Ifinal))  <span class="co">% 计算峰值频率的均值</span></a></code></pre></div>
+<p>得到末条故障轴承数据的健康指示量峰值频率均值<code>meanPeakFreqFinal</code>，计算得到该值为2.8068 kHz</p>
+<p>同时观察处于中间状态（取第一条和最后一条中间的数据）的轴承数据，此时缺陷开始出现并影响振动信号，但还不够深</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb16-1" data-line-number="1">[~,fvec,tvec,Pmiddle] = spectrogram(data{end/<span class="fl">2</span>},<span class="fl">500</span>,<span class="fl">450</span>,<span class="fl">512</span>,fs);</a>
+<a class="sourceLine" id="cb16-2" data-line-number="2">imagesc(tvec,fvec,Pmiddle)</a>
+<a class="sourceLine" id="cb16-3" data-line-number="3">xlabel(<span class="st">&#39;Time(s)&#39;</span>);</a>
+<a class="sourceLine" id="cb16-4" data-line-number="4">ylabel(<span class="st">&#39;Frequency(Hz)&#39;</span>);</a>
+<a class="sourceLine" id="cb16-5" data-line-number="5">title(<span class="st">&#39;Bearing Signal Spectrogram&#39;</span>);</a>
+<a class="sourceLine" id="cb16-6" data-line-number="6">axis xy</a></code></pre></div>
+</section>
+
+<section>
+<p align="center"><img src="..\HIDesign\middleSpec.png" style="zoom:120%;" /></p>
+<p>从图中可以看出，高频噪点充满了几乎整个频谱图，这种现象混合了原始正常振动信号和微小故障出现后导致的异常信号。为了更好地计算峰值频率均值，可以使用滤波方法去除这些高频噪点</p>
+<div class="fragment">
+<p>此例中使用中值滤波平滑化处理掉高频噪点，同时保留高频中有用的部分</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb17-1" data-line-number="1">dataMiddleFilt = medfilt1(data{end/<span class="fl">2</span>},<span class="fl">3</span>);</a></code></pre></div>
+</div>
+</section>
+
+<section>
+<p>之后画出新的频谱图，此时的高频噪声部分可以得到有效的抑制</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb18-1" data-line-number="1">[~,fvec,tvec,Pmiddle] = spectrogram(dataMiddleFilt,<span class="fl">500</span>,<span class="fl">450</span>,<span class="fl">512</span>,fs);</a>
+<a class="sourceLine" id="cb18-2" data-line-number="2">imagesc(tvec,fvec,Pmiddle)</a>
+<a class="sourceLine" id="cb18-3" data-line-number="3">xlabel(<span class="st">&#39;Time(s)&#39;</span>);</a>
+<a class="sourceLine" id="cb18-4" data-line-number="4">ylabel(<span class="st">&#39;Frequency(Hz)&#39;</span>);</a>
+<a class="sourceLine" id="cb18-5" data-line-number="5">title(<span class="st">&#39;Filtered Bearing Signal Spectrogram&#39;</span>);</a>
+<a class="sourceLine" id="cb18-6" data-line-number="6">axis xy</a></code></pre></div>
+<p align="center"><img src="..\HIDesign\middleFilteredSpec.png" style="zoom:100%;" /></p>
+</section>
+
+<section>
+<p>从上述过程可以看出，峰值频率均值可以有效地区分健康和故障的球轴承数据，因此对<code>cell</code>型数据<code>data</code>中存储的每条数据做上述的频谱分析并得到各自的峰值频率均值，如下</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="co">% 开启进度条</span></a>
+<a class="sourceLine" id="cb19-2" data-line-number="2">h = waitbar(<span class="fl">0</span>,<span class="st">&#39;Start to extract features&#39;</span>);</a>
+<a class="sourceLine" id="cb19-3" data-line-number="3"><span class="co">% 初始化存储峰值频率均值的数组</span></a>
+<a class="sourceLine" id="cb19-4" data-line-number="4">meanPeakFreq = zeros(numSamples,<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb19-5" data-line-number="5">for k = <span class="fl">1</span>:numSamples</a>
+<a class="sourceLine" id="cb19-6" data-line-number="6">    <span class="co">% 获取当前第k条数据</span></a>
+<a class="sourceLine" id="cb19-7" data-line-number="7">    curData = data{k};</a>
+<a class="sourceLine" id="cb19-8" data-line-number="8">    <span class="co">% 使用中值滤波，长度为3</span></a>
+<a class="sourceLine" id="cb19-9" data-line-number="9">    curDataFilt = medfilt1(curData,<span class="fl">3</span>);</a>
+<a class="sourceLine" id="cb19-10" data-line-number="10">    <span class="co">% 计算频谱</span></a>
+<a class="sourceLine" id="cb19-11" data-line-number="11">    [~,fvec,tvec,P_k] = spectrogram(curDataFilt,<span class="fl">500</span>,<span class="fl">450</span>,<span class="fl">512</span>,fs);</a>
+<a class="sourceLine" id="cb19-12" data-line-number="12">    <span class="co">% 计算每个时刻的峰值频率</span></a>
+<a class="sourceLine" id="cb19-13" data-line-number="13">    [~,I] = max(P_k);</a>
+<a class="sourceLine" id="cb19-14" data-line-number="14">    meanPeakFreq(k) = mean(fvec(I));</a>
+<a class="sourceLine" id="cb19-15" data-line-number="15">    <span class="co">% 进度条，用来展示处理了多少条数据</span></a>
+<a class="sourceLine" id="cb19-16" data-line-number="16">    waitbar(k/numSamples,h,<span class="st">&#39;Extracting features&#39;</span>);</a>
+<a class="sourceLine" id="cb19-17" data-line-number="17">end</a>
+<a class="sourceLine" id="cb19-18" data-line-number="18">close(h);</a></code></pre></div>
+</section>
+
+<section>
+<p>得到所有时间片段的峰值频率均值后，可以画出该量随时间变化的图像</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb20-1" data-line-number="1">plot(expTime,meanPeakFreq);</a>
+<a class="sourceLine" id="cb20-2" data-line-number="2">xlabel(<span class="st">&#39;Time(min)&#39;</span>);</a>
+<a class="sourceLine" id="cb20-3" data-line-number="3">ylabel(<span class="st">&#39;Mean peak frequency (Hz)&#39;</span>);</a>
+<a class="sourceLine" id="cb20-4" data-line-number="4">grid on;</a></code></pre></div>
+<p align="center"><img src="..\HIDesign\HITendence.png" style="zoom:120%;" /></p>
+<p>可以看出，随着球轴承缺陷深度的加大，即故障越来越严重时，峰值频率均值也呈现增长的趋势</p>
+</section>
+</section>
+<section align="left">
+<h4 id="第四步状态监测及预诊断"><strong>第四步：状态监测及预诊断</strong></h4>
+<section>
+<p>在该部分中，状态监测及故障预诊断通过使用预先设定的阈值和动态模型实现。对于状态监测，当峰值频率均值超过该阈值时，发出警告。对于预诊断，建立动态模型预测接下来几个小时内的峰值频率均值，同样地当该值超过了预先设定的阈值时，发出警告</p>
+<p>模型预测的过程需要用到<code>forecast</code>函数，因此事先定义好一些与该函数相关的量</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb21-1" data-line-number="1">tStart = <span class="fl">200</span>;               <span class="co">% 开始时间，表示使用初始的200条数据来初始化建立动态模型</span></a>
+<a class="sourceLine" id="cb21-2" data-line-number="2">timeSeg = <span class="fl">100</span>;              <span class="co">% 用来建立动态模型的数据长度</span></a>
+<a class="sourceLine" id="cb21-3" data-line-number="3">forecastLen = <span class="fl">10</span>;           <span class="co">% 定义预测的未来时间段范围</span></a>
+<a class="sourceLine" id="cb21-4" data-line-number="4">batchSize = <span class="fl">10</span>;             <span class="co">% 定义更新动态模型的数据块大小</span></a></code></pre></div>
+<p>如前所述，在建模前需要先找到应该设定的阈值，在基于前200条数据表征正常数据，其他数据表征故障数据的前提下，可以分别画出正常数据和故障数据得到的峰值频率均值的概率分布函数，代码如下：</p>
+<p>加载峰值频率均值数据（该数据来自另一次仿真，可以看作是更大的训练集数据）</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb22-1" data-line-number="1">load pdmBearingConditionMonitoringStatistics.mat</a></code></pre></div>
+</section>
+
+<section>
+<p>分别画出正常数据和故障数据的概率分布函数图像</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb23-1" data-line-number="1">plot(pFreq,pNormal,<span class="st">&#39;g--&#39;</span>,pFreq,pFaulty,<span class="st">&#39;r&#39;</span>);</a>
+<a class="sourceLine" id="cb23-2" data-line-number="2">xlabel(<span class="st">&#39;Mean peak frequency(Hz)&#39;</span>);</a>
+<a class="sourceLine" id="cb23-3" data-line-number="3">ylabel(<span class="st">&#39;Probability Distribution&#39;</span>);</a>
+<a class="sourceLine" id="cb23-4" data-line-number="4">legend(<span class="st">&#39;Normal Bearing&#39;</span>,<span class="st">&#39;Faulty Bearing&#39;</span>);</a></code></pre></div>
+<p align="center"><img src="..\HIDesign\probaDistribution.png" style="zoom:85%;" /></p>
+<p>从图上可以看出，2000 Hz可以作为区分正常数据和故障数据阈值时，可以把轴承使用到最大寿命</p>
+<p>此时，设定阈值为2000</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb24-1" data-line-number="1">threshold = <span class="fl">2000</span></a></code></pre></div>
+</section>
+
+<section>
+<p>之后准备初始动态模型的输入数据</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb25-1" data-line-number="1">samplingTime = <span class="fl">60</span>*(expTime(<span class="fl">2</span>)-expTime(<span class="fl">1</span>));                  <span class="co">% 单位：秒</span></a>
+<a class="sourceLine" id="cb25-2" data-line-number="2">tsFeature = iddata(meanPeakFreq(<span class="fl">1</span>:tStart),[],samplingTime); <span class="co">%将峰值频率均值数据存为iddata形式</span></a></code></pre></div>
+<p>其中<code>iddata</code>方法（<code>iddata</code>数据形式方便后续建模）用来建立包含200个训练样本的时域数据，每个样本的时间长度为<code>samplingTime</code>即600秒，即整个数据集的时间长度为200*600=120000 秒，共2000分钟</p>
+<p>画出前200个初始峰值频率均值如下：</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb26-1" data-line-number="1">plot(tsFeature.y)</a></code></pre></div>
+<p align="center"><img src="..\HIDesign\initMeanPeakFreq.png" style="zoom:80%;" /></p>
+<p>该图像显示，初始数据中包含了常量和噪点，此时的轴承处于健康状态，因为没有明显的瞬态波动出现</p>
+</section>
+
+<section>
+<p>此时引入一个二阶状态空间模型并使用前200个数据点建模，该模型采用经典形式并指定采样时间，该模型的公式表示如下： <span class="math display">$$
+\dot{x(t)}=Ax(t)+Bu(t)+Ke(t) \\
+y(t)=Cx(t)+Du(t)+e(t)
+$$</span> 其中<span class="math inline"><em>A</em></span>,<span class="math inline"><em>B</em></span>,<span class="math inline"><em>C</em></span>,<span class="math inline"><em>D</em></span>,<span class="math inline"><em>K</em></span>为待确定的模型系数矩阵，<span class="math inline"><em>u</em>(<em>t</em>)</span>为输入，<span class="math inline"><em>y</em>(<em>t</em>)</span>为输出，<span class="math inline"><em>x</em>(<em>t</em>)</span>为状态向量，<span class="math inline"><em>e</em>(<em>t</em>)</span>为随机扰动。代码如下：</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb27-1" data-line-number="1">past_sys = ssest(tsFeature,<span class="fl">2</span>,<span class="st">&#39;Ts&#39;</span>,samplingTime,<span class="st">&#39;Form&#39;</span>,<span class="st">&#39;canonical&#39;</span>)</a></code></pre></div>
+</section>
+
+<section>
+<p>得到如下系统模型：</p>
+<p align="center"><img src="..\HIDesign\sysPara.PNG" style="zoom: 120%;" /></p>
+</section>
+
+<section>
+<p>可以看出输入为空，只有输出，因此模型方程退化为： <br /><span class="math display">$$
+{x(t+Ts)}=Ax(t)+Ke(t) \\
+y(t)=Cx(t)+e(t)
+$$</span><br /> 此时的拟合优度比较低，仅有0.2763%。值得一提的是，此处的拟合优度度量指标使用归一均方根差，计算过程如下： <br /><span class="math display">$$
+NRMSE = 1-\frac{\parallel x_{true}-x_{pred}\parallel}{\parallel x_{true}-mean(x_{true})\parallel}
+$$</span><br /> <span class="math inline"><em>x</em><sub><em>t</em><em>r</em><em>u</em><em>e</em></sub></span>表示真值，<span class="math inline"><em>x</em><sub><em>p</em><em>r</em><em>e</em><em>d</em></sub></span>表示预测值。当预测的值由常量和噪点组成时，<span class="math inline"><em>x</em><sub><em>p</em><em>r</em><em>e</em><em>d</em></sub> ≈ <em>m</em><em>e</em><em>a</em><em>n</em>(<em>x</em><sub><em>t</em><em>r</em><em>u</em><em>e</em></sub>)</span>，此时的<span class="math inline"><em>N</em><em>R</em><em>M</em><em>S</em><em>E</em></span>近似于0。为了验证得到的该模型，可视化残值的自相关图像如下：</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb28-1" data-line-number="1">resid(tsFeature,past_sys)</a></code></pre></div>
+</section>
+
+<section>
+<p align="center"><img src="..\HIDesign\residualAR.png" style="zoom:120%;" /></p>
+<p>图像来看（浅蓝色标记的部分表示99%置信区间拒绝自相关假设），残差随时间延迟并未表现出相关性，说明数据的自相关性不存在，因此生成的回归模型有效</p>
+</section>
+
+<section>
+<p>之后，便可以使用识别模型<code>past_sys</code>预测峰值频率均值，同时可以计算预测值的标准差</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb29-1" data-line-number="1">[yF,~,~,yFSD] = forecast(past_sys,tsFeature,forecastLen);</a></code></pre></div>
+<p><code>tsFeature</code>表示初始模型使用的前200条数据得到的特征数据，<code>forecastLen</code>表示之前定义的预测序列长度，此处设置为10，表示模型每次使用最近的100个数据来预测之后的10个数据。返回的<code>yF</code>表示预测值，<code>yFSD</code>表示预测值的标准差。以下代码绘制预测值及预测值标准差图像：</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb30-1" data-line-number="1">tHistory = expTime(<span class="fl">1</span>:tStart);   <span class="co">%前200条数据作为初始训练数据</span></a>
+<a class="sourceLine" id="cb30-2" data-line-number="2">forecastTimeIdx = (tStart+<span class="fl">1</span>):(tStart+forecastLen); <span class="co">%接下来10条数据的索引</span></a>
+<a class="sourceLine" id="cb30-3" data-line-number="3">tForecast = expTime(forecastTimeIdx);  <span class="co">%接下来10条数据的时刻</span></a>
+<a class="sourceLine" id="cb30-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb30-5" data-line-number="5"><span class="co">% 绘制历史数据，预测值及预测值95%置信区间</span></a>
+<a class="sourceLine" id="cb30-6" data-line-number="6">plot(tHistory,meanPeakFreq(<span class="fl">1</span>:tStart),<span class="st">&#39;b&#39;</span>,...  <span class="co">%历史数据</span></a>
+<a class="sourceLine" id="cb30-7" data-line-number="7">     tForecast,yF.OutputData,<span class="st">&#39;kx&#39;</span>,...  <span class="co">%预测值</span></a>
+<a class="sourceLine" id="cb30-8" data-line-number="8">     [tHistory; tForecast], threshold*ones(<span class="fl">1</span>,length(tHistory)+forecastLen), <span class="st">&#39;r--&#39;</span>,...<span class="co">%阈值 </span></a>
+<a class="sourceLine" id="cb30-9" data-line-number="9">     tForecast,yF.OutputData+<span class="fl">1.96</span>*yFSD,<span class="st">&#39;g--&#39;</span>,... <span class="co">% 95%置信区间上界，95%对应1.96由查表得到</span></a>
+<a class="sourceLine" id="cb30-10" data-line-number="10">     tForecast,yF.OutputData-<span class="fl">1.96</span>*yFSD,<span class="st">&#39;g--&#39;</span>);  <span class="co">% 95%置信区间下界</span></a>
+<a class="sourceLine" id="cb30-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb30-12" data-line-number="12">ylim([<span class="fl">400</span>, <span class="fl">1.1</span>*threshold]);</a>
+<a class="sourceLine" id="cb30-13" data-line-number="13">ylabel(<span class="st">&#39;Mean peak frequency (Hz)&#39;</span>);</a>
+<a class="sourceLine" id="cb30-14" data-line-number="14">xlabel(<span class="st">&#39;Time (min)&#39;</span>);</a>
+<a class="sourceLine" id="cb30-15" data-line-number="15">legend({<span class="st">&#39;Past Data&#39;</span>, <span class="st">&#39;Forecast&#39;</span>, <span class="st">&#39;Failure Threshold&#39;</span>, <span class="st">&#39;95% C.I&#39;</span>},...</a>
+<a class="sourceLine" id="cb30-16" data-line-number="16">    <span class="st">&#39;Location&#39;</span>,<span class="st">&#39;northoutside&#39;</span>,<span class="st">&#39;Orientation&#39;</span>,<span class="st">&#39;horizontal&#39;</span>);</a>
+<a class="sourceLine" id="cb30-17" data-line-number="17">grid on;</a></code></pre></div>
+</section>
+
+<section>
+<p align="center"><img src="..\HIDesign\forecaseValue.png" style="zoom:120%;" /></p>
+<p>此时，预测得到的峰值频率均值远小于设定的阈值</p>
+</section>
+
+<section>
+<p>接下来，当有新数据进来时，重新预测健康状态指示量的值。同时，设置警告机制以提醒指示量超过阈值的情况</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb31-1" data-line-number="1">for tCur = tStart:batchSize:numSamples  <span class="co">%自初始位置开始遍历所有样本点</span></a>
+<a class="sourceLine" id="cb31-2" data-line-number="2">    <span class="co">%  将最近的100个数据生成为iddata对象</span></a>
+<a class="sourceLine" id="cb31-3" data-line-number="3">    tsFeature = iddata(meanPeakFreq((tCur-timeSeg+<span class="fl">1</span>):tCur),[],samplingTime);</a>
+<a class="sourceLine" id="cb31-4" data-line-number="4">    </a>
+<a class="sourceLine" id="cb31-5" data-line-number="5">    <span class="co">% 当新数据进来时，喂入之前的模型更新模型参数</span></a>
+<a class="sourceLine" id="cb31-6" data-line-number="6">    sys = ssest(tsFeature,past_sys);</a>
+<a class="sourceLine" id="cb31-7" data-line-number="7">    <span class="co">% 将之前的模型更新为当前模型，为下一次循环做准备</span></a>
+<a class="sourceLine" id="cb31-8" data-line-number="8">    past_sys = sys;</a>
+<a class="sourceLine" id="cb31-9" data-line-number="9">    </a>
+<a class="sourceLine" id="cb31-10" data-line-number="10">    <span class="co">% 预测更新后的状态空间模型的输出，同时计算预测值的标准差</span></a>
+<a class="sourceLine" id="cb31-11" data-line-number="11">    [yF,~,~,yFSD]  = forecast(sys, tsFeature, forecastLen);</a>
+<a class="sourceLine" id="cb31-12" data-line-number="12">    </a>
+<a class="sourceLine" id="cb31-13" data-line-number="13">    <span class="co">% 找到历史数据和预测值的时间轴</span></a>
+<a class="sourceLine" id="cb31-14" data-line-number="14">    tHistory = expTime(<span class="fl">1</span>:tCur);</a>
+<a class="sourceLine" id="cb31-15" data-line-number="15">    forecastTimeIdx = (tCur+<span class="fl">1</span>):(tCur+forecastLen);</a>
+<a class="sourceLine" id="cb31-16" data-line-number="16">    tForecast = expTime(forecastTimeIdx);</a>
+<a class="sourceLine" id="cb31-17" data-line-number="17">    </a>
+<a class="sourceLine" id="cb31-18" data-line-number="18">    <span class="co">% 绘制历史数据，预测的峰值频率均值和95%置信区间</span></a>
+<a class="sourceLine" id="cb31-19" data-line-number="19">    plot(tHistory,meanPeakFreq(<span class="fl">1</span>:tCur),<span class="st">&#39;b&#39;</span>,...</a>
+<a class="sourceLine" id="cb31-20" data-line-number="20">              tForecast,yF.OutputData,<span class="st">&#39;kx&#39;</span>,...</a>
+<a class="sourceLine" id="cb31-21" data-line-number="21">              [tHistory; tForecast], threshold*ones(<span class="fl">1</span>,length(tHistory)+forecastLen), <span class="st">&#39;r--&#39;</span>,...</a>
+<a class="sourceLine" id="cb31-22" data-line-number="22">              tForecast,yF.OutputData+<span class="fl">1.96</span>*yFSD,<span class="st">&#39;g--&#39;</span>,...</a>
+<a class="sourceLine" id="cb31-23" data-line-number="23">              tForecast,yF.OutputData-<span class="fl">1.96</span>*yFSD,<span class="st">&#39;g--&#39;</span>);</a>
+<a class="sourceLine" id="cb31-24" data-line-number="24"></a>
+<a class="sourceLine" id="cb31-25" data-line-number="25">    ylim([<span class="fl">400</span>, <span class="fl">1.1</span>*threshold]);</a>
+<a class="sourceLine" id="cb31-26" data-line-number="26">    ylabel(<span class="st">&#39;Mean peak frequency (Hz)&#39;</span>);</a>
+<a class="sourceLine" id="cb31-27" data-line-number="27">    xlabel(<span class="st">&#39;Time (min)&#39;</span>);</a>
+<a class="sourceLine" id="cb31-28" data-line-number="28">    legend({<span class="st">&#39;Past Data&#39;</span>, <span class="st">&#39;Forecast&#39;</span>, <span class="st">&#39;Failure Threshold&#39;</span>, <span class="st">&#39;95% C.I&#39;</span>},...</a>
+<a class="sourceLine" id="cb31-29" data-line-number="29">           <span class="st">&#39;Location&#39;</span>,<span class="st">&#39;northoutside&#39;</span>,<span class="st">&#39;Orientation&#39;</span>,<span class="st">&#39;horizontal&#39;</span>);</a>
+<a class="sourceLine" id="cb31-30" data-line-number="30">    grid on;</a>
+<a class="sourceLine" id="cb31-31" data-line-number="31">    </a>
+<a class="sourceLine" id="cb31-32" data-line-number="32">    <span class="co">% 当监测的变量或者说预测值超过阈值时，显示警告</span></a>
+<a class="sourceLine" id="cb31-33" data-line-number="33">    if(any(meanPeakFreq(tCur-batchSize+<span class="fl">1</span>:tCur)&gt;threshold))</a>
+<a class="sourceLine" id="cb31-34" data-line-number="34">        disp(<span class="st">&#39;Monitored variable exceeds failure threshold&#39;</span>);</a>
+<a class="sourceLine" id="cb31-35" data-line-number="35">        break;</a>
+<a class="sourceLine" id="cb31-36" data-line-number="36">    elseif(any(yF.y&gt;threshold))</a>
+<a class="sourceLine" id="cb31-37" data-line-number="37">        <span class="co">% 估计系统到达故障阈值的时刻</span></a>
+<a class="sourceLine" id="cb31-38" data-line-number="38">        tAlarm = tForecast(find(yF.y&gt;threshold,<span class="fl">1</span>));</a>
+<a class="sourceLine" id="cb31-39" data-line-number="39">        disp([<span class="st">&#39;Estimated to hit failure threshold in &#39;</span> num2str(tAlarm-tHistory(end)) <span class="st">&#39; minutes from now.&#39;</span>]);</a>
+<a class="sourceLine" id="cb31-40" data-line-number="40">        break;</a>
+<a class="sourceLine" id="cb31-41" data-line-number="41">    end</a>
+<a class="sourceLine" id="cb31-42" data-line-number="42">end</a></code></pre></div>
+</section>
+
+<section>
+<p align="center"><img src="..\HIDesign\forecastValueToEnd.png" style="zoom:100%;" /></p>
+</section>
+<section>
+<p>此时，查看当前的模型状态</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb32-1" data-line-number="1">sys</a></code></pre></div>
+<p align="center"><img src="..\HIDesign\finalModel.PNG" style="zoom:100%;" /></p>
+<p>此时的拟合优度达到92.53%，证明模型预测得到的结果可信，即此时到达了预警故障的时刻，发出故障预警信息</p>
+
+</section>
+</section>
+<section>
+<p style="font-size:44px;">参考：</strong><a href="https://ww2.mathworks.cn/help/predmaint/ug/condition-monitoring-and-prognostics-using-vibration-signals.html" target="_blank">https://ww2.mathworks.cn/help/predmaint/ug/condition-monitoring-and-prognostics-using-vibration-signals.html</a></p>
+</section>
+	    </div>
+  </div>
+
+  <script src="../reveal.js/lib/js/head.min.js"></script>
+  <script src="../reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Push each slide change to the browser history
+        history: true,
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: '../reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: '../reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: '../reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>

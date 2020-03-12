@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>MATLAB 预测性维护工具箱简介</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="reveal.js/css/reveal.css">
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="reveal.js/css/theme/solarized.css" id="theme">
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+    </script>
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+  <!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+	
+<section id="matlab-预测性维护工具箱简介" class="slide level1" style="font-size:36px;text-align:left;">
+<h3 style="text-align:center;">MATLAB 预测性维护工具箱简介</h3>
+<p><strong>用途：</strong>本工具箱可标记数据、设计寿命健康因子并预测机器剩余寿命</p>
+<p><strong>主要功能：</strong>探索、提取数据特征并按指定的指标做出特征排序，相关技术包括基于数据和基于模型的方法，如统计分析、时频域分析。简单的寿命监控例子包括通过从振动数据的时频特征提取，监控转动机器的轴承或变速箱的健康状况。对于预测寿命可使用生存模型、相似性模型和基于趋势分析的模型预测剩余寿命</p>
+<div class="fragment">
+<p><strong>主要模块：</strong>数据管理、数据预处理、健康状况指标识别、检测和预测故障、预测剩余寿命、部署算法</p>
+<p><strong>数据导入方式：</strong>本地、云储存、分布式文件系统、Simulink仿真数据</p>
+<p><strong>主要部件：</strong>预测性维护工具箱主要由Signal Processing Toolbox，Statistic and Machine Learning Toolbox，System Identification Toolbox组成，大部分函数都可以在这三个工具箱中找到</p>
+</div>
+<p class="fragment">下面介绍仅包含在Predictive Maintenance Toolbox中的函数，同时给出各个模块对应的功能样例和几个与实际生产过程相关的应用案例</p>
+</section>
+
+<section id="工具箱新增函数" class="slide level1">
+
+<h3>1. 工具箱函数（主要介绍新增函数）</h3>
+</section>
+<section style="font-size:36px;text-align:left;">
+<h4 id="数据管理">1.1. 数据管理</h4>
+<p ><code>fileEnsembleDatastore</code>用来读取文件夹中符合文件扩展形式的所有数据文件，如</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb1-1" data-line-number="1">fensemble = fileEnsembleDatastore(<span class="st">&#39;D:\RQMS\电流传感器故障\data\ERX5\&#39;</span>,<span class="st">&#39;.csv&#39;</span>)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">fensemble = fileEnsembleDatastore(<span class="st">&#39;D:\RQMS\电流传感器故障\data\ERX5\&#39;</span>,<span class="st">&#39;.csv&#39;</span>,<span class="st">&#39;ConditionVariables&#39;</span>,[&quot;FaultCond&quot;;&quot;ID&quot;])</a></code></pre></div>
+<div class="fragment">
+<p>此时结果<code>fensemble</code>具有以下属性，属于object类型</p>
+<p align="center"><img data-src="other_pics\image-20200122094152378.png" /></p>
+</div>
+<div class="fragment">
+<p>之后的几个函数都是基于这个<code>fileEnsembleDatastore</code>展开的操作</p>
+<p><code>simulationEnsembleDatastore</code>直接从<code>simulink</code>模型中读取数据到对象中，其中<code>generateSimulationEnsemble</code>函数直接用来读取<code>simulink</code>数据</p>
+<p><code>read</code>和<code>writeToLastMemberRead</code>同属于对数据存储对象操作的函数，分别为从集成的数据存储中读取一部分子数据集和写数据到集成数据集中的某一子数据集中</p>
+</div>
+</section>
+</section>
+
+<section style="font-size:36px;text-align:left;">
+<h4 id="数据预处理" style="margin-top:20px;">1.2. 数据预处理</h4>
+<p>本文档仅介绍预测性维护工具箱新引入的函数，对于包含在别的工具箱中用到的函数不加介绍</p>
+<section>
+<br></br>
+<p><strong>信号分析函数</strong></p>
+
+<div class="fragment">
+<ul style="display:felx;font-size:28px;">
+<li><p><code>tsadifference</code>，时间同步平均信号的差分信号</p>
+<figure align="center">
+<img data-src="TSA/FindAndVisualizeTheDifferenceSignalOfACompoundTSASignalExample_02.png" alt="img" />
+</figure></li>
+</ul>
+
+<ul style="display:felx;font-size:28px;">
+<li><p><code>tsaregular</code>，时间同步平均信号的正则信号</p></li>
+<figure align="center">
+<img data-src="TSA/FindAndVisualizeTheRegularSignalOfACompoundTSASignalExample_02.png" alt="img" />
+</figure>
+</ul>
+
+<ul style="display:felx;font-size:28px;">
+<li><p><code>tsaresidual</code>，时间同步平均信号的残值信号</p>
+<figure align="center">
+<img data-src="TSA/FindAndVisualizeTheResidualOfATSASignalExample_02.png" alt="img" />
+</figure></li>
+</ul>
+</div>
+<div class="fragment">
+<p>使用形式：</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb2-1" data-line-number="1">Y = tsa__(X,fs,rpm,orderList)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">Y = tsa__(X,t,rpm,orderList)</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">Y = tsa__(XT,rpm,orderList)</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">[Y,S] = tsa__(___)</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">___ = tsa__(___)</a></code></pre></div>
+<p>其中，X表示mat形式的时间同步平均信号，XT表示timetable形式的时间同步平均信号，fs表示TSA信号的采样频率，t表示采样时间，rpm表示机器转速，orderList表示需要在TSA信号中被滤除的阶数</p>
+</div>
+
+</section>
+
+<section>
+<br></br>
+<p><strong>频率带生成函数</strong></p>
+<div class="fragment">
+<ul>
+<li><p><code>bearingFaultBands</code>，围绕滚珠或滚子轴承的特征故障频率生成频带或进行光谱特征提取</p></li>
+<li><p><code>gearMeshFaultBands</code>，围绕啮合齿轮的特征故障频率构造频带或进行频谱特征提取</p></li>
+<li><p><code>faultBands</code>，生成故障频带进行光谱特征提取</p></li>
+</ul>
+</div>
+<div class="fragment">
+<p>前两个函数的输入参数都有赖于轴承或者齿轮的参数，非常具有特异性，不具有普遍性，就不展开细述</p>
+<p><code>faultBands</code>主要基于机器的基础频率和基础频率的谐振得出故障频率带，示例如下</p>
+<ul style="zoom:125%;">
+<div class="sourceCode" id="cb3" style="width:600px;align:right;"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb3-1" data-line-number="1">F0 = <span class="fl">60</span>;  <span class="co">%故障频率为60Hz</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">N0 = <span class="fl">1</span>:<span class="fl">2</span>; <span class="co">%基频谐波</span></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">slip = <span class="fl">0.03</span>; </a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">F1 = <span class="fl">2</span>*slip*F0; <span class="co">%第一边到基频的距离</span></a>
+<a class="sourceLine" id="cb3-5" data-line-number="5">N1 = <span class="fl">1</span>:<span class="fl">3</span>; <span class="co">%基频边带及其谐波</span></a></code></pre></div>
+</ul>
+<ul>
+<div class="sourceCode" id="cb4"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb4-1" data-line-number="1">faultBands(F0,N0)</a></code></pre></div>
+<p><img src="faultBand\withoutSideband.jpg" style="zoom:75%;" /></p>
+</ul>
+
+<ul>
+<div class="sourceCode" id="cb5"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb5-1" data-line-number="1">faultBands(F0,N0,F1,N1)</a></code></pre></div>
+<p><img src="faultBand\withSideband.jpg" style="zoom: 75%;" /></p>
+</ul>
+</div>
+</section>
+</section>
+
+<section style="font-size:36px;text-align:left;">
+<h4 id="健康状况指标识别">1.3. 健康状况指标识别</h4>
+<section>
+<p><strong>表征混沌运动过程</strong></p>
+<p><code>phaseSpaceReconstruction</code>，将观测到的时间序列转化为状态向量，将作为下列<code>approximateEntropy</code>，<code>correlationDimension</code>，<code>lyapunovExponent</code>三项指标计算的第一步。最终求得三个值，空间重构后的数据<code>XR</code>，预计的延迟值<code>eLag</code>，嵌入维度<code>eDim</code>。例如某个空间重构后的时序数据在求得<code>eLag</code>和<code>eDim</code>后的图像如下</p>
+<p align="center"><img src="Condition Indicator\phaseSpaceReconstruction.jpg" style="zoom:80%;"/></p>
+<p>其中<span class="math inline"><em>x</em><sub>1</sub>(<em>t</em>), <em>x</em><sub>1</sub>(<em>t</em> + 10), <em>x</em><sub>1</sub>(<em>t</em> + 20)</span> 中的<span class="math inline">10, 20</span>表示相位差，即<code>eLag</code>产生的结果</p>
+</section>
+<section>
+<p><code>approximateEntropy</code>，近似熵，用来计算非线性时间序列正则性测度。简单来说信号的随机性越高，正则性越低，近似熵越小，反之越大。对于时序信号数据可直接使用该函数，对于观测到的数据，可使用上述相空间重构函数重构数据并得到<code>eLag</code>和<code>eDim</code>后带入函数求得近似熵。</p>
+<p><code>correlationDimension</code>，混沌信号的复杂度度量指标</p>
+<p><code>lyapunovExponent</code>，李雅普诺夫指数，表示相空间相邻轨迹的平均指数发散率的数值特征，用于识别混沌运动的指标之一</p>
+<div class="fragment">
+<p><strong>时序数据的频谱特征分析</strong></p>
+<p><code>faultBandMetrics</code>，针对功率谱中特定故障频率带的频谱指标</p>
+<p><code>gearConditionMetrcs</code>，齿轮状态监控的标准指标</p>
+<p><code>tfmoment</code>，信号时频分布的联合力矩</p>
+<p><code>tfsmoment</code>，信号时频分布的条件谱矩</p>
+<p><code>tftmoment</code>，信号时频分布的条件时间矩</p>
+</div>
+</section>
+</section>
+<section style="font-size:36px;text-align:left;">
+<h4 id="检测预测故障和寿命预测">1.4. 检测、预测故障和寿命预测</h4>
+<p>主要分为趋势分析方法、模型和具有其他辅助功能的函数</p>
+<section>
+<p><strong>趋势分析</strong></p>
+<p><code>monotonicity</code>，对健康状况指标单调性的量化指标，标准为0-1，0表示无单调性，1表示完全单调。输入数据类型为<code>cell</code>,<code>table</code>,<code>timetable</code>,<code>tall</code>, <code>fileEnsembleDatastore</code>，样例如下</p>
+<p align="center"><img src="monotonicity\multiVar.jpg" alt="多条数据" style="zoom: 70%;" />&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<img src="monotonicity\trend.jpg" alt="单调性分析" style="zoom:84%;" /></p>
+</section>
+<section style="font-size:30px;">
+
+<p><code>prognosability</code>，度量失效时健康状况指标的可预测性，原理是可预测特征在初始值和终值之间的范围具有更小的可变性，数据依据为多次全寿命周期测得的该时序数据的特征轨迹。之后可以从可预测性大的特征入手构造健康状况指标。数值范围0-1，0表示不可预测，1表示完全可预测。样例如下</p>
+<p align="center"><img src="monotonicity\multiVar.jpg" alt="多条数据" style="zoom: 58%;" />&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<img src="monotonicity\prognosability.jpg" alt="可预测性样例" style="zoom: 72%" /></p>
+
+<p><code>trendability</code>，度量健康状况指标轨迹间的相似性。数值为0-1之间，0表示无趋势，1表示趋势明显。样例如下</p>
+<p align="center"><img src="monotonicity\multiVar.jpg" alt="多条数据" style="zoom: 58%;" />&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<img src="monotonicity\trendability.jpg" alt="趋势性样例" style="zoom:72%;" /></p>
+
+</section>
+<section>
+<p><strong>模型</strong></p>
+<p><code>exponentialDegradationModel</code>，对RUL预测建立指数退化模型</p>
+<p><code>linearDegradationModel</code>，对RUL预测建立线性退化模型</p>
+<p><code>hashSimilarityModel</code>，用于预测RUL的散列特征相似性模型，散列特征相似性模型将每个训练数据的退化曲线数据转换为一系列散列特征，例如数据的平均值、标准差、峰值、功率、最小值或最大值</p>
+<p><code>pairwiseSimilarityModel</code>，基于两两比较（用测试数据的相似性曲线和训练数据的相似性曲线进行两两对比）的用于预测RUL的相似性模型，计算原理为相关性或动态时间规整</p>
+<p><code>residualSimilarityModel</code>，基于残值对比的用于预测RUL的相似性模型，需事先给定部件退化模型，然后基于该模型对所有退化数据做拟合，得出拟合模型和给定模型的残差，以此为依据预测RUL</p>
+<p><code>covarianteSurvivalModel</code>，评估剩余使用寿命的比例风险生存模型，该模型使用关于组件寿命和相关协变量的历史信息来描述测试组件的生存概率</p>
+<p><code>reliabilitySurvialModel</code>，建立部件失效时间的概率分布，估计剩余使用寿命的概率失效时间模型</p>
+<p>以上模型使用的共同前提是，有一组相似部件的全寿命失效模型数据，如多台在被生产制造出来时具有相同配置的机器</p>
+</section>
+<section>
+<p><strong>其他功能函数</strong></p>
+<p><code>predictRUL</code>，预测RUL，与上述模型搭配使用</p>
+<p><code>compare</code>，为相似性模型比较测试数据和历史训练数据，样例如下，黄色曲线为测试数据</p>
+<p align="center"><img src="monotonicity\compare.jpg" alt="相似性比较" style="zoom:72%;" /></p>
+<p><code>fit</code>，模型拟合</p>
+<p><code>restart</code>，重置RUL预测的退化模型</p>
+<p><code>update</code>，使用最新的退化过程测量数据，更新退化剩余寿命模型的后验参数分布</p>
+</section>
+</section>
+
+<section style="font-size:36px;text-align:left;">
+<h4 id="部署算法">1.5. 部署算法</h4>
+<p>主要有<code>codegen</code>和<code>mcc</code>两种方式，第一种直接从<code>matlab</code>代码生成<code>C/C++</code>代码，第二种编译<code>matlab</code>函数进行部署</p>
+<p><code>codegen</code>： 具体内容和配置可以在Matlab Coder App中完成，随后生成指定文件</p>
+<p><code>mcc</code>：</p>
+<ul>
+<li><code>mcc options mfilename1 mfilename2...mfilenameN</code>直接用来编译</li>
+<li><code>mcc -m options mfilename</code>和<code>mcc -e options mfilename</code>用来生成单一<code>.exe</code>程序</li>
+<li><code>mcc -H -W hadoop:archiveName,CONFIG:configFile</code>用来生成Hadoop集群可执行的程序</li>
+</ul>
+</section>
+</section>
+<section>
+<h1>Thank You !!</h1>
+<p><a href="案例目录.html" target="_blank">点我查看案例展示</a></p>
+</section>
+</div>
+  </div>
+  <script src="reveal.js/lib/js/head.min.js"></script>
+  <script src="reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Push each slide change to the browser history
+        history: true,
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>

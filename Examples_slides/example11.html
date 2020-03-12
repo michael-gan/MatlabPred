@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>案例11</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../reveal.js/css/reveal.css">
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../reveal.js/css/theme/beige.css" id="theme">
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? '../reveal.js/css/print/pdf.css' : '../reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+    </script>
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+  <!--[if lt IE 9]>
+  <script src="../reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+	<section>
+<h2 id="案例11基于相似性的剩余寿命估计">案例11：基于相似性的剩余寿命估计</h2>
+</section>
+<section align=left>
+<p>本案例将展示出构建剩余寿命估计的完整工作流，包括数据预处理、选择趋势特征、通过传感器融合构建健康因子、训练剩余寿命估计模型并评估模型预测能力。本案例使用的数据来自PHM2008的挑战赛数据，可通过以下NASA的链接下载本数据集<a href="https://ti.arc.nasa.gov/tech/dash/groups/pcoe/prognostic-data-repository/" target="_blank">https://ti.arc.nasa.gov/tech/dash/groups/pcoe/prognostic-data-repository/</a></p>
+</section>
+<section align=left>
+<h4 id="第一步数据准备"><strong>第一步：数据准备</strong></h4>
+<section>
+<p>由于本数据集较小，因此可以将整个数据集都导入到内存中。之后可以通过<code>helperLoadData</code>辅助函数将训练数据文件中的数据导入到<code>timetable</code>型的<code>cell</code>数组中。训练数据包含了218条运行至失效的模拟数据，测量数据的组合被称为集成数据<code>ensemble</code></p>
+<p><code>helperLoadData</code>辅助函数如下：</p>
+<div class="sourceCode" id="cb212"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb212-1" data-line-number="1">function degradationData = helperLoadData(filename)</a>
+<a class="sourceLine" id="cb212-2" data-line-number="2"><span class="co">% Load degradation data from text file and convert to cell array of tables.</span></a>
+<a class="sourceLine" id="cb212-3" data-line-number="3"><span class="co">%</span></a>
+<a class="sourceLine" id="cb212-4" data-line-number="4"><span class="co">% This function supports the Similarity-based Remaining Useful Life</span></a>
+<a class="sourceLine" id="cb212-5" data-line-number="5"><span class="co">% Estimation example. It may change in a future release.</span></a>
+<a class="sourceLine" id="cb212-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb212-7" data-line-number="7"><span class="co">% Copyright 2017-2018 The MathWorks, Inc.</span></a>
+<a class="sourceLine" id="cb212-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb212-9" data-line-number="9"><span class="co">% 导入文本数据为table</span></a>
+<a class="sourceLine" id="cb212-10" data-line-number="10">t = readtable(filename);</a>
+<a class="sourceLine" id="cb212-11" data-line-number="11">t(:,end) = []; <span class="co">%忽略数据的最后一列，因为它们都是空的&#39;&#39;</span></a>
+<a class="sourceLine" id="cb212-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb212-13" data-line-number="13"><span class="co">% 添加列标签</span></a>
+<a class="sourceLine" id="cb212-14" data-line-number="14">VarNames = {...</a>
+<a class="sourceLine" id="cb212-15" data-line-number="15">    <span class="st">&#39;id&#39;</span>, <span class="st">&#39;time&#39;</span>, <span class="st">&#39;op_setting_1&#39;</span>, <span class="st">&#39;op_setting_2&#39;</span>, <span class="st">&#39;op_setting_3&#39;</span>, ...</a>
+<a class="sourceLine" id="cb212-16" data-line-number="16">    <span class="st">&#39;sensor_1&#39;</span>, <span class="st">&#39;sensor_2&#39;</span>, <span class="st">&#39;sensor_3&#39;</span>, <span class="st">&#39;sensor_4&#39;</span>, <span class="st">&#39;sensor_5&#39;</span>, ...</a>
+<a class="sourceLine" id="cb212-17" data-line-number="17">    <span class="st">&#39;sensor_6&#39;</span>, <span class="st">&#39;sensor_7&#39;</span>, <span class="st">&#39;sensor_8&#39;</span>, <span class="st">&#39;sensor_9&#39;</span>, <span class="st">&#39;sensor_10&#39;</span>, ...</a>
+<a class="sourceLine" id="cb212-18" data-line-number="18">    <span class="st">&#39;sensor_11&#39;</span>, <span class="st">&#39;sensor_12&#39;</span>, <span class="st">&#39;sensor_13&#39;</span>, <span class="st">&#39;sensor_14&#39;</span>, <span class="st">&#39;sensor_15&#39;</span>, ...</a>
+<a class="sourceLine" id="cb212-19" data-line-number="19">    <span class="st">&#39;sensor_16&#39;</span>, <span class="st">&#39;sensor_17&#39;</span>, <span class="st">&#39;sensor_18&#39;</span>, <span class="st">&#39;sensor_19&#39;</span>, <span class="st">&#39;sensor_20&#39;</span>, ...</a>
+<a class="sourceLine" id="cb212-20" data-line-number="20">    <span class="st">&#39;sensor_21&#39;</span>};</a>
+<a class="sourceLine" id="cb212-21" data-line-number="21">t.Properties.VariableNames = VarNames;</a>
+<a class="sourceLine" id="cb212-22" data-line-number="22"></a>
+<a class="sourceLine" id="cb212-23" data-line-number="23"><span class="co">% 根据id，将数据分为不同的时序数据存入table中，并将table数据组合成cell数据</span></a>
+<a class="sourceLine" id="cb212-24" data-line-number="24">IDs = t{:,<span class="fl">1</span>};</a>
+<a class="sourceLine" id="cb212-25" data-line-number="25">nID = unique(IDs);</a>
+<a class="sourceLine" id="cb212-26" data-line-number="26">degradationData = cell(numel(nID),<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb212-27" data-line-number="27">for ct=<span class="fl">1</span>:numel(nID)</a>
+<a class="sourceLine" id="cb212-28" data-line-number="28">    idx = IDs == nID(ct);</a>
+<a class="sourceLine" id="cb212-29" data-line-number="29">    degradationData{ct} = t(idx,:);</a>
+<a class="sourceLine" id="cb212-30" data-line-number="30">end</a>
+<a class="sourceLine" id="cb212-31" data-line-number="31">end</a></code></pre></div>
+</section>
+<section align=left>
+<p>导入数据：</p>
+<div class="sourceCode" id="cb213"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb213-1" data-line-number="1">degradationData = helperLoadData(<span class="st">&#39;Challenge_Data/train.txt&#39;</span>);  <span class="co">% 数据存储的路径</span></a>
+<a class="sourceLine" id="cb213-2" data-line-number="2">degradationData(<span class="fl">1</span>:<span class="fl">5</span>)</a></code></pre></div>
+<p align=center><img src="..\rulPred\PHMdata.PNG" style="zoom:90%;" /></p>
+<p>每个集成数据中的元素都是一个<code>table</code>，包含了26列数据，列分别表示机械ID、时间戳、3种操作工况量、21种传感器测量量，如下：</p>
+<div class="sourceCode" id="cb214"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb214-1" data-line-number="1">head(degradationData{<span class="fl">1</span>})</a></code></pre></div>
+<p align=center><img src="..\rulPred\degradationDataDemo.PNG" style="zoom:100%;" /></p>
+</section>
+<section align=left>
+<p>接下来，将退化数据划分为训练数据集和验证数据集，以便验证模型表现</p>
+<div class="sourceCode" id="cb215"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb215-1" data-line-number="1">rng(<span class="st">&#39;default&#39;</span>)  <span class="co">% 设置随机种子</span></a>
+<a class="sourceLine" id="cb215-2" data-line-number="2">numEnsemble = length(degradationData);</a>
+<a class="sourceLine" id="cb215-3" data-line-number="3">numFold = <span class="fl">5</span>;</a>
+<a class="sourceLine" id="cb215-4" data-line-number="4">cv = cvpartition(numEnsemble, <span class="st">&#39;KFold&#39;</span>, numFold);  <span class="co">% 划分训练-验证集</span></a>
+<a class="sourceLine" id="cb215-5" data-line-number="5">trainData = degradationData(training(cv, <span class="fl">1</span>));</a>
+<a class="sourceLine" id="cb215-6" data-line-number="6">validationData = degradationData(test(cv, <span class="fl">1</span>));</a></code></pre></div>
+<p>为变量分组</p>
+<div class="sourceCode" id="cb216"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb216-1" data-line-number="1">varNames = string(degradationData{<span class="fl">1</span>}.Properties.VariableNames);</a>
+<a class="sourceLine" id="cb216-2" data-line-number="2">timeVariable = varNames{<span class="fl">2</span>};  <span class="co">% 第2列为时间戳</span></a>
+<a class="sourceLine" id="cb216-3" data-line-number="3">conditionVariables = varNames(<span class="fl">3</span>:<span class="fl">5</span>);  <span class="co">% 第3-5列为工况量</span></a>
+<a class="sourceLine" id="cb216-4" data-line-number="4">dataVariables = varNames(<span class="fl">6</span>:<span class="fl">26</span>);  <span class="co">% 第6-26列为传感器测量量</span></a></code></pre></div>
+
+<p>使用辅助函数<code>helperPlotEnsemble</code>可视化查看集成数据中的一组数据</p>
+</section>
+<section align=left>
+<p>辅助函数为：</p>
+<div class="sourceCode" id="cb217"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb217-1" data-line-number="1">function helperPlotEnsemble(ensemble, TimeVariable, DataVariables, nsample, varargin)</a>
+<a class="sourceLine" id="cb217-2" data-line-number="2"><span class="co">% HELPERPLOTENSEMBLE Helper function to plot ensemble data</span></a>
+<a class="sourceLine" id="cb217-3" data-line-number="3"><span class="co">%</span></a>
+<a class="sourceLine" id="cb217-4" data-line-number="4"><span class="co">% This function supports the Similarity-based Remaining Useful Life</span></a>
+<a class="sourceLine" id="cb217-5" data-line-number="5"><span class="co">% Estimation example. It may change in a future release.</span></a>
+<a class="sourceLine" id="cb217-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb217-7" data-line-number="7"><span class="co">% Copyright 2017-2018 The MathWorks, Inc.</span></a>
+<a class="sourceLine" id="cb217-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb217-9" data-line-number="9"><span class="co">% 集成数据为矩阵、时间表或表格的cell型数组</span></a>
+<a class="sourceLine" id="cb217-10" data-line-number="10">randIdx = randperm(length(ensemble));</a>
+<a class="sourceLine" id="cb217-11" data-line-number="11">ensembleSample = ensemble(randIdx(<span class="fl">1</span>:nsample));</a>
+<a class="sourceLine" id="cb217-12" data-line-number="12">numData = length(DataVariables);</a>
+<a class="sourceLine" id="cb217-13" data-line-number="13">for i = <span class="fl">1</span>:numData</a>
+<a class="sourceLine" id="cb217-14" data-line-number="14">    data2plot = DataVariables(i);</a>
+<a class="sourceLine" id="cb217-15" data-line-number="15">    subplot(numData, <span class="fl">1</span>, i)</a>
+<a class="sourceLine" id="cb217-16" data-line-number="16">    hold on</a>
+<a class="sourceLine" id="cb217-17" data-line-number="17">    for j = <span class="fl">1</span>:length(ensembleSample)</a>
+<a class="sourceLine" id="cb217-18" data-line-number="18">        ensembleMember = ensembleSample{j};</a>
+<a class="sourceLine" id="cb217-19" data-line-number="19">        if isa(ensembleMember, <span class="st">&#39;double&#39;</span>)</a>
+<a class="sourceLine" id="cb217-20" data-line-number="20">            <span class="co">% 时间变量和数据变量为double型</span></a>
+<a class="sourceLine" id="cb217-21" data-line-number="21">            if isempty(TimeVariable)</a>
+<a class="sourceLine" id="cb217-22" data-line-number="22">                plot(ensembleMember(:, DataVariables), varargin{:})</a>
+<a class="sourceLine" id="cb217-23" data-line-number="23">            else</a>
+<a class="sourceLine" id="cb217-24" data-line-number="24">                plot(ensembleMember(:, TimeVariable), ensembleMember(:, DataVariables), varargin{:})</a>
+<a class="sourceLine" id="cb217-25" data-line-number="25">            end</a>
+<a class="sourceLine" id="cb217-26" data-line-number="26">            xlblstr = &quot;time&quot;;</a>
+<a class="sourceLine" id="cb217-27" data-line-number="27">            ylblstr = &quot;Var &quot; + data2plot;</a>
+<a class="sourceLine" id="cb217-28" data-line-number="28">        else</a>
+<a class="sourceLine" id="cb217-29" data-line-number="29">            <span class="co">% 集成数据中的元素为table型</span></a>
+<a class="sourceLine" id="cb217-30" data-line-number="30">            plot(ensembleMember.(char(TimeVariable)), ensembleMember.(char(data2plot)), varargin{:})</a>
+<a class="sourceLine" id="cb217-31" data-line-number="31">            xlblstr = TimeVariable;</a>
+<a class="sourceLine" id="cb217-32" data-line-number="32">            ylblstr = data2plot;</a>
+<a class="sourceLine" id="cb217-33" data-line-number="33">        end</a>
+<a class="sourceLine" id="cb217-34" data-line-number="34">    end</a>
+<a class="sourceLine" id="cb217-35" data-line-number="35">    hold off</a>
+<a class="sourceLine" id="cb217-36" data-line-number="36">    ylabel(ylblstr, <span class="st">&#39;Interpreter&#39;</span>, <span class="st">&#39;none&#39;</span>)</a>
+<a class="sourceLine" id="cb217-37" data-line-number="37">end</a>
+<a class="sourceLine" id="cb217-38" data-line-number="38">xlabel(xlblstr)</a>
+<a class="sourceLine" id="cb217-39" data-line-number="39">end</a></code></pre></div>
+</section>
+<section align=left>
+<div class="sourceCode" id="cb218"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb218-1" data-line-number="1">nsample = <span class="fl">10</span>;</a>
+<a class="sourceLine" id="cb218-2" data-line-number="2">figure</a>
+<a class="sourceLine" id="cb218-3" data-line-number="3"><span class="co">% 仅画出10组数据中的前2个工况量和传感器测量量</span></a>
+<a class="sourceLine" id="cb218-4" data-line-number="4">helperPlotEnsemble(trainData, timeVariable, ...</a>
+<a class="sourceLine" id="cb218-5" data-line-number="5">    [conditionVariables(<span class="fl">1</span>:<span class="fl">2</span>) dataVariables(<span class="fl">1</span>:<span class="fl">2</span>)], nsample)  </a></code></pre></div>
+
+<p align=center><img src="..\rulPred\PlotEnsemblerMember.png" style="zoom: 120%;" /></p>
+<p>从图上可以看出，仅凭图中的信息完全看不出传感器的变化趋势</p>
+</section>
+</section>
+<section align=left>
+<h4 id="第二步按工况聚类"><strong>第二步：按工况聚类</strong></h4>
+<section>
+<p>本节中，将从原始的传感器数据中根据运行工况提取清晰的退化趋势</p>
+<p>注意到，每个集成数据中的元素都包含了三个工况量，”op_setting_1“、”op_setting_2“、”op_setting_3“。首先可以将每个元素中的所有量提取出来并组合成一个新的<code>table</code></p>
+<div class="sourceCode" id="cb219"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb219-1" data-line-number="1">trainDataUnwrap = vertcat(trainData{:});  <span class="co">% 包含所有量</span></a>
+<a class="sourceLine" id="cb219-2" data-line-number="2">opConditionUnwrap = trainDataUnwrap(:, cellstr(conditionVariables));  <span class="co">% 仅包含工况量</span></a></code></pre></div>
+<p>之后借助辅助函数<code>helperPlotClusters</code>将操作工况量画成3D散点图，从图中可以清晰地看出所有数据呈现出6种不同的操作工况，并且每种工况中的样本点都聚拢得非常紧</p>
+<p><code>helperPlotClusters</code>辅助函数如下：</p>
+<div class="sourceCode" id="cb220"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb220-1" data-line-number="1">function helperPlotClusters(X, idx, C)</a>
+<a class="sourceLine" id="cb220-2" data-line-number="2"><span class="co">% HELPERPLOTCLUSTER Helper function for cluster plotting</span></a>
+<a class="sourceLine" id="cb220-3" data-line-number="3"><span class="co">%</span></a>
+<a class="sourceLine" id="cb220-4" data-line-number="4"><span class="co">% This function supports the Similarity-based Remaining Useful Life</span></a>
+<a class="sourceLine" id="cb220-5" data-line-number="5"><span class="co">% Estimation example. It may change in a future release.</span></a>
+<a class="sourceLine" id="cb220-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb220-7" data-line-number="7"><span class="co">% Copyright 2017-2018 The MathWorks, Inc.</span></a>
+<a class="sourceLine" id="cb220-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb220-9" data-line-number="9">if(nargin&gt;<span class="fl">1</span>)</a>
+<a class="sourceLine" id="cb220-10" data-line-number="10">    hold on</a>
+<a class="sourceLine" id="cb220-11" data-line-number="11">    for i = <span class="fl">1</span>:max(idx)</a>
+<a class="sourceLine" id="cb220-12" data-line-number="12">        scatter3(X{idx==i,<span class="fl">1</span>}, X{idx==i,<span class="fl">2</span>}, X{idx==i,<span class="fl">3</span>});</a>
+<a class="sourceLine" id="cb220-13" data-line-number="13">    end</a>
+<a class="sourceLine" id="cb220-14" data-line-number="14">    scatter3(C(:,<span class="fl">1</span>),C(:,<span class="fl">2</span>),C(:,<span class="fl">3</span>), <span class="st">&#39;x&#39;</span>, <span class="st">&#39;MarkerFaceColor&#39;</span>, [<span class="fl">0</span> <span class="fl">0</span> <span class="fl">0</span>], ...</a>
+<a class="sourceLine" id="cb220-15" data-line-number="15">        <span class="st">&#39;MarkerEdgeColor&#39;</span>, [<span class="fl">0</span> <span class="fl">0</span> <span class="fl">0</span>], <span class="st">&#39;LineWidth&#39;</span>, <span class="fl">2</span>);</a>
+<a class="sourceLine" id="cb220-16" data-line-number="16">    legendStr = [&quot;Cluster &quot;+(<span class="fl">1</span>:<span class="fl">6</span>), &quot;Centroids&quot;];</a>
+<a class="sourceLine" id="cb220-17" data-line-number="17">    legend(cellstr(legendStr), <span class="st">&#39;Location&#39;</span>, <span class="st">&#39;NW&#39;</span>);</a>
+<a class="sourceLine" id="cb220-18" data-line-number="18">    hold off</a>
+<a class="sourceLine" id="cb220-19" data-line-number="19">    view(-<span class="fl">30</span>,<span class="fl">30</span>)</a>
+<a class="sourceLine" id="cb220-20" data-line-number="20">    grid on</a>
+<a class="sourceLine" id="cb220-21" data-line-number="21">else</a>
+<a class="sourceLine" id="cb220-22" data-line-number="22">    scatter3(X{:,<span class="fl">1</span>}, X{:,<span class="fl">2</span>}, X{:,<span class="fl">3</span>});</a>
+<a class="sourceLine" id="cb220-23" data-line-number="23">end</a>
+<a class="sourceLine" id="cb220-24" data-line-number="24">xlabel(X.Properties.VariableNames{<span class="fl">1</span>}, <span class="st">&#39;Interpreter&#39;</span>, <span class="st">&#39;none&#39;</span>)</a>
+<a class="sourceLine" id="cb220-25" data-line-number="25">ylabel(X.Properties.VariableNames{<span class="fl">2</span>}, <span class="st">&#39;Interpreter&#39;</span>, <span class="st">&#39;none&#39;</span>)</a>
+<a class="sourceLine" id="cb220-26" data-line-number="26">zlabel(X.Properties.VariableNames{<span class="fl">3</span>}, <span class="st">&#39;Interpreter&#39;</span>, <span class="st">&#39;none&#39;</span>)</a>
+<a class="sourceLine" id="cb220-27" data-line-number="27">end</a></code></pre></div>
+</section>
+<section align=left>
+<div class="sourceCode" id="cb221"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb221-1" data-line-number="1">figure</a>
+<a class="sourceLine" id="cb221-2" data-line-number="2">helperPlotClusters(opConditionUnwrap)</a></code></pre></div>
+<p align=center><img src="..\rulPred\RegimePlot.png" style="zoom: 80%;" /></p>
+<p>之后可以使用聚类的方法自动定位这6簇聚类。此处使用K-Means聚类算法，作为最流行的聚类方法之一，K-Means算法会导致局部最优。因此为避免这种情况的出现，我们可以多次运行该算法，并每次设置不同的初始点。本案例中，我们运行了5次该算法， 最后得到的结果都相同</p>
+<div class="sourceCode" id="cb222"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb222-1" data-line-number="1">opts = statset(<span class="st">&#39;Display&#39;</span>, <span class="st">&#39;final&#39;</span>);</a>
+<a class="sourceLine" id="cb222-2" data-line-number="2">[clusterIndex, centers] = kmeans(table2array(opConditionUnwrap), <span class="fl">6</span>, ...</a>
+<a class="sourceLine" id="cb222-3" data-line-number="3">    <span class="st">&#39;Distance&#39;</span>, <span class="st">&#39;sqeuclidean&#39;</span>, <span class="st">&#39;Replicates&#39;</span>, <span class="fl">5</span>, <span class="st">&#39;Options&#39;</span>, opts);</a></code></pre></div>
+<p align=center><img src="..\rulPred\KMeansPerformance.PNG" style="zoom:90%;" /></p>
+</section>
+<section align=left>
+<p>之后同样使用辅助函数<code>helperPlotClusters</code>，可视化得到的聚类中心和聚类结果</p>
+<div class="sourceCode" id="cb223"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb223-1" data-line-number="1">figure</a>
+<a class="sourceLine" id="cb223-2" data-line-number="2">helperPlotClusters(opConditionUnwrap, clusterIndex, centers)</a></code></pre></div>
+<p align=center><img src="..\rulPred\RegimePlotWithCluster.png" style="zoom:120%;" /></p>
+<p>绘图显示，聚类算法成功识别出了这6种不同的操作工况</p>
+</section>
+</section>
+<section align=left>
+<h4 id="第三步按工况归一化"><strong>第三步：按工况归一化</strong></h4>
+<section>
+<p>接下来，按照上一节中识别到的不同工况类型，进行传感器数据的归一化处理。首先按照样本被划分的聚类类型计算不同类型下传感器数据的均值和标准差</p>
+<div class="sourceCode" id="cb224"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb224-1" data-line-number="1">centerstats = struct(<span class="st">&#39;Mean&#39;</span>, table(), <span class="st">&#39;SD&#39;</span>, table());</a>
+<a class="sourceLine" id="cb224-2" data-line-number="2">for v = dataVariables</a>
+<a class="sourceLine" id="cb224-3" data-line-number="3">    centerstats.Mean.(char(v)) = splitapply(@mean, trainDataUnwrap.(char(v)), clusterIndex);</a>
+<a class="sourceLine" id="cb224-4" data-line-number="4">    centerstats.SD.(char(v))   = splitapply(@std,  trainDataUnwrap.(char(v)), clusterIndex);</a>
+<a class="sourceLine" id="cb224-5" data-line-number="5">end</a>
+<a class="sourceLine" id="cb224-6" data-line-number="6">centerstats.Mean</a></code></pre></div>
+<p align=center><img src="..\rulPred\sensorMean.PNG" style="zoom: 120%;" /></p>
+<div class="sourceCode" id="cb225"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb225-1" data-line-number="1">centerstats.SD</a></code></pre></div>
+<p align=center><img data-src="..\rulPred\sensorSD.PNG" style="zoom: 120%;"/></p>
+</section>
+<section align=left>
+<p>每种操作工况类型下的统计数据可以被用来归一化训练数据。对于集成数据中的元素而言，提取每一行数据的操作工况数据，并计算其到6个聚类中心的距离，并依次找到它对应聚类簇。然后，用传感器测量量减去该簇对应的传感器均值并除以其对应的标准差（z-score归一化）。如果某簇中某传感器测量量的标准差为0，则将对应的传感器数据归一化结果都设置为0，因为这表明该传感器对应的测量值为恒定，而恒定的测量值对估计寿命没有帮助</p>
+<p>下面，使用辅助函数<code>regimeNormalization</code>归一化数据</p>
+<div class="sourceCode" id="cb226"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb226-1" data-line-number="1">function data = regimeNormalization(data, centers, centerstats)</a>
+<a class="sourceLine" id="cb226-2" data-line-number="2"><span class="co">% 根据数据簇类的归属进行归一化处理</span></a>
+<a class="sourceLine" id="cb226-3" data-line-number="3">conditionIdx = <span class="fl">3</span>:<span class="fl">5</span>;</a>
+<a class="sourceLine" id="cb226-4" data-line-number="4">dataIdx = <span class="fl">6</span>:<span class="fl">26</span>;</a>
+<a class="sourceLine" id="cb226-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb226-6" data-line-number="6"><span class="co">% 对每一行操作</span></a>
+<a class="sourceLine" id="cb226-7" data-line-number="7">data{:, dataIdx} = table2array(...</a>
+<a class="sourceLine" id="cb226-8" data-line-number="8">    rowfun(@(row) localNormalize(row, conditionIdx, dataIdx, centers, centerstats), ...</a>
+<a class="sourceLine" id="cb226-9" data-line-number="9">    data, <span class="st">&#39;SeparateInputs&#39;</span>, false));</a>
+<a class="sourceLine" id="cb226-10" data-line-number="10">end</a>
+<a class="sourceLine" id="cb226-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb226-12" data-line-number="12">function rowNormalized = localNormalize(row, conditionIdx, dataIdx, centers, centerstats)</a>
+<a class="sourceLine" id="cb226-13" data-line-number="13"><span class="co">% 对每一行归一化</span></a>
+<a class="sourceLine" id="cb226-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb226-15" data-line-number="15"><span class="co">% 获得工况和传感器数据</span></a>
+<a class="sourceLine" id="cb226-16" data-line-number="16">ops = row(<span class="fl">1</span>, conditionIdx);</a>
+<a class="sourceLine" id="cb226-17" data-line-number="17">sensor = row(<span class="fl">1</span>, dataIdx);</a>
+<a class="sourceLine" id="cb226-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb226-19" data-line-number="19"><span class="co">% 找出离样本点最近的簇中心</span></a>
+<a class="sourceLine" id="cb226-20" data-line-number="20">dist = sum((centers - ops).^<span class="fl">2</span>, <span class="fl">2</span>);</a>
+<a class="sourceLine" id="cb226-21" data-line-number="21">[~, idx] = min(dist);</a>
+<a class="sourceLine" id="cb226-22" data-line-number="22"></a>
+<a class="sourceLine" id="cb226-23" data-line-number="23"><span class="co">% 将传感器数据根据其簇类的均值和标准差归一化</span></a>
+<a class="sourceLine" id="cb226-24" data-line-number="24"><span class="co">% 将NaN和Inf值都设定为0</span></a>
+<a class="sourceLine" id="cb226-25" data-line-number="25">rowNormalized = (sensor - centerstats.Mean{idx, :}) ./ centerstats.SD{idx, :};</a>
+<a class="sourceLine" id="cb226-26" data-line-number="26">rowNormalized(isnan(rowNormalized) | isinf(rowNormalized)) = <span class="fl">0</span>;</a>
+<a class="sourceLine" id="cb226-27" data-line-number="27">end</a></code></pre></div>
+<div class="sourceCode" id="cb227"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb227-1" data-line-number="1">trainDataNormalized = cellfun(@(data) regimeNormalization(data, centers, centerstats), ...</a>
+<a class="sourceLine" id="cb227-2" data-line-number="2">    trainData, <span class="st">&#39;UniformOutput&#39;</span>, false);</a></code></pre></div>
+</section>
+<section align=left>
+<p>使用之前的辅助函数<code>helperPlotEnsemble</code>可视化归一化后的数据，此时某些传感器的退化趋势可见</p>
+<pre><code>figure
+helperPlotEnsemble(trainDataNormalized, timeVariable, dataVariables(1:4), nsample)</code></pre>
+<p align=center><img src="..\rulPred\trendPlot.png" style="zoom: 140%;" /></p>
+</section>
+</section>
+<section align=left>
+<h4 id="第四步趋势分析"><strong>第四步：趋势分析</strong></h4>
+<section>
+<p>下面，从所有的传感器中选出趋势最明显的几个用来构造预测剩余寿命的健康因子。对每一种传感器，用线性退化模型估计它们，并根据模型的梯度排序出最重要的几种传感器</p>
+<div class="sourceCode" id="cb229"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb229-1" data-line-number="1">numSensors = length(dataVariables);</a>
+<a class="sourceLine" id="cb229-2" data-line-number="2">signalSlope = zeros(numSensors, <span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb229-3" data-line-number="3">warn = warning(<span class="st">&#39;off&#39;</span>);</a>
+<a class="sourceLine" id="cb229-4" data-line-number="4">for ct = <span class="fl">1</span>:numSensors</a>
+<a class="sourceLine" id="cb229-5" data-line-number="5">    tmp = cellfun(@(tbl) tbl(:, cellstr(dataVariables(ct))), trainDataNormalized, <span class="st">&#39;UniformOutput&#39;</span>, false);</a>
+<a class="sourceLine" id="cb229-6" data-line-number="6">    mdl = linearDegradationModel(); <span class="co">% 创建模型</span></a>
+<a class="sourceLine" id="cb229-7" data-line-number="7">    fit(mdl, tmp); <span class="co">% 训练模型</span></a>
+<a class="sourceLine" id="cb229-8" data-line-number="8">    signalSlope(ct) = mdl.Theta;</a>
+<a class="sourceLine" id="cb229-9" data-line-number="9">end</a>
+<a class="sourceLine" id="cb229-10" data-line-number="10">warning(warn);</a></code></pre></div>
+<p>之后按照传感器模型的梯度绝对值排序，并选出最具有趋势的8种传感器</p>
+<div class="sourceCode" id="cb230"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb230-1" data-line-number="1">[~, idx] = sort(abs(signalSlope), <span class="st">&#39;descend&#39;</span>);</a>
+<a class="sourceLine" id="cb230-2" data-line-number="2">sensorTrended = sort(idx(<span class="fl">1</span>:<span class="fl">8</span>))</a></code></pre></div>
+<p align=center><img src="..\rulPred\selectedSensors.PNG" style="zoom:120%;" /></p>
+</section>
+<section align=left>
+<p>借助辅助函数<code>helperPlotEnsemble</code>可视化所选传感器的测量值</p>
+<div class="sourceCode" id="cb231"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb231-1" data-line-number="1">figure</a>
+<a class="sourceLine" id="cb231-2" data-line-number="2">helperPlotEnsemble(trainDataNormalized, timeVariable, dataVariables(sensorTrended(<span class="fl">3</span>:<span class="fl">6</span>)), nsample)  <span class="co">% 使用8种传感器种的第4，7，11，12号传感器画图</span></a></code></pre></div>
+<p align=center><img src="..\rulPred\trendedSensorsPlot.png" style="zoom:140%;" /></p>
+<p>可以看到，有些传感器呈现正梯度趋势，有些呈现负梯度趋势</p>
+</section>
+</section>
+<section align=left>
+<h4 id="第五步构造健康因子"><strong>第五步：构造健康因子</strong></h4>
+<section>
+<p>本节聚焦如何将传感器测量值融合成一个单一的健康因子变量，然后基于该健康因子变量训练相似性模型</p>
+<p>假设所有运行至失效的数据始于健康状态。然后将健康状态下的健康因子设定为1，将失效时的健康因子设定为0。同时健康因子随时间线性地从1退化到0。改线性退化将用来融合传感器值，更多精巧的传感器融合技术可以参考文献<a href="#/fn19" class="footnote-ref" id="fnref19"><sup>19</sup></a><a href="#/fn20" class="footnote-ref" id="fnref20"><sup>20</sup></a><a href="#/fn21" class="footnote-ref" id="fnref21"><sup>21</sup></a><a href="#/fn22" class="footnote-ref" id="fnref22"><sup>22</sup></a></p>
+<div class="sourceCode" id="cb232"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb232-1" data-line-number="1">for j=<span class="fl">1</span>:numel(trainDataNormalized)</a>
+<a class="sourceLine" id="cb232-2" data-line-number="2">    data = trainDataNormalized{j};</a>
+<a class="sourceLine" id="cb232-3" data-line-number="3">    rul = max(data.time)-data.time;  <span class="co">% 计算每个样本点的RUL</span></a>
+<a class="sourceLine" id="cb232-4" data-line-number="4">    data.health_condition = rul / max(rul);  <span class="co">% 将每个样本点的RUL折算到HI中</span></a>
+<a class="sourceLine" id="cb232-5" data-line-number="5">    trainDataNormalized{j} = data;</a>
+<a class="sourceLine" id="cb232-6" data-line-number="6">end</a></code></pre></div>
+<p>可视化健康因子</p>
+<pre><code>figure
+helperPlotEnsemble(trainDataNormalized, timeVariable, &quot;health_condition&quot;, nsample)</code></pre>
+<p align=center><img src="..\rulPred\HIVisualization.png" style="zoom:80%;" /></p>
+<p>可以看出，所有的传感器以不同的退化速度从健康因子为1退化到0</p>
+</section>
+<section align=left>
+<p>现在使用选出来的最具有趋势性的传感器值作为自变量，拟合得到健康因子的线性回归模型，方程如下：</p>
+<p><br /><span class="math display"><em>H</em><em>e</em><em>a</em><em>l</em><em>t</em><em>h</em><em>C</em><em>o</em><em>n</em><em>d</em><em>i</em><em>t</em><em>i</em><em>o</em><em>n</em> ∼ 1 + <em>S</em><em>e</em><em>n</em><em>s</em><em>o</em><em>r</em>2 + <em>S</em><em>e</em><em>n</em><em>s</em><em>o</em><em>r</em>3 + <em>S</em><em>e</em><em>n</em><em>s</em><em>o</em><em>r</em>4 + <em>S</em><em>e</em><em>n</em><em>s</em><em>o</em><em>r</em>7 + <em>S</em><em>e</em><em>n</em><em>s</em><em>o</em><em>r</em>11 + <em>S</em><em>e</em><em>n</em><em>s</em><em>o</em><em>r</em>12 + <em>S</em><em>e</em><em>n</em><em>s</em><em>o</em><em>r</em>15 + <em>S</em><em>e</em><em>n</em><em>s</em><em>o</em><em>r</em>17</span><br /></p>
+<div class="sourceCode" id="cb234"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb234-1" data-line-number="1">trainDataNormalizedUnwrap = vertcat(trainDataNormalized{:});</a>
+<a class="sourceLine" id="cb234-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb234-3" data-line-number="3">sensorToFuse = dataVariables(sensorTrended);</a>
+<a class="sourceLine" id="cb234-4" data-line-number="4">X = trainDataNormalizedUnwrap{:, cellstr(sensorToFuse)};</a>
+<a class="sourceLine" id="cb234-5" data-line-number="5">y = trainDataNormalizedUnwrap.health_condition;</a>
+<a class="sourceLine" id="cb234-6" data-line-number="6">regModel = fitlm(X,y);</a>
+<a class="sourceLine" id="cb234-7" data-line-number="7">bias = regModel.Coefficients.Estimate(<span class="fl">1</span>)</a></code></pre></div>
+<p align=center><img src="..\rulPred\biasValue.PNG" style="zoom: 90%;" /></p>
+<div class="sourceCode" id="cb235"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb235-1" data-line-number="1">weights = regModel.Coefficients.Estimate(<span class="fl">2</span>:end)</a></code></pre></div>
+<p align=center><img src="..\rulPred\weights.PNG" style="zoom: 90%;" /></p>
+<p>之后通过将传感器值乘上对应的权重构造出单一的健康因子</p>
+</section>
+<section align=left>
+<p>使用到的辅助函数<code>degradationSensorFusion</code>如下：</p>
+<div class="sourceCode" id="cb236"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb236-1" data-line-number="1">function dataFused = degradationSensorFusion(data, sensorToFuse, weights)</a>
+<a class="sourceLine" id="cb236-2" data-line-number="2"><span class="co">% 将测量值和权值相乘得到融合的健康因子值，同时做平滑处理并设定offset为1，使得健康因子从1开始</span></a>
+<a class="sourceLine" id="cb236-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb236-4" data-line-number="4"><span class="co">% 根据权重融合数据</span></a>
+<a class="sourceLine" id="cb236-5" data-line-number="5">dataToFuse = data{:, cellstr(sensorToFuse)};</a>
+<a class="sourceLine" id="cb236-6" data-line-number="6">dataFusedRaw = dataToFuse*weights;</a>
+<a class="sourceLine" id="cb236-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb236-8" data-line-number="8"><span class="co">% 使用移动平均平滑化处理融合数据</span></a>
+<a class="sourceLine" id="cb236-9" data-line-number="9">stepBackward = <span class="fl">10</span>;</a>
+<a class="sourceLine" id="cb236-10" data-line-number="10">stepForward = <span class="fl">10</span>;</a>
+<a class="sourceLine" id="cb236-11" data-line-number="11">dataFused = movmean(dataFusedRaw, [stepBackward stepForward]);</a>
+<a class="sourceLine" id="cb236-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb236-13" data-line-number="13"><span class="co">% 数据的offset设定为1</span></a>
+<a class="sourceLine" id="cb236-14" data-line-number="14">dataFused = dataFused + <span class="fl">1</span> - dataFused(<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb236-15" data-line-number="15">end</a></code></pre></div>
+<div class="sourceCode" id="cb237"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb237-1" data-line-number="1">trainDataFused = cellfun(@(data) degradationSensorFusion(data, sensorToFuse, weights), trainDataNormalized, ...</a>
+<a class="sourceLine" id="cb237-2" data-line-number="2">    <span class="st">&#39;UniformOutput&#39;</span>, false);</a></code></pre></div>
+</section>
+<section align=left>
+<p>之后可视化融合得到的训练数据健康因子</p>
+<div class="sourceCode" id="cb238"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb238-1" data-line-number="1">figure</a>
+<a class="sourceLine" id="cb238-2" data-line-number="2">helperPlotEnsemble(trainDataFused, [], <span class="fl">1</span>, nsample)</a>
+<a class="sourceLine" id="cb238-3" data-line-number="3">xlabel(<span class="st">&#39;Time&#39;</span>)</a>
+<a class="sourceLine" id="cb238-4" data-line-number="4">ylabel(<span class="st">&#39;Health Indicator&#39;</span>)</a>
+<a class="sourceLine" id="cb238-5" data-line-number="5">title(<span class="st">&#39;Training Data&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\rulPred\HIFused.png" style="zoom:120%;" /></p>
+<p>多传感器的数据被融合成了单一的健康因子变量。同时健康因子量被移动平均滤波器平滑化处理。可参考辅助函数<code>dagradationSensorFusion</code>查看更多细节</p>
+</section>
+</section>
+<section align=left>
+<h4 id="第六步对验证数据采取同样操作"><strong>第六步：对验证数据采取同样操作</strong></h4>
+<p>在验证数据集上重复根据工况归一化和传感器融合的过程</p>
+<div class="sourceCode" id="cb239"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb239-1" data-line-number="1">validationDataNormalized = cellfun(@(data) regimeNormalization(data, centers, centerstats), ...</a>
+<a class="sourceLine" id="cb239-2" data-line-number="2">    validationData, <span class="st">&#39;UniformOutput&#39;</span>, false);</a>
+<a class="sourceLine" id="cb239-3" data-line-number="3">validationDataFused = cellfun(@(data) degradationSensorFusion(data, sensorToFuse, weights), ...</a>
+<a class="sourceLine" id="cb239-4" data-line-number="4">    validationDataNormalized, <span class="st">&#39;UniformOutput&#39;</span>, false);</a></code></pre></div>
+<p>可视化验证数据的健康因子</p>
+<pre><code>figure
+helperPlotEnsemble(validationDataFused, [], 1, nsample)
+xlabel(&#39;Time&#39;)
+ylabel(&#39;Health Indicator&#39;)
+title(&#39;Validation Data&#39;)</code></pre>
+<p align=center><img src="..\rulPred\HIValidationData.png" style="zoom:110%;" /></p>
+</section>
+<section align=left>
+<h4 id="第七步构建相似性模型"><strong>第七步：构建相似性模型</strong></h4>
+<p>现在，可以使用训练数据构建基于残差的相似性模型。在此设定中，模型尝试使用二阶多项式拟合每个融合数据</p>
+<p>第<span class="math inline"><em>i</em></span>个数据和第<span class="math inline"><em>j</em></span>个数据的距离通过1-范数残差定义为： <br /><span class="math display"><em>d</em>(<em>i</em>, <em>j</em>) = ||<em>y</em><sub><em>j</em></sub>−<em>ŷ</em><sub><em>j</em>, <em>i</em></sub>||<sub>1</sub></span><br /> 其中<span class="math inline"><em>y</em><sub><em>j</em></sub></span>为第<span class="math inline"><em>j</em></span>台机器的健康因子，<span class="math inline"><em>ŷ</em><sub><em>j</em>, <em>i</em></sub></span>为使用第<span class="math inline"><em>i</em></span>台机器建立的二阶多项式模型在第<span class="math inline"><em>j</em></span>台机器上的健康因子估计值</p>
+<p>相似性得分通过以下公式计算： <br /><span class="math display"><em>s</em><em>c</em><em>o</em><em>r</em><em>e</em>(<em>i</em>, <em>j</em>) = <em>e</em><sup> − <em>d</em>(<em>i</em>, <em>j</em>)<sup>2</sup></sup></span><br /> 给定验证集中的一条数据，模型将寻找到训练集中最近的50条训练数据集结果。之后基于这50条数据集的结果做出概率分布，并使用分布的均值作为剩余寿命的估计值</p>
+<div class="sourceCode" id="cb241"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb241-1" data-line-number="1">mdl = residualSimilarityModel(...</a>
+<a class="sourceLine" id="cb241-2" data-line-number="2">    <span class="st">&#39;Method&#39;</span>, <span class="st">&#39;poly2&#39;</span>,...</a>
+<a class="sourceLine" id="cb241-3" data-line-number="3">    <span class="st">&#39;Distance&#39;</span>, <span class="st">&#39;absolute&#39;</span>,...</a>
+<a class="sourceLine" id="cb241-4" data-line-number="4">    <span class="st">&#39;NumNearestNeighbors&#39;</span>, <span class="fl">50</span>,...</a>
+<a class="sourceLine" id="cb241-5" data-line-number="5">    <span class="st">&#39;Standardize&#39;</span>, <span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb241-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb241-7" data-line-number="7">fit(mdl, trainDataFused);</a></code></pre></div>
+</section>
+<section align=left>
+<h4 id="第八步模型评估"><strong>第八步：模型评估</strong></h4>
+<section>
+<p>为评估相似性模型，使用50%、70%、90%数据量的验证数据来预测剩余寿命</p>
+<div class="sourceCode" id="cb242"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb242-1" data-line-number="1">breakpoint = [<span class="fl">0.5</span>, <span class="fl">0.7</span>, <span class="fl">0.9</span>];</a>
+<a class="sourceLine" id="cb242-2" data-line-number="2">validationDataTmp = validationDataFused{<span class="fl">3</span>}; <span class="co">% 使用一条验证集数据作为展示</span></a></code></pre></div>
+<p>先使用该数据的前50%部分</p>
+<div class="sourceCode" id="cb243"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb243-1" data-line-number="1">bpidx = <span class="fl">1</span>;</a>
+<a class="sourceLine" id="cb243-2" data-line-number="2">validationDataTmp50 = validationDataTmp(<span class="fl">1</span>:ceil(end*breakpoint(bpidx)),:);</a>
+<a class="sourceLine" id="cb243-3" data-line-number="3">trueRUL = length(validationDataTmp) - length(validationDataTmp50);</a>
+<a class="sourceLine" id="cb243-4" data-line-number="4">[estRUL, ciRUL, pdfRUL] = predictRUL(mdl, validationDataTmp50);</a></code></pre></div>
+</section>
+<section align=left>
+<p>然后可视化前50%部分的验证数据及其最近的训练数据</p>
+<div class="sourceCode" id="cb244"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb244-1" data-line-number="1">figure</a>
+<a class="sourceLine" id="cb244-2" data-line-number="2">compare(mdl, validationDataTmp50);</a></code></pre></div>
+<p align=center><img src="..\rulPred\KNNPlot.png" style="zoom:120%;" /></p>
+<p>画出剩余寿命的真值、估计值的对比并给出估计值的概率分布</p>
+</section>
+<section align=left>
+<p>辅助函数<code>helperPlotRULDistribution</code>如下：</p>
+<div class="sourceCode" id="cb245"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb245-1" data-line-number="1">function helperPlotRULDistribution(trueRUL, estRUL, pdfRUL, ciRUL)</a>
+<a class="sourceLine" id="cb245-2" data-line-number="2"><span class="co">% HELPERPLOTRULDISTRIBUTION Plot RUL distribution</span></a>
+<a class="sourceLine" id="cb245-3" data-line-number="3"><span class="co">%</span></a>
+<a class="sourceLine" id="cb245-4" data-line-number="4"><span class="co">% This function supports the Similarity-based Remaining Useful Life</span></a>
+<a class="sourceLine" id="cb245-5" data-line-number="5"><span class="co">% Estimation example. It may change in a future release.</span></a>
+<a class="sourceLine" id="cb245-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb245-7" data-line-number="7"><span class="co">%  Copyright 2017-2018 The MathWorks, Inc.</span></a>
+<a class="sourceLine" id="cb245-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb245-9" data-line-number="9">hold on</a>
+<a class="sourceLine" id="cb245-10" data-line-number="10">plot(pdfRUL.RUL, pdfRUL.ProbabilityDensity, <span class="st">&#39;b&#39;</span>);</a>
+<a class="sourceLine" id="cb245-11" data-line-number="11">idx = find(pdfRUL.RUL &gt; trueRUL, <span class="fl">1</span>, <span class="st">&#39;first&#39;</span>);</a>
+<a class="sourceLine" id="cb245-12" data-line-number="12">if isempty(idx)</a>
+<a class="sourceLine" id="cb245-13" data-line-number="13">    y = pdfRUL.ProbabilityDensity(end);</a>
+<a class="sourceLine" id="cb245-14" data-line-number="14">else</a>
+<a class="sourceLine" id="cb245-15" data-line-number="15">    y = pdfRUL.ProbabilityDensity(idx);</a>
+<a class="sourceLine" id="cb245-16" data-line-number="16">end</a>
+<a class="sourceLine" id="cb245-17" data-line-number="17">plot([trueRUL, trueRUL], [<span class="fl">0</span>, y], <span class="st">&#39;r&#39;</span>);</a>
+<a class="sourceLine" id="cb245-18" data-line-number="18">idx = find(pdfRUL.RUL &gt; estRUL, <span class="fl">1</span>, <span class="st">&#39;first&#39;</span>);</a>
+<a class="sourceLine" id="cb245-19" data-line-number="19">if isempty(idx)</a>
+<a class="sourceLine" id="cb245-20" data-line-number="20">    y = pdfRUL.ProbabilityDensity(end);</a>
+<a class="sourceLine" id="cb245-21" data-line-number="21">else</a>
+<a class="sourceLine" id="cb245-22" data-line-number="22">    y = pdfRUL.ProbabilityDensity(idx);</a>
+<a class="sourceLine" id="cb245-23" data-line-number="23">end</a>
+<a class="sourceLine" id="cb245-24" data-line-number="24">plot([estRUL, estRUL], [<span class="fl">0</span>, y], <span class="st">&#39;g&#39;</span>);</a>
+<a class="sourceLine" id="cb245-25" data-line-number="25">idx = pdfRUL.RUL &gt;= ciRUL(<span class="fl">1</span>) &amp; pdfRUL.RUL&lt;=ciRUL(<span class="fl">2</span>);</a>
+<a class="sourceLine" id="cb245-26" data-line-number="26">area(pdfRUL.RUL(idx), pdfRUL.ProbabilityDensity(idx), ...</a>
+<a class="sourceLine" id="cb245-27" data-line-number="27">    <span class="st">&#39;FaceAlpha&#39;</span>, <span class="fl">0.2</span>, <span class="st">&#39;FaceColor&#39;</span>, <span class="st">&#39;y&#39;</span>, <span class="st">&#39;EdgeColor&#39;</span>, <span class="st">&#39;none&#39;</span>);</a>
+<a class="sourceLine" id="cb245-28" data-line-number="28">hold off</a>
+<a class="sourceLine" id="cb245-29" data-line-number="29">legend(<span class="st">&#39;Probability Density Function&#39;</span>, <span class="st">&#39;True RUL&#39;</span>, <span class="st">&#39;Estimated RUL&#39;</span>, <span class="st">&#39;90% Confidence Inteval&#39;</span>);</a>
+<a class="sourceLine" id="cb245-30" data-line-number="30">xlabel(<span class="st">&#39;Cycle&#39;</span>)</a>
+<a class="sourceLine" id="cb245-31" data-line-number="31">ylabel(<span class="st">&#39;Probability Density&#39;</span>)</a>
+<a class="sourceLine" id="cb245-32" data-line-number="32">title(<span class="st">&#39;RUL Estimation&#39;</span>)</a>
+<a class="sourceLine" id="cb245-33" data-line-number="33">end</a></code></pre></div>
+</section>
+<section align=left>
+<div class="sourceCode" id="cb246"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb246-1" data-line-number="1">figure</a>
+<a class="sourceLine" id="cb246-2" data-line-number="2">helperPlotRULDistribution(trueRUL, estRUL, pdfRUL, ciRUL)</a></code></pre></div>
+<p align=center><img src="..\rulPred\RULDistribution50.png" style="zoom:120%;" /></p>
+<p>可以看出，当机器处于中等健康状态时，剩余寿命的估计值和真值之间还存在一定较大误差。本案例中，最相似的10条曲线在一开始表现得很近，但在它们接近失效时，曲线分叉成了两股，也就造成了剩余寿命估计值的分布粗略的有两种模式</p>
+</section>
+<section align=left>
+<p>之后使用第二个断点，即使用验证数据的前70%数据</p>
+<div class="sourceCode" id="cb247"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb247-1" data-line-number="1">bpidx = <span class="fl">2</span>;</a>
+<a class="sourceLine" id="cb247-2" data-line-number="2">validationDataTmp70 = validationDataTmp(<span class="fl">1</span>:ceil(end*breakpoint(bpidx)), :);</a>
+<a class="sourceLine" id="cb247-3" data-line-number="3">trueRUL = length(validationDataTmp) - length(validationDataTmp70);</a>
+<a class="sourceLine" id="cb247-4" data-line-number="4">[estRUL,ciRUL,pdfRUL] = predictRUL(mdl, validationDataTmp70);</a>
+<a class="sourceLine" id="cb247-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb247-6" data-line-number="6">figure</a>
+<a class="sourceLine" id="cb247-7" data-line-number="7">compare(mdl, validationDataTmp70);</a></code></pre></div>
+<p align=center><img src="..\rulPred\KNNPlot70.png" style="zoom:120%;" /></p>
+</section>
+<section align=left>
+<div class="sourceCode" id="cb248"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb248-1" data-line-number="1">figure</a>
+<a class="sourceLine" id="cb248-2" data-line-number="2">helperPlotRULDistribution(trueRUL, estRUL, pdfRUL, ciRUL)</a></code></pre></div>
+<p align=center><img src="..\rulPred\RULDistribution70.png" style="zoom:120%;" /></p>
+<p>当数据量增加时，剩余寿命的预测也就更准确</p>
+</section>
+<section align=left>
+<p>最后使用90%的断点，即验证数据的前90%验证模型</p>
+<div class="sourceCode" id="cb249"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb249-1" data-line-number="1">bpidx = <span class="fl">3</span>;</a>
+<a class="sourceLine" id="cb249-2" data-line-number="2">validationDataTmp90 = validationDataTmp(<span class="fl">1</span>:ceil(end*breakpoint(bpidx)), :);</a>
+<a class="sourceLine" id="cb249-3" data-line-number="3">trueRUL = length(validationDataTmp) - length(validationDataTmp90);</a>
+<a class="sourceLine" id="cb249-4" data-line-number="4">[estRUL,ciRUL,pdfRUL] = predictRUL(mdl, validationDataTmp90);</a>
+<a class="sourceLine" id="cb249-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb249-6" data-line-number="6">figure</a>
+<a class="sourceLine" id="cb249-7" data-line-number="7">compare(mdl, validationDataTmp90);</a></code></pre></div>
+<p align=center><img src="..\rulPred\KNNPlot90.png" style="zoom:120%;" /></p>
+</section>
+<section align=left>
+<div class="sourceCode" id="cb250"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb250-1" data-line-number="1">figure</a>
+<a class="sourceLine" id="cb250-2" data-line-number="2">helperPlotRULDistribution(trueRUL, estRUL, pdfRUL, ciRUL)</a></code></pre></div>
+<p align=center><img src="..\rulPred\RULDistribution90.png" style="zoom:120%;" /></p>
+<p>当机器临近于失效时，剩余寿命的预测结果又比70%时更准确</p>
+</section>
+<section align=left>
+<p>现在对整个验证集数据重复相同评估过程，并对每种断点情况计算剩余寿命的估计值和真实值的差</p>
+<div class="sourceCode" id="cb251"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb251-1" data-line-number="1">numValidation = length(validationDataFused);</a>
+<a class="sourceLine" id="cb251-2" data-line-number="2">numBreakpoint = length(breakpoint);</a>
+<a class="sourceLine" id="cb251-3" data-line-number="3">error = zeros(numValidation, numBreakpoint);</a>
+<a class="sourceLine" id="cb251-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb251-5" data-line-number="5">for dataIdx = <span class="fl">1</span>:numValidation</a>
+<a class="sourceLine" id="cb251-6" data-line-number="6">    tmpData = validationDataFused{dataIdx};</a>
+<a class="sourceLine" id="cb251-7" data-line-number="7">    for bpidx = <span class="fl">1</span>:numBreakpoint</a>
+<a class="sourceLine" id="cb251-8" data-line-number="8">        tmpDataTest = tmpData(<span class="fl">1</span>:ceil(end*breakpoint(bpidx)), :);</a>
+<a class="sourceLine" id="cb251-9" data-line-number="9">        trueRUL = length(tmpData) - length(tmpDataTest);</a>
+<a class="sourceLine" id="cb251-10" data-line-number="10">        [estRUL, ~, ~] = predictRUL(mdl, tmpDataTest);</a>
+<a class="sourceLine" id="cb251-11" data-line-number="11">        error(dataIdx, bpidx) = estRUL - trueRUL;</a>
+<a class="sourceLine" id="cb251-12" data-line-number="12">    end</a>
+<a class="sourceLine" id="cb251-13" data-line-number="13">end</a></code></pre></div>
+<p>可视化对每种断点，它所对应的预测误差概率分布柱状图</p>
+<div class="sourceCode" id="cb252"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb252-1" data-line-number="1">[pdf50, x50] = ksdensity(error(:, <span class="fl">1</span>));</a>
+<a class="sourceLine" id="cb252-2" data-line-number="2">[pdf70, x70] = ksdensity(error(:, <span class="fl">2</span>));</a>
+<a class="sourceLine" id="cb252-3" data-line-number="3">[pdf90, x90] = ksdensity(error(:, <span class="fl">3</span>));</a>
+<a class="sourceLine" id="cb252-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb252-5" data-line-number="5">figure</a>
+<a class="sourceLine" id="cb252-6" data-line-number="6">ax(<span class="fl">1</span>) = subplot(<span class="fl">3</span>,<span class="fl">1</span>,<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb252-7" data-line-number="7">hold on</a>
+<a class="sourceLine" id="cb252-8" data-line-number="8">histogram(error(:, <span class="fl">1</span>), <span class="st">&#39;BinWidth&#39;</span>, <span class="fl">5</span>, <span class="st">&#39;Normalization&#39;</span>, <span class="st">&#39;pdf&#39;</span>)</a>
+<a class="sourceLine" id="cb252-9" data-line-number="9">plot(x50, pdf50)</a>
+<a class="sourceLine" id="cb252-10" data-line-number="10">hold off</a>
+<a class="sourceLine" id="cb252-11" data-line-number="11">xlabel(<span class="st">&#39;Prediction Error&#39;</span>)</a>
+<a class="sourceLine" id="cb252-12" data-line-number="12">title(<span class="st">&#39;RUL Prediction Error using first 50% of each validation ensemble member&#39;</span>)</a>
+<a class="sourceLine" id="cb252-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb252-14" data-line-number="14">ax(<span class="fl">2</span>) = subplot(<span class="fl">3</span>,<span class="fl">1</span>,<span class="fl">2</span>);</a>
+<a class="sourceLine" id="cb252-15" data-line-number="15">hold on</a>
+<a class="sourceLine" id="cb252-16" data-line-number="16">histogram(error(:, <span class="fl">2</span>), <span class="st">&#39;BinWidth&#39;</span>, <span class="fl">5</span>, <span class="st">&#39;Normalization&#39;</span>, <span class="st">&#39;pdf&#39;</span>)</a>
+<a class="sourceLine" id="cb252-17" data-line-number="17">plot(x70, pdf70)</a>
+<a class="sourceLine" id="cb252-18" data-line-number="18">hold off</a>
+<a class="sourceLine" id="cb252-19" data-line-number="19">xlabel(<span class="st">&#39;Prediction Error&#39;</span>)</a>
+<a class="sourceLine" id="cb252-20" data-line-number="20">title(<span class="st">&#39;RUL Prediction Error using first 70% of each validation ensemble member&#39;</span>)</a>
+<a class="sourceLine" id="cb252-21" data-line-number="21"></a>
+<a class="sourceLine" id="cb252-22" data-line-number="22">ax(<span class="fl">3</span>) = subplot(<span class="fl">3</span>,<span class="fl">1</span>,<span class="fl">3</span>);</a>
+<a class="sourceLine" id="cb252-23" data-line-number="23">hold on</a>
+<a class="sourceLine" id="cb252-24" data-line-number="24">histogram(error(:, <span class="fl">3</span>), <span class="st">&#39;BinWidth&#39;</span>, <span class="fl">5</span>, <span class="st">&#39;Normalization&#39;</span>, <span class="st">&#39;pdf&#39;</span>)</a>
+<a class="sourceLine" id="cb252-25" data-line-number="25">plot(x90, pdf90)</a>
+<a class="sourceLine" id="cb252-26" data-line-number="26">hold off</a>
+<a class="sourceLine" id="cb252-27" data-line-number="27">xlabel(<span class="st">&#39;Prediction Error&#39;</span>)</a>
+<a class="sourceLine" id="cb252-28" data-line-number="28">title(<span class="st">&#39;RUL Prediction Error using first 90% of each validation ensemble member&#39;</span>)</a>
+<a class="sourceLine" id="cb252-29" data-line-number="29">linkaxes(ax)</a></code></pre></div>
+</section>
+<section align=left>
+<p align=center><img src="..\rulPred\predictionRULErrorDistribution.png" style="zoom:180%;" /></p>
+</section>
+<section align=left>
+<p>之后使用25-75为主部分的箱形图可视化预测误差，并给出均值及离群点分布</p>
+<div class="sourceCode" id="cb253"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb253-1" data-line-number="1">figure</a>
+<a class="sourceLine" id="cb253-2" data-line-number="2">boxplot(error, <span class="st">&#39;Labels&#39;</span>, {<span class="st">&#39;50%&#39;</span>, <span class="st">&#39;70%&#39;</span>, <span class="st">&#39;90%&#39;</span>})</a>
+<a class="sourceLine" id="cb253-3" data-line-number="3">ylabel(<span class="st">&#39;Prediction Error&#39;</span>)</a>
+<a class="sourceLine" id="cb253-4" data-line-number="4">title(<span class="st">&#39;Prediction error using different percentages of each validation ensemble member&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\rulPred\predictionErrorBox.png" style="zoom:120%;" /></p>
+</section>
+<section align=left>
+<p>计算并比较预测误差的均值和标准差</p>
+<div class="sourceCode" id="cb254"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb254-1" data-line-number="1">errorMean = mean(error)</a></code></pre></div>
+<p align=center><img src="..\rulPred\errorMean.PNG" style="zoom:120%;" /></p>
+<div class="sourceCode" id="cb255"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb255-1" data-line-number="1">errorMedian = median(error)</a></code></pre></div>
+<p align=center><img src="..\rulPred\errorMedian.PNG" style="zoom:120%;" /></p>
+<div class="sourceCode" id="cb256"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb256-1" data-line-number="1">errorSD = std(error)</a></code></pre></div>
+<p align=center><img src="..\rulPred\errorSD.PNG" style="zoom:120%;" /></p>
+</section>
+<section align=left>
+<p>对每种断点画出其估计误差和标准差范围</p>
+<div class="sourceCode" id="cb257"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb257-1" data-line-number="1">figure</a>
+<a class="sourceLine" id="cb257-2" data-line-number="2">errorbar([<span class="fl">50</span> <span class="fl">70</span> <span class="fl">90</span>], errorMean, errorSD, <span class="st">&#39;-o&#39;</span>, <span class="st">&#39;MarkerEdgeColor&#39;</span>,<span class="st">&#39;r&#39;</span>)</a>
+<a class="sourceLine" id="cb257-3" data-line-number="3">xlim([<span class="fl">40</span>, <span class="fl">100</span>])</a>
+<a class="sourceLine" id="cb257-4" data-line-number="4">xlabel(<span class="st">&#39;Percentage of validation data used for RUL prediction&#39;</span>)</a>
+<a class="sourceLine" id="cb257-5" data-line-number="5">ylabel(<span class="st">&#39;Prediction Error&#39;</span>)</a>
+<a class="sourceLine" id="cb257-6" data-line-number="6">legend(<span class="st">&#39;Mean Prediction Error with 1 Standard Deviation Eror bar&#39;</span>, <span class="st">&#39;Location&#39;</span>, <span class="st">&#39;south&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\rulPred\errorOverview.png" style="zoom: 100%;" /></p>
+<p>可以看出，当足够的数据可知时，预测的误差均值收敛于0附近</p>
+</section>
+</section>
+<section style="font-size:44px;">
+<p><strong>参考：</strong><a href="https://ww2.mathworks.cn/help/predmaint/ug/similarity-based-remaining-useful-life-estimation.html" target="_blank">https://ww2.mathworks.cn/help/predmaint/ug/similarity-based-remaining-useful-life-estimation.html</a></p>
+</section>
+	    </div>
+  </div>
+
+  <script src="../reveal.js/lib/js/head.min.js"></script>
+  <script src="../reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Push each slide change to the browser history
+        history: true,
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: '../reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: '../reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: '../reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>

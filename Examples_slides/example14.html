@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>案例14</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../reveal.js/css/reveal.css">
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../reveal.js/css/theme/beige.css" id="theme">
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? '../reveal.js/css/print/pdf.css' : '../reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+    </script>
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+  <!--[if lt IE 9]>
+  <script src="../reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+	<section>
+<h2 id="案例14使用识别技术检测系统突变">案例14：使用识别技术检测系统突变</h2>
+</section>
+<section align=left>
+<p>本案例展示，如何使用在线估计和数据自动分割技术进行系统行为的突变检测。本案例要求装有系统识别工具箱，不要求预测性维护工具箱</p>
+</section>
+<section align=left>
+<h4 id="第一步问题描述-2"><strong>第一步：问题描述</strong></h4>
+<section>
+<p>考虑一个传输延迟为1或2秒的线性系统。传输延迟指的是从输入到影响到输出测量结果所花费的时间。本案例中，将使用在线估计和数据分割的技术检测传输延迟的突变。系统测得的输入输出数据存储在<code>pdmAbruptChangesData.mat</code>中</p>
+<p>导入数据及绘图</p>
+<div class="sourceCode" id="cb286"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb286-1" data-line-number="1">load pdmAbruptChangesData.mat</a>
+<a class="sourceLine" id="cb286-2" data-line-number="2">z = iddata(z(:,<span class="fl">1</span>),z(:,<span class="fl">2</span>));</a>
+<a class="sourceLine" id="cb286-3" data-line-number="3">plot(z)</a>
+<a class="sourceLine" id="cb286-4" data-line-number="4">grid on</a></code></pre></div>
+<p align=center><img src="..\faultDetectionAndPrognose\inputOutputData.png" style="zoom:120%;" /></p>
+<p>传输延迟改变发生在大约20秒时，但在图上不易看出</p>
+</section>
+<section align=left>
+<p>使用一个多项式系数<span class="math inline"><em>A</em></span>，两个多项式系数<span class="math inline"><em>B</em></span>和一个延迟的ARX结构构建系统模型 <br /><span class="math display"><em>y</em>(<em>t</em>) + <em>a</em><em>y</em>(<em>t</em> − 1) = <em>b</em><sub>1</sub><em>u</em>(<em>t</em> − 1) + <em>b</em><sub>2</sub><em>u</em>(<em>t</em> − 2)</span><br /> 此处<span class="math inline"><em>A</em> = [1  <em>a</em>]</span>，<span class="math inline"><em>B</em> = [0  <em>b</em><sub>1</sub>  <em>b</em><sub>2</sub>]</span></p>
+<p>多项式系数<span class="math inline"><em>B</em></span>的首项为0，因为模型没有直接的输入。当系统动态变化时，三个系数<span class="math inline"><em>a</em></span>,<span class="math inline"><em>b</em><sub>1</sub></span>,<span class="math inline"><em>b</em><sub>2</sub></span>的值同样变化。当<span class="math inline"><em>b</em><sub>1</sub></span>接近于0时，有效的传输延迟为2个样本，因为<span class="math inline"><em>B</em></span>多项式中前两个均为0。当<span class="math inline"><em>b</em><sub>1</sub></span>变更大时，有效传输延迟变为1个样本</p>
+<p>于是，为了检测传输延迟的变化，可以通过观察多项式系数<span class="math inline"><em>B</em></span>的变化实现</p>
+</section>
+</section>
+<section align=left>
+<h4 id="第二步在线估计检测变化"><strong>第二步：在线估计检测变化</strong></h4>
+<section>
+<p>在线估计算法更新模型参数和状态估计，并当新数据可用时处于不断迭代的规律中。可以选择使用来自系统识别工具项库中的Simulink模块或直接在命令行上使用递归识别程序，如<code>recursiveARX</code>。在线估计可以被用来建立随时间变化的动态模型如机械老化、气候模式改变或检测机电系统的故障</p>
+<p>当估计器更新模型参数时，系统动态变化（延迟）将会被参数<span class="math inline"><em>b</em><sub>1</sub></span>和<span class="math inline"><em>b</em><sub>2</sub></span>大于平常的变化所指示。多项式系数<span class="math inline"><em>B</em></span>的变化用以下计算追踪： <br /><span class="math display"><em>L</em>(<em>t</em>) = <em>a</em><em>b</em><em>s</em>(<em>B</em>(<em>t</em>) − <em>B</em>(<em>t</em> − 1))</span><br /> 使用<code>recursiveARX</code>对象在线估计ARX模型参数</p>
+<div class="sourceCode" id="cb287"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb287-1" data-line-number="1">na = <span class="fl">1</span>;</a>
+<a class="sourceLine" id="cb287-2" data-line-number="2">nb = <span class="fl">2</span>;</a>
+<a class="sourceLine" id="cb287-3" data-line-number="3">nk = <span class="fl">1</span>;</a>
+<a class="sourceLine" id="cb287-4" data-line-number="4">Estimator = recursiveARX([na nb nk]);</a></code></pre></div>
+
+<p>指定<code>NormalizedGradient</code>为递归估计算法，并且自适应增益为0.9</p>
+<div class="sourceCode" id="cb288"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb288-1" data-line-number="1">Estimator.EstimationMethod = <span class="st">&#39;NormalizedGradient&#39;</span>;</a>
+<a class="sourceLine" id="cb288-2" data-line-number="2">Estimator.AdaptationGain = <span class="fl">.9</span>;</a></code></pre></div>
+<p>从<code>iddata</code>对象<code>z</code>中提取原始数据</p>
+<div class="sourceCode" id="cb289"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb289-1" data-line-number="1">Output = z.OutputData; </a>
+<a class="sourceLine" id="cb289-2" data-line-number="2">Input = z.InputData; </a>
+<a class="sourceLine" id="cb289-3" data-line-number="3">t = z.SamplingInstants;</a>
+<a class="sourceLine" id="cb289-4" data-line-number="4">N = length(t);</a></code></pre></div>
+</section>
+<section align=left>
+<p>使用动态线段画出参数估计值和L，并在估计前初始化这些动态线段。为模拟流数据，每次向估计器提供一个样本。在估计前初始化模型参数，随后进行在线估计</p>
+<div class="sourceCode" id="cb290"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb290-1" data-line-number="1"><span class="co">%% 初始化绘图</span></a>
+<a class="sourceLine" id="cb290-2" data-line-number="2">Colors = {<span class="st">&#39;r&#39;</span>,<span class="st">&#39;g&#39;</span>,<span class="st">&#39;b&#39;</span>};</a>
+<a class="sourceLine" id="cb290-3" data-line-number="3">ax = gca;</a>
+<a class="sourceLine" id="cb290-4" data-line-number="4">cla(ax)</a>
+<a class="sourceLine" id="cb290-5" data-line-number="5">for k = <span class="fl">3</span>:-<span class="fl">1</span>:<span class="fl">1</span></a>
+<a class="sourceLine" id="cb290-6" data-line-number="6">   h(k) = animatedline(<span class="st">&#39;Color&#39;</span>,Colors{k}); <span class="co">% a,b1,b2参数的线段</span></a>
+<a class="sourceLine" id="cb290-7" data-line-number="7">end</a>
+<a class="sourceLine" id="cb290-8" data-line-number="8">h(<span class="fl">4</span>) =  animatedline(<span class="st">&#39;Marker&#39;</span>,<span class="st">&#39;.&#39;</span>,<span class="st">&#39;Color&#39;</span>,[<span class="fl">0</span> <span class="fl">0</span> <span class="fl">0</span>]); <span class="co">% line for L</span></a>
+<a class="sourceLine" id="cb290-9" data-line-number="9">legend({<span class="st">&#39;a&#39;</span>,<span class="st">&#39;b1&#39;</span>,<span class="st">&#39;b2&#39;</span>,<span class="st">&#39;Deviation&#39;</span>},<span class="st">&#39;location&#39;</span>,<span class="st">&#39;southeast&#39;</span>)</a>
+<a class="sourceLine" id="cb290-10" data-line-number="10">title(<span class="st">&#39;ARX Recursive Parameter Estimation&#39;</span>)</a>
+<a class="sourceLine" id="cb290-11" data-line-number="11">xlabel(<span class="st">&#39;Time (seconds)&#39;</span>)</a>
+<a class="sourceLine" id="cb290-12" data-line-number="12">ylabel(<span class="st">&#39;Parameter value&#39;</span>)</a>
+<a class="sourceLine" id="cb290-13" data-line-number="13">ax.XLim = [t(<span class="fl">1</span>),t(end)];</a>
+<a class="sourceLine" id="cb290-14" data-line-number="14">ax.YLim = [-<span class="fl">2</span>, <span class="fl">2</span>];</a>
+<a class="sourceLine" id="cb290-15" data-line-number="15">grid on</a>
+<a class="sourceLine" id="cb290-16" data-line-number="16">box on</a>
+<a class="sourceLine" id="cb290-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb290-18" data-line-number="18"><span class="co">%% 进行迭代估计并展示结果</span></a>
+<a class="sourceLine" id="cb290-19" data-line-number="19">n0 = <span class="fl">6</span>;</a>
+<a class="sourceLine" id="cb290-20" data-line-number="20">L = NaN(N,nk);</a>
+<a class="sourceLine" id="cb290-21" data-line-number="21">B_old = NaN(<span class="fl">1</span>,<span class="fl">3</span>);</a>
+<a class="sourceLine" id="cb290-22" data-line-number="22">for ct = <span class="fl">1</span>:N</a>
+<a class="sourceLine" id="cb290-23" data-line-number="23">   [A,B] = step(Estimator,Output(ct),Input(ct)); </a>
+<a class="sourceLine" id="cb290-24" data-line-number="24">   if ct&gt;n0</a>
+<a class="sourceLine" id="cb290-25" data-line-number="25">      L(ct) = norm(B-B_old);</a>
+<a class="sourceLine" id="cb290-26" data-line-number="26">      B_old = B;</a>
+<a class="sourceLine" id="cb290-27" data-line-number="27">   end</a>
+<a class="sourceLine" id="cb290-28" data-line-number="28">   addpoints(h(<span class="fl">1</span>),t(ct),A(<span class="fl">2</span>))</a>
+<a class="sourceLine" id="cb290-29" data-line-number="29">   addpoints(h(<span class="fl">2</span>),t(ct),B(<span class="fl">2</span>))</a>
+<a class="sourceLine" id="cb290-30" data-line-number="30">   addpoints(h(<span class="fl">3</span>),t(ct),B(<span class="fl">3</span>))</a>
+<a class="sourceLine" id="cb290-31" data-line-number="31">   addpoints(h(<span class="fl">4</span>),t(ct),L(ct))</a>
+<a class="sourceLine" id="cb290-32" data-line-number="32">   pause(<span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb290-33" data-line-number="33">end</a></code></pre></div>
+</section>
+<section align=left>
+<p align=center><img src="..\faultDetectionAndPrognose\ARXParaEstimator.png" style="zoom: 150%;" /></p>
+
+<p>前<span class="math inline"><em>n</em><sub>0</sub> = 6</span>个数据样本不用了计算变化探测器L。在这区间内，参数变化是很大的，这归因于未知的初始化条件</p>
+</section>
+<section align=left>
+<p>通过使用信号处理工具箱中的<code>findpeaks</code>命令，找到L上所有峰值的位置</p>
+<div class="sourceCode" id="cb291"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb291-1" data-line-number="1">[v,Loc] = findpeaks(L);</a>
+<a class="sourceLine" id="cb291-2" data-line-number="2">[~,I] = max(v);</a>
+<a class="sourceLine" id="cb291-3" data-line-number="3">line(t(Loc(I)),L(Loc(I)),<span class="st">&#39;parent&#39;</span>,ax,<span class="st">&#39;Marker&#39;</span>,<span class="st">&#39;o&#39;</span>,<span class="st">&#39;MarkerEdgeColor&#39;</span>,<span class="st">&#39;r&#39;</span>,...</a>
+<a class="sourceLine" id="cb291-4" data-line-number="4">   <span class="st">&#39;MarkerFaceColor&#39;</span>,<span class="st">&#39;y&#39;</span>,<span class="st">&#39;MarkerSize&#39;</span>,<span class="fl">12</span>)</a></code></pre></div>
+<p align=center><img src="..\faultDetectionAndPrognose\ARXParaEstimatorWithLocation.png" style="zoom:150%;" /></p>
+</section>
+<section align=left>
+<div class="sourceCode" id="cb292"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb292-1" data-line-number="1">fprintf(<span class="st">&#39;Change in system delay detected at sample number %d.\n&#39;</span>,Loc(I));</a></code></pre></div>
+<p align=center><img src="..\faultDetectionAndPrognose\ChangePointResult.PNG" style="zoom:140%;" /></p>
+<p>最大峰值的位置与多项式系数<span class="math inline"><em>B</em></span>的最大改变位置相对应，即传输延迟改变的位置</p>
+<p>相比于在线估计技术可以提供更多的估计方法和模型结构选择，数据分割方法可以帮助自动检测突变和孤立变化</p>
+</section>
+</section>
+<section align=left>
+<h4 id="第三步数据分割检测变化"><strong>第三步：数据分割检测变化</strong></h4>
+<section>
+<p>数据分割算法自动将数据分割到不同动态行为区域内。这种方法对于捕捉源自失效或操作工况的改变引起的突变十分有用。<code>segment</code>命令简化了单输出数据操作。当你不需要捕捉系统运行时的随时间变化行为时，<code>segment</code>是一种备选的在线估计技术</p>
+<p>数据分割技术的应用领域包括语音信号的分割（每个分割组代表一个音素），故障检测（每个分割组对应有或无故障的操作）和系统不同工作模式的估计</p>
+<p><code>segment</code>命令的输入包括测量数据、模型阶数和影响系统噪声方差的猜想值<span class="math inline"><em>r</em><sub>2</sub></span>。如果方差完全未知，那它可以被自动的估计出来。使用具有与在线估计相同阶数的ARX模型进行数据分割。将方差值设定为0.1</p>
+<div class="sourceCode" id="cb293"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb293-1" data-line-number="1">[seg,V,tvmod] = segment(z,[na nb nk],<span class="fl">0.1</span>);</a></code></pre></div>
+</section>
+<section align=left>
+<p>分割的方法基于多模型自适应遗忘AFMM（adaptive forgetting through multiple models）</p>
+<p>多模型方法被用于追踪时间变化系统。最终的追踪模型是多模型的平均，并作为<code>segment</code>和<code>tvmod</code>的第三输出返回</p>
+<p>下面画出追踪模型的参数</p>
+<pre><code>plot(tvmod)
+legend({&#39;a&#39;,&#39;b_1&#39;,&#39;b_2&#39;},&#39;Location&#39;,&#39;best&#39;)
+xlabel(&#39;Samples&#39;), ylabel(&#39;Parameter value&#39;)
+title(&#39;Time-varying estimates&#39;)</code></pre>
+<p align=center><img src="..\faultDetectionAndPrognose\timeVaryingEsti.png" style="zoom:120%;" /></p>
+<p>注意这三条参数轨迹之间的相似性，它们都是用<code>recursiveARX</code>估计得到的</p>
+</section>
+<section align=left>
+
+<p><code>segment</code>可使用<code>tvmod</code>确定改变发生的时间点和<code>q</code>，模型发生突变的概率。这些时间点通过应用对追踪模型使用平滑化过程，被用来构造分割后的模型</p>
+<p>分割后的模型参数值返回到<code>seg</code>中，<code>segment</code>的第一个输出量。每个连续行中的值是基础分割模型在相应时刻的参数值，这些值在连续行中保持恒定，仅当系统动态属性发生改变时，这些值才会改变。即，<code>seg</code>中的值是分段式恒定的</p>
+<p>画出<span class="math inline"><em>a</em></span>,<span class="math inline"><em>b</em><sub>1</sub></span>,<span class="math inline"><em>b</em><sub>2</sub></span>的参数估计值</p>
+<div class="sourceCode" id="cb295"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb295-1" data-line-number="1">plot(seg)</a>
+<a class="sourceLine" id="cb295-2" data-line-number="2">title(<span class="st">&#39;Parameter value segments&#39;</span>)</a>
+<a class="sourceLine" id="cb295-3" data-line-number="3">legend({<span class="st">&#39;a&#39;</span>,<span class="st">&#39;b1&#39;</span>,<span class="st">&#39;b2&#39;</span>},<span class="st">&#39;Location&#39;</span>,<span class="st">&#39;best&#39;</span>)</a>
+<a class="sourceLine" id="cb295-4" data-line-number="4">xlabel(<span class="st">&#39;Time (seconds)&#39;</span>)</a>
+<a class="sourceLine" id="cb295-5" data-line-number="5">ylabel(<span class="st">&#39;Parameter value&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\faultDetectionAndPrognose\parameterValueSegmented.png" style="zoom:80%;" /></p>
+<p>参数值的变化发生在第19个样本点附近。<span class="math inline"><em>b</em><sub>1</sub></span>的值从小（接近于0）变大（接近于1）.<span class="math inline"><em>b</em><sub>2</sub></span>的值以相反的模式变化。这些在多项式参数<span class="math inline"><em>B</em></span>上发生的改变说明了传输延迟的变化</p>
+</section>
+<section align=left>
+<p><code>segment</code>的第二个输出参数V，表示分割模型的损失函数（例如对分割模型的估计预测差的方差）。可以使用V来评估分割模型的质量</p>
+<p>注意分割算法最重要的两个输入是<span class="math inline"><em>r</em><sub>2</sub></span>和<span class="math inline"><em>q</em></span>，<code>segment</code>的第四个输出参数。在本案例中，<span class="math inline"><em>q</em></span>并未指定，因为使用其默认值0.01便可。更小的<span class="math inline"><em>r</em><sub>2</sub></span>值和更大的<span class="math inline"><em>q</em></span>值会导致更多的分割点。为了找到合适的值，可以改变<span class="math inline"><em>r</em><sub>2</sub></span>和<span class="math inline"><em>q</em></span>的值，并找到表现最好的那一组值。通常，相比于<span class="math inline"><em>q</em></span>，分割算法对<span class="math inline"><em>r</em><sub>2</sub></span>的敏感度更高</p>
+</section>
+</section>
+<section align=left>
+<h4 id="第四步总结"><strong>第四步：总结</strong></h4>
+<p>本案例中，使用在线估计和数据分割技术的系统突变检测方法被评估。在线估计方法提供了更多的灵活性，并且可以对估计过程有更多的控制。然而，对突变或罕见的变化，<code>segment</code>使得基于平滑的时变参数估计的自动检测技术变得容易</p>
+</section>
+<section style="font-size:44px;">
+<p><strong>参考：</strong><a href="https://ww2.mathworks.cn/help/predmaint/ug/Detect-Abrupt-System-Changes-Using-Identification-Techniques.html" target="_blank">https://ww2.mathworks.cn/help/predmaint/ug/Detect-Abrupt-System-Changes-Using-Identification-Techniques.html</a></p>
+</section>
+	    </div>
+  </div>
+
+  <script src="../reveal.js/lib/js/head.min.js"></script>
+  <script src="../reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Push each slide change to the browser history
+        history: true,
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: '../reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: '../reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: '../reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>

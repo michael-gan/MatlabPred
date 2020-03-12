@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>案例5</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../reveal.js/css/reveal.css">
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../reveal.js/css/theme/beige.css" id="theme">
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? '../reveal.js/css/print/pdf.css' : '../reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+    </script>
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+  <!--[if lt IE 9]>
+  <script src="../reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+	<section>
+<h2 id="案例5滚动轴承故障诊断">案例5：滚动轴承故障诊断</h2>
+</section>
+<section align=left>
+<p>该案例展示了如何基于加速信号，尤其是有其他机械部件强掩蔽信号存在的情况下，进行故障分析诊断。该案例将演示如何使用包络谱分析和谱峰度来诊断轴承故障，同时也可被拓展到大数据应用方面</p>
+</section>
+<section align=left>
+<h4 id="第一步问题描述-1"><strong>第一步：问题描述</strong></h4>
+<p>滚动轴承的局部故障可能发生在外圈、内圈、保持架和滚动元件中。当健康滚动元件撞击内圈或外圈的局部故障，或故障滚动元件撞击健康内圈或外圈时，会激起高频谐振。下图中展示了健康滚动元件撞击轴承内圈局部故障。待研究的问题是如何检测并识别不同类型的故障。</p>
+<p align=center><img src="..\algo_dev\RollingElementBearingFaultDiagnosisExample.png" style="zoom: 120%;" /></p>
+</section>
+<section align=left>
+<h4 id="第二步数据描述"><strong>第二步：数据描述</strong></h4>
+<section>
+<p>本案例数据来源于MFPT（Machinery Failure Prevention Technology）挑战数据，该数据包含了来自遭受不同故障类型的不同机械，它包括23组数据集。前20组数据情况如下（前20组数据集来自轴承试验台，后3组为实际采集的真实数据，分别来自油泵轴承、中速轴承和行星轴承，故障位置未知）：</p>
+<ul>
+<li>3组为健康状态</li>
+<li>3组为恒定载荷下的外圈故障</li>
+<li>7组为变载荷下的外圈故障</li>
+<li>7组为变载荷下的内圈故障</li>
+</ul>
+<p>本案例分析过程中仅使用前20组带标签的数据</p>
+</section>
+<section>
+<p>每组数据包含了一条时序加速信号“gs”，采样频率“sr”，轴转速“rate”，载荷“load”，以及代表不同故障位置的四种临界频率：外圈缺陷频率（BPFO），内圈缺陷频率（BPFI），轴承保持器损坏频率（FTF），轴承滚动件损坏频率（BSF）<a href="#/fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a>。以下四个公式描述了这四种频率的计算：</p>
+<ul>
+<li><span class="math inline">$BPFD=\frac{nf_r}{2}(1-\frac d Dcos \phi)$</span></li>
+<li><span class="math inline">$BPFI=\frac{nf_r}{2}(1+\frac d Dcos \phi)$</span></li>
+<li><span class="math inline">$FTF=\frac{f_r}{2}(1-\frac d Dcos \phi)$</span></li>
+<li><span class="math inline">$BSF=\frac{D}{2d}[1-(\frac d D cos\phi)^2]$</span></li>
+</ul>
+<p>公式中<span class="math inline"><em>d</em></span>为球直径，<span class="math inline"><em>D</em></span>为节径，变量<span class="math inline"><em>f</em><sub><em>r</em></sub></span>为轴转速，<span class="math inline"><em>n</em></span>为滚动元件（滚珠）的个数，<span class="math inline"><em>ϕ</em></span>为轴承接触角</p>
+</section>
+</section>
+<section align=left>
+<h4 id="第三步用于轴承诊断的包络谱分析"><strong>第三步：用于轴承诊断的包络谱分析</strong></h4>
+<section>
+<p>在MFPT数据中，轴转速都是恒定的，因此没有必要进行阶次跟踪作为预处理步骤以消除转速变化的影响</p>
+<p>当健康滚动元件撞击故障内圈或外圈，或故障滚动元件撞击健康内圈或外圈时，所带来的冲击会调制出对应的临界频率如BFPO、BFPI、FTF、BSF等。因此幅度解调产生的包络信号，会传达出更多通过使用原始信号进行频谱分析无法得到的诊断信息。接下来以MFPT数据中的内圈故障数据为例：</p>
+<div class="sourceCode" id="cb92"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb92-1" data-line-number="1">dataInner = load(fullfile(matlabroot, <span class="st">&#39;toolbox&#39;</span>, <span class="st">&#39;predmaint&#39;</span>, ...</a>
+<a class="sourceLine" id="cb92-2" data-line-number="2">    <span class="st">&#39;predmaintdemos&#39;</span>, <span class="st">&#39;bearingFaultDiagnosis&#39;</span>, ...</a>
+<a class="sourceLine" id="cb92-3" data-line-number="3">    <span class="st">&#39;train_data&#39;</span>, <span class="st">&#39;InnerRaceFault_vload_1.mat&#39;</span>));</a></code></pre></div>
+</section>
+<section>
+<p>可视化时域内原始内圈故障数据</p>
+<div class="sourceCode" id="cb93"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb93-1" data-line-number="1">xInner = dataInner.bearing.gs;  <span class="co">% 时序数据</span></a>
+<a class="sourceLine" id="cb93-2" data-line-number="2">fsInner = dataInner.bearing.sr;  <span class="co">% 采样频率</span></a>
+<a class="sourceLine" id="cb93-3" data-line-number="3">tInner = (<span class="fl">0</span>:length(xInner)-<span class="fl">1</span>)/fsInner;  <span class="co">% 生成时间轴</span></a>
+<a class="sourceLine" id="cb93-4" data-line-number="4">figure</a>
+<a class="sourceLine" id="cb93-5" data-line-number="5">plot(tInner, xInner)</a>
+<a class="sourceLine" id="cb93-6" data-line-number="6">xlabel(<span class="st">&#39;Time, (s)&#39;</span>)</a>
+<a class="sourceLine" id="cb93-7" data-line-number="7">ylabel(<span class="st">&#39;Acceleration (g)&#39;</span>)</a>
+<a class="sourceLine" id="cb93-8" data-line-number="8">title(<span class="st">&#39;Raw Signal: Inner Race Fault&#39;</span>)</a>
+<a class="sourceLine" id="cb93-9" data-line-number="9">xlim([<span class="fl">0</span> <span class="fl">0.1</span>])</a></code></pre></div>
+<p align=center><img src="..\algo_dev\rawSignalIRF.png" style="zoom:120%;" /></p>
+</section>
+<section>
+<p>使用功率谱生成函数<code>pspectrum</code>查看频域内的原始数据</p>
+<div class="sourceCode" id="cb94"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb94-1" data-line-number="1">figure</a>
+<a class="sourceLine" id="cb94-2" data-line-number="2">[pInner, fpInner] = pspectrum(xInner, fsInner);  <span class="co">% 生成功率谱，返回功率谱和对应的频率</span></a>
+<a class="sourceLine" id="cb94-3" data-line-number="3">pInner = <span class="fl">10</span>*log10(pInner);</a>
+<a class="sourceLine" id="cb94-4" data-line-number="4">plot(fpInner, pInner)</a>
+<a class="sourceLine" id="cb94-5" data-line-number="5">xlabel(<span class="st">&#39;Frequency (Hz)&#39;</span>)</a>
+<a class="sourceLine" id="cb94-6" data-line-number="6">ylabel(<span class="st">&#39;Power Spectrum (dB)&#39;</span>)</a>
+<a class="sourceLine" id="cb94-7" data-line-number="7">title(<span class="st">&#39;Raw Signal: Inner Race Fault&#39;</span>)</a>
+<a class="sourceLine" id="cb94-8" data-line-number="8">legend(<span class="st">&#39;Power Spectrum&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\algo_dev\rawSignalPowerSpectrum.png" style="zoom:120%;" /></p>
+</section>
+<section>
+<p>下面将频率放大到0-1000 Hz范围，进一步查看内圈缺陷频率的响应以及它出现第一次谐振时的情形</p>
+<div class="sourceCode" id="cb95"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb95-1" data-line-number="1">figure</a>
+<a class="sourceLine" id="cb95-2" data-line-number="2">plot(fpInner, pInner)</a>
+<a class="sourceLine" id="cb95-3" data-line-number="3">ncomb = <span class="fl">10</span>;  <span class="co">% 定义10个谐波游标</span></a>
+<a class="sourceLine" id="cb95-4" data-line-number="4">helperPlotCombs(ncomb, dataInner.BPFI)  <span class="co">% 画出这些谐波游标</span></a>
+<a class="sourceLine" id="cb95-5" data-line-number="5">xlabel(<span class="st">&#39;Frequency (Hz)&#39;</span>)</a>
+<a class="sourceLine" id="cb95-6" data-line-number="6">ylabel(<span class="st">&#39;Power Spectrum (dB)&#39;</span>)</a>
+<a class="sourceLine" id="cb95-7" data-line-number="7">title(<span class="st">&#39;Raw Signal: Inner Race Fault&#39;</span>)</a>
+<a class="sourceLine" id="cb95-8" data-line-number="8">legend(<span class="st">&#39;Power Spectrum&#39;</span>, <span class="st">&#39;BPFI Harmonics&#39;</span>)</a>
+<a class="sourceLine" id="cb95-9" data-line-number="9">xlim([<span class="fl">0</span> <span class="fl">1000</span>])</a></code></pre></div>
+<p align=center><img src="..\algo_dev\rawSignalPowerSpectrumZoomed.png" style="zoom:120%;" /></p>
+</section>
+<section>
+<p>帮助函数<code>helperPlotCombs</code>如下：</p>
+<div class="sourceCode" id="cb96"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb96-1" data-line-number="1">function helperPlotCombs(ncomb, f)</a>
+<a class="sourceLine" id="cb96-2" data-line-number="2"><span class="co">%HELPERPLOTCOMBS Plot harmonic cursors on a power spectrum plot</span></a>
+<a class="sourceLine" id="cb96-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb96-4" data-line-number="4"><span class="co">% Copyright 2017 The MathWorks, Inc.</span></a>
+<a class="sourceLine" id="cb96-5" data-line-number="5">ylimit = get(gca, <span class="st">&#39;YLim&#39;</span>);</a>
+<a class="sourceLine" id="cb96-6" data-line-number="6">ylim(ylimit);</a>
+<a class="sourceLine" id="cb96-7" data-line-number="7">ycomb = repmat([ylimit nan], <span class="fl">1</span>, ncomb);</a>
+<a class="sourceLine" id="cb96-8" data-line-number="8">hold(gca, <span class="st">&#39;on&#39;</span>)</a>
+<a class="sourceLine" id="cb96-9" data-line-number="9">for i = <span class="fl">1</span>:length(f)</a>
+<a class="sourceLine" id="cb96-10" data-line-number="10">    xcomb = f(i)*(<span class="fl">1</span>:ncomb);</a>
+<a class="sourceLine" id="cb96-11" data-line-number="11">    xcombs = [xcomb; xcomb; nan(<span class="fl">1</span>, ncomb)];</a>
+<a class="sourceLine" id="cb96-12" data-line-number="12">    xcombs = xcombs(:)&#39;;</a>
+<a class="sourceLine" id="cb96-13" data-line-number="13">    plot(xcombs, ycomb, <span class="st">&#39;--&#39;</span>)</a>
+<a class="sourceLine" id="cb96-14" data-line-number="14">end</a>
+<a class="sourceLine" id="cb96-15" data-line-number="15">hold(gca, <span class="st">&#39;off&#39;</span>)</a>
+<a class="sourceLine" id="cb96-16" data-line-number="16">end</a></code></pre></div>
+<p>从图中可以看到BPFI和它的谐波中观察不到明显的模式。此时对原始信号的频域分析也没法提供有用的诊断信息</p>
+</section>
+<section>
+<p>再回过头来看时序数据，原始信号的振幅按一定频率调制，并且主频大约是<span class="math inline">1/0.009<em>H</em><em>z</em> ≈ 111<em>H</em><em>z</em></span>。已知健康滚动元件撞击内圈局部故障时的频率，也就是BPFI是118.875 Hz。这就说明该轴承可能有潜在的内圈故障</p>
+<p>下面提取一段连续的振幅变化的时序数据进行可视化：</p>
+<div class="sourceCode" id="cb97"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb97-1" data-line-number="1">figure</a>
+<a class="sourceLine" id="cb97-2" data-line-number="2">subplot(<span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">1</span>)</a>
+<a class="sourceLine" id="cb97-3" data-line-number="3">plot(tInner, xInner)</a>
+<a class="sourceLine" id="cb97-4" data-line-number="4">xlim([<span class="fl">0.04</span> <span class="fl">0.06</span>])</a>
+<a class="sourceLine" id="cb97-5" data-line-number="5">title(<span class="st">&#39;Raw Signal: Inner Race Fault&#39;</span>)</a>
+<a class="sourceLine" id="cb97-6" data-line-number="6">ylabel(<span class="st">&#39;Acceleration (g)&#39;</span>)</a>
+<a class="sourceLine" id="cb97-7" data-line-number="7">annotation(<span class="st">&#39;doublearrow&#39;</span>, [<span class="fl">0.37</span> <span class="fl">0.71</span>], [<span class="fl">0.8</span> <span class="fl">0.8</span>])</a>
+<a class="sourceLine" id="cb97-8" data-line-number="8">text(<span class="fl">0.047</span>, <span class="fl">20</span>, [<span class="st">&#39;0.009 sec \approx 1/BPFI, BPFI = &#39;</span> num2str(dataInner.BPFI)])</a></code></pre></div>
+</section>
+<section>
+<p>同时在下方使用函数<code>envspectrum</code>函数计算包络谱信息以提取调制振幅，并画出原始信号的包络</p>
+<div class="sourceCode" id="cb98"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb98-1" data-line-number="1">subplot(<span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">2</span>)</a>
+<a class="sourceLine" id="cb98-2" data-line-number="2">[pEnvInner, fEnvInner, xEnvInner, tEnvInner] = envspectrum(xInner, fsInner);</a>
+<a class="sourceLine" id="cb98-3" data-line-number="3">plot(tEnvInner, xEnvInner)</a>
+<a class="sourceLine" id="cb98-4" data-line-number="4">xlim([<span class="fl">0.04</span> <span class="fl">0.06</span>])</a>
+<a class="sourceLine" id="cb98-5" data-line-number="5">xlabel(<span class="st">&#39;Time (s)&#39;</span>)</a>
+<a class="sourceLine" id="cb98-6" data-line-number="6">ylabel(<span class="st">&#39;Acceleration (g)&#39;</span>)</a>
+<a class="sourceLine" id="cb98-7" data-line-number="7">title(<span class="st">&#39;Envelope signal&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\algo_dev\envAnalysisLocal.png" style="zoom: 120%;" /></p>
+</section>
+<section>
+<p>之后再使用包络信号计算功率谱，并查看对应的BPFI和它谐振的响应</p>
+<div class="sourceCode" id="cb99"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb99-1" data-line-number="1">figure</a>
+<a class="sourceLine" id="cb99-2" data-line-number="2">plot(fEnvInner, pEnvInner)</a>
+<a class="sourceLine" id="cb99-3" data-line-number="3">xlim([<span class="fl">0</span> <span class="fl">1000</span>])</a>
+<a class="sourceLine" id="cb99-4" data-line-number="4">ncomb = <span class="fl">10</span>;</a>
+<a class="sourceLine" id="cb99-5" data-line-number="5">helperPlotCombs(ncomb, dataInner.BPFI)</a>
+<a class="sourceLine" id="cb99-6" data-line-number="6">xlabel(<span class="st">&#39;Frequency (Hz)&#39;</span>)</a>
+<a class="sourceLine" id="cb99-7" data-line-number="7">ylabel(<span class="st">&#39;Peak Amplitude&#39;</span>)</a>
+<a class="sourceLine" id="cb99-8" data-line-number="8">title(<span class="st">&#39;Envelope Spectrum: Inner Race Fault&#39;</span>)</a>
+<a class="sourceLine" id="cb99-9" data-line-number="9">legend(<span class="st">&#39;Envelope Spectrum&#39;</span>, <span class="st">&#39;BPFI Harmonics&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\algo_dev\rawSignalEnvSpectrum.png" style="zoom:110%;" /></p>
+<p>可以看出，大部分能量集中于BPFI和它的谐振上。这一现象指示了轴承内圈的故障，这也佐证了数据的故障标签</p>
+</section>
+</section>
+<section align=left>
+<h4 id="第四步包络谱分析用于其他故障类型"><strong>第四步：包络谱分析用于其他故障类型</strong></h4>
+<section>
+<p>现在将同样的包络谱分析方法应用于正常数据和轴承外圈故障数据中</p>
+<div class="sourceCode" id="cb100"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb100-1" data-line-number="1"><span class="co">% 载入正常数据</span></a>
+<a class="sourceLine" id="cb100-2" data-line-number="2">dataNormal = load(fullfile(matlabroot, <span class="st">&#39;toolbox&#39;</span>, <span class="st">&#39;predmaint&#39;</span>, ...</a>
+<a class="sourceLine" id="cb100-3" data-line-number="3">    <span class="st">&#39;predmaintdemos&#39;</span>, <span class="st">&#39;bearingFaultDiagnosis&#39;</span>, ...</a>
+<a class="sourceLine" id="cb100-4" data-line-number="4">    <span class="st">&#39;train_data&#39;</span>, <span class="st">&#39;baseline_1.mat&#39;</span>));</a>
+<a class="sourceLine" id="cb100-5" data-line-number="5">xNormal = dataNormal.bearing.gs;</a>
+<a class="sourceLine" id="cb100-6" data-line-number="6">fsNormal = dataNormal.bearing.sr;</a>
+<a class="sourceLine" id="cb100-7" data-line-number="7">tNormal = (<span class="fl">0</span>:length(xNormal)-<span class="fl">1</span>)/fsNormal;</a>
+<a class="sourceLine" id="cb100-8" data-line-number="8">[pEnvNormal, fEnvNormal] = envspectrum(xNormal, fsNormal);  <span class="co">% 分析正常数据的包络谱</span></a>
+<a class="sourceLine" id="cb100-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb100-10" data-line-number="10">figure</a>
+<a class="sourceLine" id="cb100-11" data-line-number="11">plot(fEnvNormal, pEnvNormal)</a>
+<a class="sourceLine" id="cb100-12" data-line-number="12">ncomb = <span class="fl">10</span>;</a>
+<a class="sourceLine" id="cb100-13" data-line-number="13">helperPlotCombs(ncomb, [dataNormal.BPFO dataNormal.BPFI])</a>
+<a class="sourceLine" id="cb100-14" data-line-number="14">xlim([<span class="fl">0</span> <span class="fl">1000</span>])</a>
+<a class="sourceLine" id="cb100-15" data-line-number="15">xlabel(<span class="st">&#39;Frequency (Hz)&#39;</span>)</a>
+<a class="sourceLine" id="cb100-16" data-line-number="16">ylabel(<span class="st">&#39;Peak Amplitude&#39;</span>)</a>
+<a class="sourceLine" id="cb100-17" data-line-number="17">title(<span class="st">&#39;Envelope Spectrum: Normal&#39;</span>)</a>
+<a class="sourceLine" id="cb100-18" data-line-number="18">legend(<span class="st">&#39;Envelope Spectrum&#39;</span>, <span class="st">&#39;BPFO Harmonics&#39;</span>, <span class="st">&#39;BPFI Harmonics&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\algo_dev\otherModesEnv.png" style="zoom:90%;" /></p>
+<p>可以看出，对正常数据而言，包络谱并未表现出在BPFO和BPFI谐振上有明显的峰值出现</p>
+</section>
+<section align=left>
+<div class="sourceCode" id="cb101"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb101-1" data-line-number="1"><span class="co">% 载入外圈故障数据</span></a>
+<a class="sourceLine" id="cb101-2" data-line-number="2">dataOuter = load(fullfile(matlabroot, <span class="st">&#39;toolbox&#39;</span>, <span class="st">&#39;predmaint&#39;</span>, ...</a>
+<a class="sourceLine" id="cb101-3" data-line-number="3">    <span class="st">&#39;predmaintdemos&#39;</span>, <span class="st">&#39;bearingFaultDiagnosis&#39;</span>, ...</a>
+<a class="sourceLine" id="cb101-4" data-line-number="4">    <span class="st">&#39;train_data&#39;</span>, <span class="st">&#39;OuterRaceFault_2.mat&#39;</span>));</a>
+<a class="sourceLine" id="cb101-5" data-line-number="5">xOuter = dataOuter.bearing.gs;</a>
+<a class="sourceLine" id="cb101-6" data-line-number="6">fsOuter = dataOuter.bearing.sr;</a>
+<a class="sourceLine" id="cb101-7" data-line-number="7">tOuter = (<span class="fl">0</span>:length(xOuter)-<span class="fl">1</span>)/fsOuter;</a>
+<a class="sourceLine" id="cb101-8" data-line-number="8">[pEnvOuter, fEnvOuter, xEnvOuter, tEnvOuter] = envspectrum(xOuter, fsOuter);</a>
+<a class="sourceLine" id="cb101-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb101-10" data-line-number="10">figure</a>
+<a class="sourceLine" id="cb101-11" data-line-number="11">plot(fEnvOuter, pEnvOuter)</a>
+<a class="sourceLine" id="cb101-12" data-line-number="12">ncomb = <span class="fl">10</span>;</a>
+<a class="sourceLine" id="cb101-13" data-line-number="13">helperPlotCombs(ncomb, dataOuter.BPFO)</a>
+<a class="sourceLine" id="cb101-14" data-line-number="14">xlim([<span class="fl">0</span> <span class="fl">1000</span>])</a>
+<a class="sourceLine" id="cb101-15" data-line-number="15">xlabel(<span class="st">&#39;Frequency (Hz)&#39;</span>)</a>
+<a class="sourceLine" id="cb101-16" data-line-number="16">ylabel(<span class="st">&#39;Peak Amplitude&#39;</span>)</a>
+<a class="sourceLine" id="cb101-17" data-line-number="17">title(<span class="st">&#39;Envelope Spectrum: Outer Race Fault&#39;</span>)</a>
+<a class="sourceLine" id="cb101-18" data-line-number="18">legend(<span class="st">&#39;Envelope Spectrum&#39;</span>, <span class="st">&#39;BPFO Harmonics&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\algo_dev\otherOutFaultEnv.png" style="zoom:90%;" /></p>
+<p>从外圈故障数据的包络谱来看，也没有明显的BPFO谐波出现。那么就可以断定包络谱无法区分外圈故障和健康状态吗？对此问题，可以退一步回过头来看不同条件下的原始时域数据</p>
+</section>
+<section align=left style="font-size:28px;">
+<p>首先再次可视化这些时域数据并计算它们的峰度。峰度是随机变量的第四个标准化矩，它表征了信号的脉冲或随机变量尾部的肥瘦程度</p>
+<div class="sourceCode" id="cb102"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb102-1" data-line-number="1">figure</a>
+<a class="sourceLine" id="cb102-2" data-line-number="2">subplot(<span class="fl">3</span>, <span class="fl">1</span>, <span class="fl">1</span>)</a>
+<a class="sourceLine" id="cb102-3" data-line-number="3">kurtInner = kurtosis(xInner);  <span class="co">% 计算内圈故障数据的峰度</span></a>
+<a class="sourceLine" id="cb102-4" data-line-number="4">plot(tInner, xInner)</a>
+<a class="sourceLine" id="cb102-5" data-line-number="5">ylabel(<span class="st">&#39;Acceleration (g)&#39;</span>)</a>
+<a class="sourceLine" id="cb102-6" data-line-number="6">title([<span class="st">&#39;Inner Race Fault, kurtosis = &#39;</span> num2str(kurtInner)])</a>
+<a class="sourceLine" id="cb102-7" data-line-number="7">xlim([<span class="fl">0</span> <span class="fl">0.1</span>])</a>
+<a class="sourceLine" id="cb102-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb102-9" data-line-number="9">subplot(<span class="fl">3</span>, <span class="fl">1</span>, <span class="fl">2</span>)</a>
+<a class="sourceLine" id="cb102-10" data-line-number="10">kurtNormal = kurtosis(xNormal);  <span class="co">% 计算健康数据的峰度</span></a>
+<a class="sourceLine" id="cb102-11" data-line-number="11">plot(tNormal, xNormal)</a>
+<a class="sourceLine" id="cb102-12" data-line-number="12">ylabel(<span class="st">&#39;Acceleration (g)&#39;</span>)</a>
+<a class="sourceLine" id="cb102-13" data-line-number="13">title([<span class="st">&#39;Normal, kurtosis = &#39;</span> num2str(kurtNormal)])</a>
+<a class="sourceLine" id="cb102-14" data-line-number="14">xlim([<span class="fl">0</span> <span class="fl">0.1</span>])</a>
+<a class="sourceLine" id="cb102-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb102-16" data-line-number="16">subplot(<span class="fl">3</span>, <span class="fl">1</span>, <span class="fl">3</span>)</a>
+<a class="sourceLine" id="cb102-17" data-line-number="17">kurtOuter = kurtosis(xOuter);  <span class="co">% 计算外圈故障数据的峰度</span></a>
+<a class="sourceLine" id="cb102-18" data-line-number="18">plot(tOuter, xOuter)</a>
+<a class="sourceLine" id="cb102-19" data-line-number="19">xlabel(<span class="st">&#39;Time (s)&#39;</span>)</a>
+<a class="sourceLine" id="cb102-20" data-line-number="20">ylabel(<span class="st">&#39;Acceleration (g)&#39;</span>)</a>
+<a class="sourceLine" id="cb102-21" data-line-number="21">title([<span class="st">&#39;Outer Race Fault, kurtosis = &#39;</span> num2str(kurtOuter)])</a>
+<a class="sourceLine" id="cb102-22" data-line-number="22">xlim([<span class="fl">0</span> <span class="fl">0.1</span>])</a></code></pre></div>
+<p align=center><img src="..\algo_dev\allDataVisual.png" style="zoom:80%;" /></p>
+<p>从上图可以看出，内圈故障数据有更大的峰度（即信号脉冲变化），这使得包络谱分析对它更有效。但是对于外圈故障而言，仅仅能看出轻微的BPFO谐波幅值重合，因为噪声较严重。对正常数据来说，甚至没有丝毫的幅值调制现象可以被观察到。所以综上，提取带有在BPFO处振幅调制的脉冲信号（或提高信噪比），在包络谱分析前属于关键的预处理步骤。下一节将介绍使用峰度图和谱峭度提取有着最高峰度值的信号，同时将包络谱分析方法应用在滤出的信号中</p>
+</section>
+</section>
+<section align=left>
+<h4 id="第五步峰图和谱峰度用于波段选择"><strong>第五步：峰图和谱峰度用于波段选择</strong></h4>
+<p>峰度图和谱峭度计算一定频率范围内的局部峰度。它们是找到拥有最高峰度（或最高信噪比）频率带信号的强力工具。在找到拥有最高峰度的频率带后，可以将带通滤波方法应用于原始信号来获得对包络谱分析更有帮助的强冲击信号</p>
+</section>
+<section align=left>
+<h4 id="第六步批处理"><strong>第六步：批处理</strong></h4>
+<section>
+<p>接下来，将该算法应用于批量训练数据中，该数据以文件集成数据的形式存储</p>
+<p>工具箱中提供了有限的数据集，可将该数据集复制到当前文件夹下并开启写权限：</p>
+<div class="sourceCode" id="cb103"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb103-1" data-line-number="1">copyfile(...</a>
+<a class="sourceLine" id="cb103-2" data-line-number="2">    fullfile(matlabroot, <span class="st">&#39;toolbox&#39;</span>, <span class="st">&#39;predmaint&#39;</span>, <span class="st">&#39;predmaintdemos&#39;</span>, ...</a>
+<a class="sourceLine" id="cb103-3" data-line-number="3">    <span class="st">&#39;bearingFaultDiagnosis&#39;</span>), ...</a>
+<a class="sourceLine" id="cb103-4" data-line-number="4">    <span class="st">&#39;RollingElementBearingFaultDiagnosis-Data-master&#39;</span>)</a>
+<a class="sourceLine" id="cb103-5" data-line-number="5">fileattrib(fullfile(<span class="st">&#39;RollingElementBearingFaultDiagnosis-Data-master&#39;</span>, <span class="st">&#39;train_data&#39;</span>, <span class="st">&#39;*.mat&#39;</span>), <span class="st">&#39;+w&#39;</span>)  <span class="co">% 训练数据</span></a>
+<a class="sourceLine" id="cb103-6" data-line-number="6">fileattrib(fullfile(<span class="st">&#39;RollingElementBearingFaultDiagnosis-Data-master&#39;</span>, <span class="st">&#39;test_data&#39;</span>, <span class="st">&#39;*.mat&#39;</span>), <span class="st">&#39;+w&#39;</span>)  <span class="co">% 测试数据</span></a></code></pre></div>
+<p>要想获得完整的数据集，可以使用本链接https://github.com/mathworks/RollingElementBearingFaultDiagnosis-Data来下载整个数据存储的压缩文件，可以用以下命令解压缩文件（压缩数据文件应位于当前程序位置）：</p>
+<div class="sourceCode" id="cb104"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb104-1" data-line-number="1">if exist(<span class="st">&#39;RollingElementBearingFaultDiagnosis-Data-master.zip&#39;</span>, <span class="st">&#39;file&#39;</span>)</a>
+<a class="sourceLine" id="cb104-2" data-line-number="2">    unzip(<span class="st">&#39;RollingElementBearingFaultDiagnosis-Data-master.zip&#39;</span>)</a>
+<a class="sourceLine" id="cb104-3" data-line-number="3">end</a></code></pre></div>
+<p>本案例中的结果从完整的数据集中得到。完整数据集包括14个mat文件组成的训练数据集（2个正常数据集，4个内圈故障数据集，7个外圈故障数据集）以及6个mat文件组成的测试数据集（1个正常数据集，2个内圈故障数据集，3个外圈故障数据集）</p>
+</section>
+<section align=left>
+<p>通过将函数句柄分配给<code>ReadFcn</code>以及<code>WriteToMemberFcn</code>，文件集成数据能导航到文件中，并以所需的格式检索数据。例如，MFPT数据是一个<code>struct</code>数据，存有振动信号gs，采样率sr等等。通过写入到<code>readMFPTBearing</code>函数中，而不是返回一个<code>struct</code>数据本身，可以使得文件集成数据可以直接返回振动信号gs，而不是<code>struct</code>结构数据</p>
+<div class="sourceCode" id="cb105"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb105-1" data-line-number="1">fileLocation = fullfile(<span class="st">&#39;.&#39;</span>, <span class="st">&#39;RollingElementBearingFaultDiagnosis-Data-master&#39;</span>, <span class="st">&#39;train_data&#39;</span>);</a>
+<a class="sourceLine" id="cb105-2" data-line-number="2">fileExtension = <span class="st">&#39;.mat&#39;</span>;</a>
+<a class="sourceLine" id="cb105-3" data-line-number="3">ensembleTrain = fileEnsembleDatastore(fileLocation, fileExtension);  <span class="co">% 预测性维护工具箱中新增函数，用来存储数据文件，之后直接读取文件夹中符合文件扩展形式的所有数据文件</span></a>
+<a class="sourceLine" id="cb105-4" data-line-number="4">ensembleTrain.ReadFcn = @readMFPTBearing;</a>
+<a class="sourceLine" id="cb105-5" data-line-number="5">ensembleTrain.DataVariables = [&quot;gs&quot;, &quot;sr&quot;, &quot;rate&quot;, &quot;load&quot;, &quot;BPFO&quot;, &quot;BPFI&quot;, &quot;FTF&quot;, &quot;BSF&quot;];</a>
+<a class="sourceLine" id="cb105-6" data-line-number="6">ensembleTrain.ConditionVariables = [&quot;Label&quot;, &quot;FileName&quot;];</a>
+<a class="sourceLine" id="cb105-7" data-line-number="7">ensembleTrain.WriteToMemberFcn = @writeMFPTBearing;</a>
+<a class="sourceLine" id="cb105-8" data-line-number="8">ensembleTrain.SelectedVariables = [&quot;gs&quot;, &quot;sr&quot;, &quot;rate&quot;, &quot;load&quot;, &quot;BPFO&quot;, &quot;BPFI&quot;, &quot;FTF&quot;, &quot;BSF&quot;, &quot;Label&quot;, &quot;FileName&quot;]</a></code></pre></div>
+<p align=center><img src="..\algo_dev\fileEnsembleDataStores.PNG" style="zoom:120%;" /></p>
+</section>
+<section align=left>
+<p>之后将其组合成<code>tall</code>数据类型：</p>
+<div class="sourceCode" id="cb106"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb106-1" data-line-number="1">ensembleTrainTable = tall(ensembleTrain)</a></code></pre></div>
+<p align=center><img src="..\algo_dev\tallData.PNG" style="zoom: 120%;" /></p>
+</section>
+<section align=left>
+<p>从上一节的分析看出，带通滤波后的包络谱在BPFO和BPFI幅值位置时，是用来指示轴承故障的指示器。因此，下一步可以提取从所有训练数据中提取这两个健康指示量。为了使算法结果具有更好的鲁棒性，可以在BPFO和BPFI附近设置窄频带（带宽=<span class="math inline">10<em>Δ</em><em>f</em></span>，<span class="math inline"><em>Δ</em><em>f</em></span>表示功率谱的频率分辨率），然后找到窄频带中的最大幅值。这一算法被写进了以下<code>bearingFeatureExtraction</code>函数中。在之后的讨论中，包络谱在BPFO和BPFI附近的幅值分别被叫做“BPFOAmplitude”和“BPFIAmplitude”</p>
+<div class="sourceCode" id="cb107"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb107-1" data-line-number="1">function bearingFeatureExtraction(ensemble)</a>
+<a class="sourceLine" id="cb107-2" data-line-number="2"><span class="co">% 从轴承数据中提取指示量</span></a>
+<a class="sourceLine" id="cb107-3" data-line-number="3">data = read(ensemble);</a>
+<a class="sourceLine" id="cb107-4" data-line-number="4">x = data.gs{<span class="fl">1</span>};</a>
+<a class="sourceLine" id="cb107-5" data-line-number="5">fs = data.sr;</a>
+<a class="sourceLine" id="cb107-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb107-7" data-line-number="7"><span class="co">% 临界频率</span></a>
+<a class="sourceLine" id="cb107-8" data-line-number="8">BPFO = data.BPFO;</a>
+<a class="sourceLine" id="cb107-9" data-line-number="9">BPFI = data.BPFI;</a>
+<a class="sourceLine" id="cb107-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb107-11" data-line-number="11">level = <span class="fl">9</span>;</a>
+<a class="sourceLine" id="cb107-12" data-line-number="12">[~, ~, ~, fc, ~, BW] = kurtogram(x, fs, level);</a>
+<a class="sourceLine" id="cb107-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb107-14" data-line-number="14"><span class="co">% 带通滤波后的包络谱</span></a>
+<a class="sourceLine" id="cb107-15" data-line-number="15">[pEnvpBpf, fEnvBpf] = envspectrum(x, fs, <span class="st">&#39;FilterOrder&#39;</span>, <span class="fl">200</span>, <span class="st">&#39;Band&#39;</span>, [max([fc-BW/<span class="fl">2</span> <span class="fl">0</span>]) min([fc+BW/<span class="fl">2</span> <span class="fl">0.999</span>*fs/<span class="fl">2</span>])]);</a>
+<a class="sourceLine" id="cb107-16" data-line-number="16">deltaf = fEnvBpf(<span class="fl">2</span>) - fEnvBpf(<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb107-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb107-18" data-line-number="18">BPFIAmplitude = max(pEnvpBpf((fEnvBpf &gt; (BPFI-<span class="fl">5</span>*deltaf)) &amp; (fEnvBpf &lt; (BPFI+<span class="fl">5</span>*deltaf))));</a>
+<a class="sourceLine" id="cb107-19" data-line-number="19">BPFOAmplitude = max(pEnvpBpf((fEnvBpf &gt; (BPFO-<span class="fl">5</span>*deltaf)) &amp; (fEnvBpf &lt; (BPFO+<span class="fl">5</span>*deltaf))));</a>
+<a class="sourceLine" id="cb107-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb107-21" data-line-number="21">writeToLastMemberRead(ensemble, table(BPFIAmplitude, BPFOAmplitude, <span class="st">&#39;VariableNames&#39;</span>, {<span class="st">&#39;BPFIAmplitude&#39;</span>, <span class="st">&#39;BPFOAmplitude&#39;</span>}));</a>
+<a class="sourceLine" id="cb107-22" data-line-number="22">end</a></code></pre></div>
+<div class="sourceCode" id="cb108"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb108-1" data-line-number="1"><span class="co">% 以下被注释的代码用来进行并行处理</span></a>
+<a class="sourceLine" id="cb108-2" data-line-number="2"><span class="co">% ppool = gcp;</span></a>
+<a class="sourceLine" id="cb108-3" data-line-number="3"><span class="co">% n = numpartitions(ensembleTrain, ppool);</span></a>
+<a class="sourceLine" id="cb108-4" data-line-number="4"><span class="co">% parfor ct = 1:n</span></a>
+<a class="sourceLine" id="cb108-5" data-line-number="5"><span class="co">%     subEnsembleTrain = partition(ensembleTrain, n, ct);</span></a>
+<a class="sourceLine" id="cb108-6" data-line-number="6"><span class="co">%     reset(subEnsembleTrain);</span></a>
+<a class="sourceLine" id="cb108-7" data-line-number="7"><span class="co">%     while hasdata(subEnsembleTrain)</span></a>
+<a class="sourceLine" id="cb108-8" data-line-number="8"><span class="co">%         bearingFeatureExtraction(subEnsembleTrain);</span></a>
+<a class="sourceLine" id="cb108-9" data-line-number="9"><span class="co">%     end</span></a>
+<a class="sourceLine" id="cb108-10" data-line-number="10"><span class="co">% end</span></a>
+<a class="sourceLine" id="cb108-11" data-line-number="11">ensembleTrain.DataVariables = [ensembleTrain.DataVariables; &quot;BPFIAmplitude&quot;; &quot;BPFOAmplitude&quot;];</a>
+<a class="sourceLine" id="cb108-12" data-line-number="12">reset(ensembleTrain)</a>
+<a class="sourceLine" id="cb108-13" data-line-number="13">while hasdata(ensembleTrain)</a>
+<a class="sourceLine" id="cb108-14" data-line-number="14">    bearingFeatureExtraction(ensembleTrain)</a>
+<a class="sourceLine" id="cb108-15" data-line-number="15">end</a></code></pre></div>
+</section>
+<section align=left>
+
+<p>一旦新的状态指示量被添加到文件集成数据中，可以指定<code>SelectVariables</code>来从文件集成数据存储中读取相关数据，同时创建一个包含所提取状态指示量的特征表</p>
+<div class="sourceCode" id="cb109"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb109-1" data-line-number="1">ensembleTrain.SelectedVariables = [&quot;BPFIAmplitude&quot;, &quot;BPFOAmplitude&quot;, &quot;Label&quot;];</a>
+<a class="sourceLine" id="cb109-2" data-line-number="2">featureTableTrain = tall(ensembleTrain);</a>
+<a class="sourceLine" id="cb109-3" data-line-number="3">featureTableTrain = gather(featureTableTrain);</a></code></pre></div>
+<p>查看特征表</p>
+<div class="sourceCode" id="cb110"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb110-1" data-line-number="1">featureTableTrain</a></code></pre></div>
+<p align=center><img src="..\algo_dev\featureTableTrain.PNG" style="zoom:100%;" /></p>
+</section>
+<section align=left>
+<p>之后画散点图可视化创建的特征表</p>
+<div class="sourceCode" id="cb111"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb111-1" data-line-number="1">figure</a>
+<a class="sourceLine" id="cb111-2" data-line-number="2">gscatter(featureTableTrain.BPFIAmplitude, featureTableTrain.BPFOAmplitude, featureTableTrain.Label, [], <span class="st">&#39;ox+&#39;</span>)</a>
+<a class="sourceLine" id="cb111-3" data-line-number="3">xlabel(<span class="st">&#39;BPFI Amplitude&#39;</span>)</a>
+<a class="sourceLine" id="cb111-4" data-line-number="4">ylabel(<span class="st">&#39;BPFO Amplitude&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\algo_dev\dAmplitudeDataScatter.png" style="zoom:120%;" /></p>
+<p>图中可以看到，BPFI和BPFO幅值的相对值可以作为判断不同故障类型的有效指标。因此，可以创造一个新的特征，即两个特征的对数比率，通过柱状图可画出不同故障类型时的该量的分布</p>
+</section>
+<section align=left>
+<div class="sourceCode" id="cb112"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb112-1" data-line-number="1"><span class="co">% 创造新的特征，使用BPFI和BPFO两者的对数比率</span></a>
+<a class="sourceLine" id="cb112-2" data-line-number="2">featureTableTrain.IOLogRatio = log(featureTableTrain.BPFIAmplitude./featureTableTrain.BPFOAmplitude);</a>
+<a class="sourceLine" id="cb112-3" data-line-number="3">figure</a>
+<a class="sourceLine" id="cb112-4" data-line-number="4">hold on</a>
+<a class="sourceLine" id="cb112-5" data-line-number="5">histogram(featureTableTrain.IOLogRatio(featureTableTrain.Label==&quot;Inner Race Fault&quot;), <span class="st">&#39;BinWidth&#39;</span>, <span class="fl">0.5</span>)</a>
+<a class="sourceLine" id="cb112-6" data-line-number="6">histogram(featureTableTrain.IOLogRatio(featureTableTrain.Label==&quot;Outer Race Fault&quot;), <span class="st">&#39;BinWidth&#39;</span>, <span class="fl">0.5</span>)</a>
+<a class="sourceLine" id="cb112-7" data-line-number="7">histogram(featureTableTrain.IOLogRatio(featureTableTrain.Label==&quot;Normal&quot;), <span class="st">&#39;BinWidth&#39;</span>, <span class="fl">0.5</span>)</a>
+<a class="sourceLine" id="cb112-8" data-line-number="8">plot([-<span class="fl">1.5</span> -<span class="fl">1.5</span> NaN <span class="fl">0.5</span> <span class="fl">0.5</span>], [<span class="fl">0</span> <span class="fl">3</span> NaN <span class="fl">0</span> <span class="fl">3</span>], <span class="st">&#39;k--&#39;</span>)</a>
+<a class="sourceLine" id="cb112-9" data-line-number="9">hold off</a>
+<a class="sourceLine" id="cb112-10" data-line-number="10">ylabel(<span class="st">&#39;Count&#39;</span>)</a>
+<a class="sourceLine" id="cb112-11" data-line-number="11">xlabel(<span class="st">&#39;log(BPFIAmplitude/BPFOAmplitude)&#39;</span>)</a>
+<a class="sourceLine" id="cb112-12" data-line-number="12">legend(<span class="st">&#39;Inner Race Fault&#39;</span>, <span class="st">&#39;Outer Race Fault&#39;</span>, <span class="st">&#39;Normal&#39;</span>, <span class="st">&#39;Classification Boundary&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\algo_dev\logRatioAmplitude.png" style="zoom:100%;" /></p>
+<p>柱状图显示了明显的划分三种轴承状态类型能力，因此BPFI和BPFO的对数比率是一个有效分类故障类型的特征。为了简化例子，简单的分类器可以通过图中虚线的绝对值确定，即对数值<span class="math inline"> ≤  − 1.5</span>时判断为外圈故障，<span class="math inline"> − 1.5&lt;</span>对数值<span class="math inline"> ≤ 0.5</span>时判断为正常状态，对数值<span class="math inline"> ≥ 0.5</span>时判断为内圈故障</p>
+</section>
+</section>
+<section align=left>
+<h4 id="第七步测试数据评估"><strong>第七步：测试数据评估</strong></h4>
+<section>
+<p>现在，可对测试数据使用上述完整的工作流并评估上一部分中得到的分类器。以下测试数据包含1条正常数据集，2条内圈故障数据集，3条外圈故障数据集</p>
+<div class="sourceCode" id="cb113"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb113-1" data-line-number="1">fileLocation = fullfile(<span class="st">&#39;.&#39;</span>, <span class="st">&#39;RollingElementBearingFaultDiagnosis-Data-master&#39;</span>, <span class="st">&#39;test_data&#39;</span>);</a>
+<a class="sourceLine" id="cb113-2" data-line-number="2">fileExtension = <span class="st">&#39;.mat&#39;</span>;</a>
+<a class="sourceLine" id="cb113-3" data-line-number="3">ensembleTest = fileEnsembleDatastore(fileLocation, fileExtension);</a>
+<a class="sourceLine" id="cb113-4" data-line-number="4">ensembleTest.ReadFcn = @readMFPTBearing;</a>
+<a class="sourceLine" id="cb113-5" data-line-number="5">ensembleTest.DataVariables = [&quot;gs&quot;, &quot;sr&quot;, &quot;rate&quot;, &quot;load&quot;, &quot;BPFO&quot;, &quot;BPFI&quot;, &quot;FTF&quot;, &quot;BSF&quot;];</a>
+<a class="sourceLine" id="cb113-6" data-line-number="6">ensembleTest.ConditionVariables = [&quot;Label&quot;, &quot;FileName&quot;];</a>
+<a class="sourceLine" id="cb113-7" data-line-number="7">ensembleTest.WriteToMemberFcn = @writeMFPTBearing;</a>
+<a class="sourceLine" id="cb113-8" data-line-number="8">ensembleTest.SelectedVariables = [&quot;gs&quot;, &quot;sr&quot;, &quot;rate&quot;, &quot;load&quot;, &quot;BPFO&quot;, &quot;BPFI&quot;, &quot;FTF&quot;, &quot;BSF&quot;, &quot;Label&quot;, &quot;FileName&quot;]</a></code></pre></div>
+<p align=center><img src="..\algo_dev\ensembleTestData.PNG" style="zoom:120%;" /></p>
+</section>
+<section align=left>
+<p>设置变量名并提取特征</p>
+<div class="sourceCode" id="cb114"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb114-1" data-line-number="1">ensembleTest.DataVariables = [ensembleTest.DataVariables; &quot;BPFIAmplitude&quot;; &quot;BPFOAmplitude&quot;];</a>
+<a class="sourceLine" id="cb114-2" data-line-number="2">reset(ensembleTest)</a>
+<a class="sourceLine" id="cb114-3" data-line-number="3">while hasdata(ensembleTest)</a>
+<a class="sourceLine" id="cb114-4" data-line-number="4">    bearingFeatureExtraction(ensembleTest)</a>
+<a class="sourceLine" id="cb114-5" data-line-number="5">end</a></code></pre></div>
+<p>将所有测试数据生成<code>tall</code>数据并得到测试数据特征表</p>
+<div class="sourceCode" id="cb115"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb115-1" data-line-number="1">ensembleTest.SelectedVariables = [&quot;BPFIAmplitude&quot;, &quot;BPFOAmplitude&quot;, &quot;Label&quot;];</a>
+<a class="sourceLine" id="cb115-2" data-line-number="2">featureTableTest = tall(ensembleTest);</a>
+<a class="sourceLine" id="cb115-3" data-line-number="3">featureTableTest = gather(featureTableTest);</a></code></pre></div>
+</section>
+<section align=left style="font-size:28px;">
+<p>之后生成对数比率特征值并画出其柱状分布图</p>
+<div class="sourceCode" id="cb116"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb116-1" data-line-number="1">featureTableTest.IOLogRatio = log(featureTableTest.BPFIAmplitude./featureTableTest.BPFOAmplitude);</a>
+<a class="sourceLine" id="cb116-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb116-3" data-line-number="3">figure</a>
+<a class="sourceLine" id="cb116-4" data-line-number="4">hold on</a>
+<a class="sourceLine" id="cb116-5" data-line-number="5">histogram(featureTableTrain.IOLogRatio(featureTableTrain.Label==&quot;Inner Race Fault&quot;), <span class="st">&#39;BinWidth&#39;</span>, <span class="fl">0.5</span>)</a>
+<a class="sourceLine" id="cb116-6" data-line-number="6">histogram(featureTableTrain.IOLogRatio(featureTableTrain.Label==&quot;Outer Race Fault&quot;), <span class="st">&#39;BinWidth&#39;</span>, <span class="fl">0.5</span>)</a>
+<a class="sourceLine" id="cb116-7" data-line-number="7">histogram(featureTableTrain.IOLogRatio(featureTableTrain.Label==&quot;Normal&quot;), <span class="st">&#39;BinWidth&#39;</span>, <span class="fl">0.5</span>)</a>
+<a class="sourceLine" id="cb116-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb116-9" data-line-number="9">histogram(featureTableTest.IOLogRatio(featureTableTest.Label==&quot;Inner Race Fault&quot;), <span class="st">&#39;BinWidth&#39;</span>, <span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb116-10" data-line-number="10">histogram(featureTableTest.IOLogRatio(featureTableTest.Label==&quot;Outer Race Fault&quot;), <span class="st">&#39;BinWidth&#39;</span>, <span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb116-11" data-line-number="11">histogram(featureTableTest.IOLogRatio(featureTableTest.Label==&quot;Normal&quot;), <span class="st">&#39;BinWidth&#39;</span>, <span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb116-12" data-line-number="12">plot([-<span class="fl">1.5</span> -<span class="fl">1.5</span> NaN <span class="fl">0.5</span> <span class="fl">0.5</span>], [<span class="fl">0</span> <span class="fl">3</span> NaN <span class="fl">0</span> <span class="fl">3</span>], <span class="st">&#39;k--&#39;</span>)</a>
+<a class="sourceLine" id="cb116-13" data-line-number="13">hold off</a>
+<a class="sourceLine" id="cb116-14" data-line-number="14">ylabel(<span class="st">&#39;Count&#39;</span>)</a>
+<a class="sourceLine" id="cb116-15" data-line-number="15">xlabel(<span class="st">&#39;log(BPFIAmplitude/BPFOAmplitude)&#39;</span>)</a>
+<a class="sourceLine" id="cb116-16" data-line-number="16">legend(<span class="st">&#39;Inner Race Fault - Train&#39;</span>, <span class="st">&#39;Outer Race Fault - Train&#39;</span>, <span class="st">&#39;Normal - Train&#39;</span>, ...</a>
+<a class="sourceLine" id="cb116-17" data-line-number="17">    <span class="st">&#39;Inner Race Fault - Test&#39;</span>, <span class="st">&#39;Outer Race Fault - Test&#39;</span>, <span class="st">&#39;Normal - Test&#39;</span>, ...</a>
+<a class="sourceLine" id="cb116-18" data-line-number="18">    <span class="st">&#39;Classification Boundary&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\algo_dev\logRatioAmplitudeTest.png" style="zoom:95%;" /></p>
+<p>测试数据中BPFI和BPFO幅值计算得到的对数比率特征分布几乎同训练数据得到的该分布一致。说明上一节得到的这种简单的分类器在测试数据中可以实现完美分类。</p>
+<p>当然需要注意的是，通常情况下单个特征不足以得到一个泛化能力好的分类器。更复杂的分类器可以通过将数据分割成多个块（创造更多的数据点），提取多个诊断相关的特征，然后根据它们的重要性排名选取一部分特征子集，最后使用机器学习工具箱中的Classification Learner APP训练模型来获得。<a href="example6.html" target="_blank">案例6</a>展示了这一工作流程的更多细节</p>
+</section>
+</section>
+<section align=left>
+<h4 id="第八步总结"><strong>第八步：总结</strong></h4>
+<p>本案例展示了如何使用峰度图、谱峭度和包络谱识别滚动轴承中不同的故障类型。然后将算法应用于批量数据集，这一过程显示了在BPFI和BPFO处带通滤波后的幅值，是两个应用于轴承诊断时重要的状态指示量</p>
+</section>
+<section>
+<p style="font-size:44px;"><strong>参考：</strong><a href="https://ww2.mathworks.cn/help/predmaint/ug/Rolling-Element-Bearing-Fault-Diagnosis.html" target="_blank">https://ww2.mathworks.cn/help/predmaint/ug/Rolling-Element-Bearing-Fault-Diagnosis.html</a></p>
+	    </div>
+  </div>
+</section>
+  <script src="../reveal.js/lib/js/head.min.js"></script>
+  <script src="../reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Push each slide change to the browser history
+        history: true,
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: '../reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: '../reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: '../reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>

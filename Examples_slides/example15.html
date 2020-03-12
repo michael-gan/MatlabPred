@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>案例15</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../reveal.js/css/reveal.css">
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../reveal.js/css/theme/beige.css" id="theme">
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? '../reveal.js/css/print/pdf.css' : '../reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+    </script>
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+  <!--[if lt IE 9]>
+  <script src="../reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+	<section>
+<h2 id="案例15数据驱动模型用于故障检测">案例15：数据驱动模型用于故障检测</h2>
+</section>
+<section>
+<p>本案例展示，如何使用基于数据的模型方法用于故障检测</p>
+</section>
+<section align=left>
+<h4 id="第一步背景介绍"><strong>第一步：背景介绍</strong></h4>
+<p>机械操作故障的早期检测和分离，可以帮助减少事故、减少宕机时间同时节约运营成本。该方法包括处理来自系统实时测量操作数据，从中找出可能指向新兴故障发生的非预期行为</p>
+<p>本案例探索了以下故障诊断方面：</p>
+<ol type="1">
+<li>基于残差分析检测系统异常行为</li>
+<li>建立损伤系统模型检测系统损伤</li>
+<li>使用模型参数在线自适应方法追踪系统改变</li>
+</ol>
+</section>
+<section align=left>
+<h4 id="第二步识别系统行为的动态模型"><strong>第二步：识别系统行为的动态模型</strong></h4>
+<section style="font-size:32px;">
+<p>对于基于模型的检测方法，首先要使用测量得到的输入输出数据建立相关系统的动态模型。一个好的模型是能够准确预测未来某个时间范围内的系统响应的。当预测不够好时，残差可能会很大，并可能包含相关性。利用这些方面的信息可以检测故障发生率</p>
+<p>考虑一栋受冲击和振动的建筑物。振动源可能是依赖于系统的不同类型刺激，如阵风、与运行中的发动机和涡轮接触或地面振动。冲击是对系统进行冲击试验的结果，增加冲击试验是为了充分激发系统。Simulink模型<code>idMechanicalSystem.slx</code>便是这种结构的简单例子。激励来自周期性的撞击，以及由过滤的白噪声模拟的地面振动。系统输出通过服从测量噪声的传感器测得。该模型可以用来仿真结构处于健康或损伤状态时的不同场景</p>
+<div class="sourceCode" id="cb296"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb296-1" data-line-number="1">sysA = <span class="st">&#39;pdmMechanicalSystem&#39;</span>;</a>
+<a class="sourceLine" id="cb296-2" data-line-number="2">open_system(sysA)</a>
+<a class="sourceLine" id="cb296-3" data-line-number="3"><span class="co">% 将模型设定为健康操作模式</span></a>
+<a class="sourceLine" id="cb296-4" data-line-number="4">set_param([sysA,<span class="st">&#39;/Mechanical System&#39;</span>],<span class="st">&#39;OverrideUsingVariant&#39;</span>,<span class="st">&#39;Normal&#39;</span>)</a>
+<a class="sourceLine" id="cb296-5" data-line-number="5"><span class="co">% 系统仿真并记录响应数据</span></a>
+<a class="sourceLine" id="cb296-6" data-line-number="6">sim(sysA)</a>
+<a class="sourceLine" id="cb296-7" data-line-number="7">ynormal = logsout.getElement(<span class="st">&#39;y&#39;</span>).Values;</a></code></pre></div>
+<p align=center><img src="..\faultDetectionAndPrognose\mechanicalSystem.PNG" style="zoom: 100%;" />&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<img src="..\faultDetectionAndPrognose\scope.PNG" style="zoom: 100%;" /></p>
+<p>输入信号未测量，我们记录的所有量就是响应<code>ynormal</code>。因此我们要使用“盲识别”技术构建动态系统模型。我们可以构建一个记录信号的ARMA模型来代替系统。该方法工作于假设输入信号服从白噪声的前提下</p>
+</section>
+<section align=left>
+<p>由于数据服从周期性撞击，可将数据划分为几个片段，每个片段的开始便是撞击发生的开始。这样的话，每个数据分割块包含了一次撞击加上随机激励的响应，在这种情形下它可以被时序模型刻画，这时撞击的效应依赖于合适的初始状态</p>
+<div class="sourceCode" id="cb297"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb297-1" data-line-number="1">Ts = <span class="fl">1</span>/<span class="fl">256</span>;  <span class="co">% 数据采样时间</span></a>
+<a class="sourceLine" id="cb297-2" data-line-number="2">nr = <span class="fl">10</span>;     <span class="co">% 信号中的撞击次数</span></a>
+<a class="sourceLine" id="cb297-3" data-line-number="3">N = <span class="fl">512</span>;     <span class="co">% 撞击间的数据长度</span></a>
+<a class="sourceLine" id="cb297-4" data-line-number="4">znormal = cell(nr,<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb297-5" data-line-number="5">for ct = <span class="fl">1</span>:nr</a>
+<a class="sourceLine" id="cb297-6" data-line-number="6">   ysegment = ynormal.Data((ct-<span class="fl">1</span>)*N+(<span class="fl">1</span>:<span class="fl">500</span>));</a>
+<a class="sourceLine" id="cb297-7" data-line-number="7">   z = iddata(ysegment,[],Ts);</a>
+<a class="sourceLine" id="cb297-8" data-line-number="8">   znormal{ct} = z;  <span class="co">% 每个数据分割块仅包含一次撞击</span></a>
+<a class="sourceLine" id="cb297-9" data-line-number="9">end</a>
+<a class="sourceLine" id="cb297-10" data-line-number="10">plot(znormal{:}) <span class="co">% 画出记录到的分割块的一组样本</span></a>
+<a class="sourceLine" id="cb297-11" data-line-number="11">title(<span class="st">&#39;Measured Response Segments&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\faultDetectionAndPrognose\measuredResponseSegment.png" style="zoom:120%;" /></p>
+</section>
+<section align=left>
+<p>将数据划分为估计和验证片段</p>
+<div class="sourceCode" id="cb298"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb298-1" data-line-number="1">ze = merge(znormal{<span class="fl">1</span>:<span class="fl">5</span>});</a>
+<a class="sourceLine" id="cb298-2" data-line-number="2">zv = merge(znormal{<span class="fl">6</span>:<span class="fl">10</span>});</a></code></pre></div>
+<p>使用<code>ssest()</code>命令估计一个状态空间形式的七阶时序模型。模型的阶数使用交叉验证（在验证数据上检验模型）和残差分析（检验残差不相关）的方式获得</p>
+<div class="sourceCode" id="cb299"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb299-1" data-line-number="1">nx = <span class="fl">7</span>;</a>
+<a class="sourceLine" id="cb299-2" data-line-number="2">model = ssest(ze, nx, <span class="st">&#39;form&#39;</span>, <span class="st">&#39;canonical&#39;</span>, <span class="st">&#39;Ts&#39;</span>, Ts);</a>
+<a class="sourceLine" id="cb299-3" data-line-number="3">present(model)  <span class="co">% 查看带有参数不确定性的模型方程</span></a></code></pre></div>
+</section>
+<section align=left>
+<p align=center><img src="..\faultDetectionAndPrognose\mdlPara.png" style="zoom: 90%;" /></p>
+<p>模型显示参数估计的不确定性较小</p>
+</section>
+<section align=left>
+<p>我们可以通过计算被测信号估计频谱的一个标准差(99.73%)置信界来确定其可靠性</p>
+<div class="sourceCode" id="cb300"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb300-1" data-line-number="1">h = spectrumplot(model);</a>
+<a class="sourceLine" id="cb300-2" data-line-number="2">showConfidence(h, <span class="fl">3</span>)</a></code></pre></div>
+<p align=center><img src="..\faultDetectionAndPrognose\powerSpecWithCI.png" style="zoom:120%;" /></p>
+<p>置信区间比较小，即使对于低频响应有差不多30%的不确定性</p>
+</section>
+<section align=left>
+<p>下一步验证便是看模型在验证数据集<code>zv</code>的预测响应有多好。我们可以使用提前25步的预测视角来看</p>
+<div class="sourceCode" id="cb301"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb301-1" data-line-number="1">compare(zv, model, <span class="fl">25</span>) <span class="co">% 针对一个数据集的验证</span></a></code></pre></div>
+<p align=center><img src="..\faultDetectionAndPrognose\ResponseComparision.png" style="zoom:120%;" /></p>
+<p>绘图显示，模型能够在验证数据集的第一个实验上，以超过85%的准确率预测未来25个时间步（0.1秒）的响应。查看数据集的其他实验，使用绘图轴的右键上下文菜单</p>
+</section>
+<section align=left>
+<p>模型验证的最后一步就是分析它所生成的残差。对于一个好的模型而言，这些残差应该是白噪类型的，也就是，统计上非零延迟的不显著相关性</p>
+<div class="sourceCode" id="cb302"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb302-1" data-line-number="1">resid(model, zv)</a></code></pre></div>
+<p align=center><img src="..\faultDetectionAndPrognose\residualCorrelationship.png" style="zoom:120%;" /></p>
+<p>可以看出，在非零延迟时，残差大多数都是不相关的。在已有系统正常行为模型后，我们继续研究该模型如何可以应用于故障检测</p>
+</section>
+</section>
+<section align=left>
+<h4 id="第三步使用健康状态模型进行残差分析用于故障检测"><strong>第三步：使用健康状态模型进行残差分析用于故障检测</strong></h4>
+<section>
+<p>故障检测就是找出系统观察量上的非预期变化。造成系统动态变化的故障，可能归因于逐步的磨损或消耗，也可能归因于传感器失效或部件折断导致的突变。当故障发生时，正常工况下获得的模型无法用来预测观察到的响应。这就造成了测量值和预测响应值差值（残差）的增加。这种偏差通常由一个较大的残差平方和或相关性来标记</p>
+<p>将Simulink模型代入损伤系统模型中进行仿真。我们使用一个单一撞击为输入，因为残余测试需要白噪点输入，改输入可能由于初始条件导致瞬变现象</p>
+<div class="sourceCode" id="cb303"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb303-1" data-line-number="1">set_param([sysA,<span class="st">&#39;/Mechanical System&#39;</span>],<span class="st">&#39;OverrideUsingVariant&#39;</span>,<span class="st">&#39;DamagedSystem&#39;</span>);</a>
+<a class="sourceLine" id="cb303-2" data-line-number="2">set_param([sysA,<span class="st">&#39;/Pulse&#39;</span>],<span class="st">&#39;Period&#39;</span>,<span class="st">&#39;5120&#39;</span>) <span class="co">% 仅取一次撞击</span></a>
+<a class="sourceLine" id="cb303-3" data-line-number="3">sim(sysA)</a>
+<a class="sourceLine" id="cb303-4" data-line-number="4">y = logsout.getElement(<span class="st">&#39;y&#39;</span>).Values;</a></code></pre></div>
+<p align=center><img src="..\faultDetectionAndPrognose\scopeSingle.PNG" style="zoom:120%;" /></p>
+</section>
+<section align=left>
+<div class="sourceCode" id="cb304"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb304-1" data-line-number="1">resid(model, y.Data)</a>
+<a class="sourceLine" id="cb304-2" data-line-number="2">set_param([sysA,<span class="st">&#39;/Pulse&#39;</span>],<span class="st">&#39;Period&#39;</span>,<span class="st">&#39;512&#39;</span>) <span class="co">% 还原为原始尺寸</span></a></code></pre></div>
+<p align=center><img src="..\faultDetectionAndPrognose\residueCorrelation.png" style="zoom:120%;" /></p>
+<p>此时，残差更大了，同时在非零延迟时具有相关性。这就是故障检测背后的基本想法——创建一个残差矩阵，并观察该矩阵随着每个新测量数据集如何变化。这里使用的是基于一步预测误差的简单残差。事实上，根据应用程序的需要可以生成更高级的残差</p>
+</section>
+</section>
+<section align=left>
+<h4 id="第四步使用正常和恶化状态模型用于故障检测"><strong>第四步：使用正常和恶化状态模型用于故障检测</strong></h4>
+<section>
+<p>一种更具体的故障检测方法，也是识别一个系统故障状态模型。然后，我们分析哪个模型更可能用来解释来自系统的实时测量值。这种方式适用于不同故障类型的模型，于是它不仅可以检测故障，同时可以识别属于哪种故障（故障分离）。本案例中，我们采用以下方法：</p>
+<ol type="1">
+<li>采集来自正常状态和已知的磨损导致的生命结束状态的数据</li>
+<li>识别表现每个状态下系统行为的动态模型</li>
+<li>使用数据聚类的方法画出这些状态之间明显的区别</li>
+<li>对于故障检测，收集来自运行机械的数据并建立模型来描述其行为。然后预测观察到的行为更可能属于哪种状态（正常或损伤）</li>
+</ol>
+</section>
+<section align=left>
+<p>我们已经模拟了系统在正常操作下的模式，现在我们模拟模型<code>idMechanicalSystem</code>在寿命终结时的模式。这种场景下，系统早已恶化到其准许操作的最终状态了</p>
+<div class="sourceCode" id="cb305"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb305-1" data-line-number="1">set_param([sysA,<span class="st">&#39;/Mechanical System&#39;</span>],<span class="st">&#39;OverrideUsingVariant&#39;</span>,<span class="st">&#39;DamagedSystem&#39;</span>);</a>
+<a class="sourceLine" id="cb305-2" data-line-number="2">sim(sysA)</a>
+<a class="sourceLine" id="cb305-3" data-line-number="3">y = logsout.getElement(<span class="st">&#39;y&#39;</span>).Values;</a>
+<a class="sourceLine" id="cb305-4" data-line-number="4">zfault = cell(nr,<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb305-5" data-line-number="5">for ct = <span class="fl">1</span>:nr</a>
+<a class="sourceLine" id="cb305-6" data-line-number="6">   z = iddata(y.Data((ct-<span class="fl">1</span>)*N+(<span class="fl">1</span>:<span class="fl">500</span>)),[],Ts);</a>
+<a class="sourceLine" id="cb305-7" data-line-number="7">   zfault{ct} = z;</a>
+<a class="sourceLine" id="cb305-8" data-line-number="8">end</a></code></pre></div>
+<p align=center><img src="..\faultDetectionAndPrognose\scopeEOF.PNG" style="zoom: 120%;" /></p>
+</section>
+<section align=left>
+<p>接下来， 创建一系列模型，每个模型对应一个数据分割块。像之前一样，我们构建状态空间形式的七阶时序模型。关闭速度的协方差计算</p>
+<div class="sourceCode" id="cb306"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb306-1" data-line-number="1">mNormal =  cell(nr,<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb306-2" data-line-number="2">mFault = cell(nr, <span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb306-3" data-line-number="3">nx = order(model);</a>
+<a class="sourceLine" id="cb306-4" data-line-number="4">opt = ssestOptions(<span class="st">&#39;EstimateCovariance&#39;</span>,<span class="fl">0</span>);</a>
+<a class="sourceLine" id="cb306-5" data-line-number="5">for ct = <span class="fl">1</span>:nr</a>
+<a class="sourceLine" id="cb306-6" data-line-number="6">   mNormal{ct} = ssest(znormal{ct}, nx, <span class="st">&#39;form&#39;</span>, <span class="st">&#39;canonical&#39;</span>, <span class="st">&#39;Ts&#39;</span>, Ts, opt);</a>
+<a class="sourceLine" id="cb306-7" data-line-number="7">   mFault{ct} = ssest(zfault{ct}, nx, <span class="st">&#39;form&#39;</span>, <span class="st">&#39;canonical&#39;</span>, <span class="st">&#39;Ts&#39;</span>, Ts, opt);</a>
+<a class="sourceLine" id="cb306-8" data-line-number="8">end</a></code></pre></div>
+<p>验证模型<code>mFault</code>是对操作时故障模式很好的展现</p>
+<div class="sourceCode" id="cb307"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb307-1" data-line-number="1">compare(merge(zfault{:}), mFault{:}, <span class="fl">25</span>)</a></code></pre></div>
+<p align=center><img src="..\faultDetectionAndPrognose\ResponseComparisionSetofModels.png" style="zoom:90%;" /></p>
+</section>
+<section align=left>
+<p>正常和故障时估计的功率频谱绘制如下</p>
+<div class="sourceCode" id="cb308"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb308-1" data-line-number="1">Color1 = <span class="st">&#39;k&#39;</span>; Color2 = <span class="st">&#39;r&#39;</span>;</a>
+<a class="sourceLine" id="cb308-2" data-line-number="2">ModelSet1 = cat(<span class="fl">2</span>,mNormal,repmat({Color1},[nr, <span class="fl">1</span>]))&#39;;</a>
+<a class="sourceLine" id="cb308-3" data-line-number="3">ModelSet2 = cat(<span class="fl">2</span>,mFault,repmat({Color2},[nr, <span class="fl">1</span>]))&#39;;</a>
+<a class="sourceLine" id="cb308-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb308-5" data-line-number="5">spectrum(ModelSet1{:},ModelSet2{:})</a>
+<a class="sourceLine" id="cb308-6" data-line-number="6">axis([<span class="fl">1</span>  <span class="fl">1000</span>  -<span class="fl">45</span>  <span class="fl">40</span>])</a>
+<a class="sourceLine" id="cb308-7" data-line-number="7">title(<span class="st">&#39;Output Spectra (black: normal, red: faulty)&#39;</span>)</a></code></pre></div>
+<p align=center><img src="..\faultDetectionAndPrognose\powerSpecfaultynormal.png" style="zoom:100%;" /></p>
+<p>频谱图展现了以下不同：损伤模式的主共振被放大，但谱线在其他方面是重叠的</p>
+</section>
+<section align=left>
+<p>接下来，我们创造一种方式用来定量化区分正常和故障状态。我们可以使用数据聚类或分类的方法，如：</p>
+<ul>
+<li>模糊C-Means聚类，在模糊逻辑工具箱中定义为<code>fcm()</code>函数</li>
+<li>支持向量机分类，在统计于机器学习工具箱中定义为<code>fitcsvm()</code>函数</li>
+<li>自组织特性映射，在深度学习工具箱中定义为<code>selforgmap()</code>函数</li>
+</ul>
+<p>在本案例中，我们使用支持向量分类的方法。来自这两种模型(<code>mNormal</code>和<code>mFault</code>)的信息聚类可以基于这些模型提供的不同类型的信息，比如它们的极点和零点的位置、它们的峰值共振的位置或它们的参数列表。在这里，我们根据对应于这两个共振的极点位置来对分类不同模式。对于聚类，我们将健康状态模型的极点标记为“good”，错误状态模型的极点标记为“fault”</p>
+<div class="sourceCode" id="cb309"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb309-1" data-line-number="1">ModelTags = cell(nr*<span class="fl">2</span>,<span class="fl">1</span>);  <span class="co">% nr表示数据分割块的编号</span></a>
+<a class="sourceLine" id="cb309-2" data-line-number="2">ModelTags(<span class="fl">1</span>:nr) = {<span class="st">&#39;good&#39;</span>};</a>
+<a class="sourceLine" id="cb309-3" data-line-number="3">ModelTags(nr+<span class="fl">1</span>:end) = {<span class="st">&#39;faulty&#39;</span>};</a>
+<a class="sourceLine" id="cb309-4" data-line-number="4">ParData = zeros(nr*<span class="fl">2</span>,<span class="fl">4</span>);</a>
+<a class="sourceLine" id="cb309-5" data-line-number="5">plist = @(p)[real(p(<span class="fl">1</span>)),imag(p(<span class="fl">1</span>)),real(p(<span class="fl">3</span>)),imag(p(<span class="fl">3</span>))]; <span class="co">% 主共振极点</span></a>
+<a class="sourceLine" id="cb309-6" data-line-number="6">for ct = <span class="fl">1</span>:nr</a>
+<a class="sourceLine" id="cb309-7" data-line-number="7">   ParData(ct,:) =  plist(esort(pole(mNormal{ct})));</a>
+<a class="sourceLine" id="cb309-8" data-line-number="8">   ParData(nr+ct,:) = plist(esort(pole(mFault{ct})));</a>
+<a class="sourceLine" id="cb309-9" data-line-number="9">end</a>
+<a class="sourceLine" id="cb309-10" data-line-number="10">cl = fitcsvm(ParData,ModelTags,<span class="st">&#39;KernelFunction&#39;</span>,<span class="st">&#39;rbf&#39;</span>, ...</a>
+<a class="sourceLine" id="cb309-11" data-line-number="11">   <span class="st">&#39;BoxConstraint&#39;</span>,Inf,<span class="st">&#39;ClassNames&#39;</span>,{<span class="st">&#39;good&#39;</span>, <span class="st">&#39;faulty&#39;</span>});</a>
+<a class="sourceLine" id="cb309-12" data-line-number="12">cl.ConvergenceInfo.Converged</a></code></pre></div>
+<p align=center><img src="..\faultDetectionAndPrognose\ans.PNG" style="zoom:90%;" /></p>
+<p><code>c1</code>是一个SVM分类器，将训练数据<code>ParData</code>划分为好和故障区域。使用分类器的<code>predict</code>方法可以将nx行1列的向量划分为两种区域中的一种</p>
+</section>
+<section align=left>
+<p>现在，我们可以测试分类器，通过使用采集自系统的批量数据用作预测（正常或受损），该系统的参数以一种连续的方式从正常状态(模式= ‘Normal’)变为完全损坏(模式= ‘DamagedSystem’)。为了模拟这一场景，将模型放入<code>DeterioratingSystem</code>模式中</p>
+<div class="sourceCode" id="cb310"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb310-1" data-line-number="1">set_param([sysA,<span class="st">&#39;/Mechanical System&#39;</span>],<span class="st">&#39;OverrideUsingVariant&#39;</span>,<span class="st">&#39;DeterioratingSystem&#39;</span>);</a>
+<a class="sourceLine" id="cb310-2" data-line-number="2">sim(sysA)</a>
+<a class="sourceLine" id="cb310-3" data-line-number="3">ytv = logsout.getElement(<span class="st">&#39;y&#39;</span>).Values; ytv = squeeze(ytv.Data);</a>
+<a class="sourceLine" id="cb310-4" data-line-number="4">PredictedMode = cell(nr,<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb310-5" data-line-number="5">for ct = <span class="fl">1</span>:nr</a>
+<a class="sourceLine" id="cb310-6" data-line-number="6">   zSegment = iddata(ytv((ct-<span class="fl">1</span>)*<span class="fl">512</span>+(<span class="fl">1</span>:<span class="fl">500</span>)),[],Ts);</a>
+<a class="sourceLine" id="cb310-7" data-line-number="7">   mSegment = ssest(zSegment, nx, <span class="st">&#39;form&#39;</span>, <span class="st">&#39;canonical&#39;</span>, <span class="st">&#39;Ts&#39;</span>, Ts);</a>
+<a class="sourceLine" id="cb310-8" data-line-number="8">   PredictedMode(ct) = predict(cl, plist(esort(pole(mSegment))));</a>
+<a class="sourceLine" id="cb310-9" data-line-number="9">end</a>
+<a class="sourceLine" id="cb310-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb310-11" data-line-number="11">I = strcmp(PredictedMode,<span class="st">&#39;good&#39;</span>);</a>
+<a class="sourceLine" id="cb310-12" data-line-number="12">Tags = ones(nr,<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb310-13" data-line-number="13">Tags(~I) = -<span class="fl">1</span>;</a>
+<a class="sourceLine" id="cb310-14" data-line-number="14">t = (<span class="fl">0</span>:<span class="fl">5120</span>)&#39;*Ts;  <span class="co">% 仿真时间</span></a>
+<a class="sourceLine" id="cb310-15" data-line-number="15">Time = t(<span class="fl">1</span>:<span class="fl">512</span>:end-<span class="fl">1</span>);</a>
+<a class="sourceLine" id="cb310-16" data-line-number="16">plot(Time(I),Tags(I),<span class="st">&#39;g*&#39;</span>,Time(~I),Tags(~I),<span class="st">&#39;r*&#39;</span>,<span class="st">&#39;MarkerSize&#39;</span>,<span class="fl">12</span>)</a>
+<a class="sourceLine" id="cb310-17" data-line-number="17">grid on</a>
+<a class="sourceLine" id="cb310-18" data-line-number="18">axis([<span class="fl">0</span> <span class="fl">20</span> -<span class="fl">2</span> <span class="fl">2</span>])</a>
+<a class="sourceLine" id="cb310-19" data-line-number="19">title(<span class="st">&#39;Green: Normal, Red: Faulty state&#39;</span>)</a>
+<a class="sourceLine" id="cb310-20" data-line-number="20">xlabel(<span class="st">&#39;Data evaluation time&#39;</span>)</a>
+<a class="sourceLine" id="cb310-21" data-line-number="21">ylabel(<span class="st">&#39;Prediction&#39;</span>)</a></code></pre></div>
+</section>
+<section align=left>
+<p align=center><img src="..\faultDetectionAndPrognose\scopeDeterioratingSystem.PNG" style="zoom:140%;" />&nbsp&nbsp&nbsp&nbsp<img src="..\faultDetectionAndPrognose\clfResult.png" style="zoom:120%;" /></p>
+<p>绘图显示，分类器将大约在中心点前的行为预测为正常，之后的行为预测为故障</p>
+</section>
+</section>
+<section align=left>
+<h4 id="第五步模型参数的在线自适应用于故障检测"><strong>第五步：模型参数的在线自适应用于故障检测</strong></h4>
+<section>
+<p>前面的分析使用了在系统运行期间不同时间收集的批量数据。另一种通常更方便的，监视系统健康状况的方法，是创建其行为的自适应模型。新的测量值被不断地处理，并被用来以递归的方式更新模型的参数。磨损或故障的影响由模型参数值的变化来表示</p>
+<p>再次考虑损耗的场景，当系统老化时，会出现更大的“咔嗒”声，表现为几种共振模式的激发以及系统峰值响应的上升。该场景在<code>idDeterioratingSystemEstimate</code>模型中进行了描述，与<code>idMechanicalSystem</code>的“DeterioratingSystem”模式相同，只是增加了用于离线识别的脉冲撞击。系统的响应被传递到一个“递归多项式模型估计器”模块，该模块被配置为估计一个ARMA模型结构的参数。实际的系统开始时处于健康状态，但在200秒时间后，恶化到寿命终结的状态</p>
+<div class="sourceCode" id="cb311"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb311-1" data-line-number="1">initial_model = translatecov(@(x)idpoly(x),model);</a>
+<a class="sourceLine" id="cb311-2" data-line-number="2">sysB = <span class="st">&#39;pdmDeterioratingSystemEstimation&#39;</span>;</a>
+<a class="sourceLine" id="cb311-3" data-line-number="3">open_system(sysB);</a></code></pre></div>
+<p align=center><img src="..\faultDetectionAndPrognose\ARMAMODEL.PNG" style="zoom: 120%;" /></p>
+</section>
+<section align=left>
+<p>“ARMA model” 模块块在转换为多项式(ARMA)格式后，使用前一节中导出的正常行为估计模型的参数和协方差数据进行初始化。使用<code>translatecov()</code>函数来转换参数协方差数据。该块使用“遗忘因子”算法，将遗忘因子设置为略小于1，以便在每个采样瞬间更新参数。遗忘因子的选择影响系统更新的速度。一个小的值意味着更新将会有很大的方差，而一个大的值将会使评估器很难适应快速的变化</p>
+<p>利用模型参数估计更新输出频谱及其3个标准差置信区间。当频谱的置信区域在感兴趣的频率上不与健康系统的置信区域重叠时，系统将发生明显的变化。故障检测阈值使用黑线在图上显示，其标记出在某些频率上允许的最大增益。随着系统变化的累积，频谱会在这条线上漂移。这是一个故障的可视指示器，可以用于要求对实际系统进行维护</p>
+<p>运行模拟并观察频谱图的更新，本代码需要有辅助函数<code>pdmARMASpectrumPlot</code></p>
+<div class="sourceCode" id="cb312"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb312-1" data-line-number="1">function idARMASpectrumPlot(a, c, t, cov)</a>
+<a class="sourceLine" id="cb312-2" data-line-number="2"><span class="co">%idARMASpectrumPlot Plot the output spectrum for current estimate of ARMA</span></a>
+<a class="sourceLine" id="cb312-3" data-line-number="3"><span class="co">%model.</span></a>
+<a class="sourceLine" id="cb312-4" data-line-number="4"><span class="co">% Inputs:</span></a>
+<a class="sourceLine" id="cb312-5" data-line-number="5"><span class="co">%  a:    A polynomial estimate at time t.</span></a>
+<a class="sourceLine" id="cb312-6" data-line-number="6"><span class="co">%  c:    C polynomial estimate.</span></a>
+<a class="sourceLine" id="cb312-7" data-line-number="7"><span class="co">%  t:    The current time value.</span></a>
+<a class="sourceLine" id="cb312-8" data-line-number="8"><span class="co">%  cov:  Parameter vector covariance matrix.</span></a>
+<a class="sourceLine" id="cb312-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb312-10" data-line-number="10"><span class="co">%  Copyright 2015 The MathWorks, Inc.</span></a>
+<a class="sourceLine" id="cb312-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb312-12" data-line-number="12">persistent DataSrc TextObj CL</a>
+<a class="sourceLine" id="cb312-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb312-14" data-line-number="14">if t==<span class="fl">0</span></a>
+<a class="sourceLine" id="cb312-15" data-line-number="15">   <span class="co">% Fetch the starting system (healthy state)</span></a>
+<a class="sourceLine" id="cb312-16" data-line-number="16">   sys = idpoly(a,[],c,<span class="st">&#39;Ts&#39;</span>,<span class="fl">1</span>/<span class="fl">256</span>); <span class="co">% original system for reference</span></a>
+<a class="sourceLine" id="cb312-17" data-line-number="17">   sys = setcov(sys, cov);</a>
+<a class="sourceLine" id="cb312-18" data-line-number="18">   sys2 = sys;  <span class="co">% second system whose parameters adapt (originally same as sys)</span></a>
+<a class="sourceLine" id="cb312-19" data-line-number="19">   <span class="co">% Generate a spectrum plot for the reference (sys) and adapting (sys2)</span></a>
+<a class="sourceLine" id="cb312-20" data-line-number="20">   <span class="co">% systems</span></a>
+<a class="sourceLine" id="cb312-21" data-line-number="21">   h = spectrumplot(gca,sys,sys2);</a>
+<a class="sourceLine" id="cb312-22" data-line-number="22">   <span class="co">% View peak response marker</span></a>
+<a class="sourceLine" id="cb312-23" data-line-number="23">   showCharacteristic(h,<span class="st">&#39;PeakResponse&#39;</span>)</a>
+<a class="sourceLine" id="cb312-24" data-line-number="24">   <span class="co">% View 2-std (99.7%) confidence region</span></a>
+<a class="sourceLine" id="cb312-25" data-line-number="25">   showConfidence(h, <span class="fl">3</span>)</a>
+<a class="sourceLine" id="cb312-26" data-line-number="26">   <span class="co">% Add barrier line for visual inspection of condition</span></a>
+<a class="sourceLine" id="cb312-27" data-line-number="27">   line([<span class="fl">10</span> <span class="fl">80</span> <span class="fl">80</span> <span class="fl">150</span> <span class="fl">150</span> <span class="fl">804</span>],[<span class="fl">21.3</span>*[<span class="fl">1</span> <span class="fl">1</span>] <span class="fl">0.4</span>*[<span class="fl">1</span> <span class="fl">1</span>] -<span class="fl">20</span>*[<span class="fl">1</span> <span class="fl">1</span>]],<span class="st">&#39;color&#39;</span>,<span class="st">&#39;k&#39;</span>,<span class="st">&#39;LineWidth&#39;</span>,<span class="fl">2</span>)</a>
+<a class="sourceLine" id="cb312-28" data-line-number="28">   <span class="co">% Fetch the data source corresponding to the adapting system sys2 and</span></a>
+<a class="sourceLine" id="cb312-29" data-line-number="29">   <span class="co">% cache it for updating.</span></a>
+<a class="sourceLine" id="cb312-30" data-line-number="30">   DataSrc = h.Responses(<span class="fl">2</span>).DataSrc; <span class="co">% the data source</span></a>
+<a class="sourceLine" id="cb312-31" data-line-number="31">   <span class="co">% Create a text object to display the &quot;good&quot; or &quot;fault&quot; tag</span></a>
+<a class="sourceLine" id="cb312-32" data-line-number="32">   TextObj = text(<span class="fl">123</span>, <span class="fl">19</span>,<span class="st">&#39; &#39;</span>,<span class="st">&#39;FontSize&#39;</span>,<span class="fl">14</span>);</a>
+<a class="sourceLine" id="cb312-33" data-line-number="33">   axis([<span class="fl">10</span> <span class="fl">500</span> -<span class="fl">40</span>  <span class="fl">30</span>])</a>
+<a class="sourceLine" id="cb312-34" data-line-number="34">   grid on</a>
+<a class="sourceLine" id="cb312-35" data-line-number="35">   </a>
+<a class="sourceLine" id="cb312-36" data-line-number="36">   <span class="co">% Fetch the classifier</span></a>
+<a class="sourceLine" id="cb312-37" data-line-number="37">   CL = evalin(<span class="st">&#39;base&#39;</span>,<span class="st">&#39;cl&#39;</span>);</a>
+<a class="sourceLine" id="cb312-38" data-line-number="38">   </a>
+<a class="sourceLine" id="cb312-39" data-line-number="39">elseif rem(t,<span class="fl">2</span>)==<span class="fl">0</span> <span class="co">% make only 100 updates for speed</span></a>
+<a class="sourceLine" id="cb312-40" data-line-number="40">   <span class="co">% Fetch the data source</span></a>
+<a class="sourceLine" id="cb312-41" data-line-number="41">   Model = DataSrc.Model;</a>
+<a class="sourceLine" id="cb312-42" data-line-number="42">   <span class="co">% Update the model parameters and covariance</span></a>
+<a class="sourceLine" id="cb312-43" data-line-number="43">   Model.a = a; Model.c = c; Model = setcov(Model, cov);</a>
+<a class="sourceLine" id="cb312-44" data-line-number="44">   <span class="co">% Update data source with the latest model. This causes the plot to</span></a>
+<a class="sourceLine" id="cb312-45" data-line-number="45">   <span class="co">% update.</span></a>
+<a class="sourceLine" id="cb312-46" data-line-number="46">   DataSrc.Model = Model;</a>
+<a class="sourceLine" id="cb312-47" data-line-number="47">   <span class="co">% Compute poles of the latest model</span></a>
+<a class="sourceLine" id="cb312-48" data-line-number="48">   p = esort(pole(noise2meas(Model)));</a>
+<a class="sourceLine" id="cb312-49" data-line-number="49">   <span class="co">% Predict the data class (good or faulty) using dominant poles of the</span></a>
+<a class="sourceLine" id="cb312-50" data-line-number="50">   <span class="co">% model</span></a>
+<a class="sourceLine" id="cb312-51" data-line-number="51">   [pr, score] = predict(CL, [real(p(<span class="fl">1</span>)),imag(p(<span class="fl">1</span>)),real(p(<span class="fl">3</span>)),imag(p(<span class="fl">3</span>))]);</a>
+<a class="sourceLine" id="cb312-52" data-line-number="52">   <span class="co">% Display the result of prediction. Call the results &quot;tentative&quot; if</span></a>
+<a class="sourceLine" id="cb312-53" data-line-number="53">   <span class="co">% the prediction score is close to the boundary of separation.</span></a>
+<a class="sourceLine" id="cb312-54" data-line-number="54">   add = <span class="st">&#39;&#39;</span>;</a>
+<a class="sourceLine" id="cb312-55" data-line-number="55">   if abs(score(<span class="fl">1</span>))&lt;<span class="fl">0.3</span></a>
+<a class="sourceLine" id="cb312-56" data-line-number="56">      add = <span class="st">&#39; (tentative)&#39;</span>;</a>
+<a class="sourceLine" id="cb312-57" data-line-number="57">   end</a>
+<a class="sourceLine" id="cb312-58" data-line-number="58">   if strcmp(pr,<span class="st">&#39;good&#39;</span>)</a>
+<a class="sourceLine" id="cb312-59" data-line-number="59">      TextObj.String = [<span class="st">&#39;Good&#39;</span>,add];</a>
+<a class="sourceLine" id="cb312-60" data-line-number="60">      TextObj.Color = [<span class="fl">0</span> <span class="fl">.5</span> <span class="fl">0</span>];</a>
+<a class="sourceLine" id="cb312-61" data-line-number="61">   else</a>
+<a class="sourceLine" id="cb312-62" data-line-number="62">      TextObj.String = [<span class="st">&#39;Fault&#39;</span>,add];</a>
+<a class="sourceLine" id="cb312-63" data-line-number="63">      TextObj.Color = [<span class="fl">0.9</span> <span class="fl">0</span> <span class="fl">0</span>];</a>
+<a class="sourceLine" id="cb312-64" data-line-number="64">   end</a>
+<a class="sourceLine" id="cb312-65" data-line-number="65">end</a></code></pre></div>
+</section>
+<section align=left>
+<div class="sourceCode" id="cb313"><pre class="sourceCode matlab"><code class="sourceCode matlab"><a class="sourceLine" id="cb313-1" data-line-number="1">sim(sysB)</a></code></pre></div>
+<p align=center><img src="..\faultDetectionAndPrognose\powerSpecFault.png" style="zoom:90%;" /></p>
+<p>模型参数的运行估计可以被用来计算系统极点位置，该信息喂入SVM分类器以后可以用来预测系统是否处于“good”或“fault”状态。上图中同样展示了该决策。当预测的归一化得分小于3时，这个判断被认为是试探性的（接近模型区分界限）。可以查看脚本<code>pdmARMASpectrumPlot.m</code>查看更多关于频谱运行估计和分类器预测的细节</p>
+<p>使用<code>recursiveARMA()</code>函数可在Simulink外，实现自适应估计和绘图过程。“递归多项式模型估计器”模块和<code>recursiveARMA()</code>函数都支持用于部署的代码生成</p>
+<p>分类方案可以推广到有几种已知失效模式的情况。为此，我们需要多组分类器，其中模式指的是特定的故障。这些方面的内容在本例中不做讨论</p>
+</section>
+</section>
+<section align=left>
+<h4 id="第六步总结-2"><strong>第六步：总结</strong></h4>
+<p>这个例子展示了，如何结合数据聚类和分类方法的系统识别方案，用来检测和隔离故障。讨论了序列批量分析和在线适应方案。建立了测量输出信号的ARMA结构模型。在可以同时访问输入和输出信号的情况下，可以采用类似的方法，并希望采用其他类型的模型结构，如状态空间或Box-Jenkins多项式模型</p>
+<p>在这个例子中，我们发现：</p>
+<ol type="1">
+<li>基于正常操作模型的残差相关性可以指示失败的开始</li>
+<li>通过采用系统行为的连续自适应模型，可以检测出逐渐恶化的故障。对模型特征(如输出频谱的界限)预先设置阈值有助于可视化故障的发生和发展</li>
+<li>当故障源需要隔离时，一种可行的方法是预先创建单独的故障模式模型。然后可以使用分类方法将系统的预测状态分配给这些模式之一</li>
+</ol>
+</section>
+<section style="font-size:44px;">
+<p><strong>参考：</strong><a href="https://ww2.mathworks.cn/help/predmaint/ug/Fault-Detection-Using-Data-Based-Models.html" target="_blank">https://ww2.mathworks.cn/help/predmaint/ug/Fault-Detection-Using-Data-Based-Models.html</a></p>
+</section>
+	    </div>
+  </div>
+
+  <script src="../reveal.js/lib/js/head.min.js"></script>
+  <script src="../reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Push each slide change to the browser history
+        history: true,
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: '../reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: '../reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: '../reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>
